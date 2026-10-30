@@ -89,6 +89,7 @@ nav.tabs svg{display:none;width:24px;height:24px;fill:none;stroke:currentColor;s
 .banner{background:var(--surface);border:1px solid var(--warn);color:var(--ink);border-radius:12px;padding:10px 14px;margin-bottom:16px;font-size:.9rem}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow)}
 .grid{display:grid;gap:14px}
+.grid>*{min-width:0}
 .g2{grid-template-columns:1fr 1fr}
 @media (max-width:820px){.g2{grid-template-columns:1fr}}
 h2{font-size:1rem;margin:0 0 12px;font-weight:700}
@@ -305,14 +306,14 @@ a{color:var(--brand)}
 <div class="update-bar" id="updateBar" role="status" hidden><span>Hay una nueva versión</span><button class="go" id="updateGo">Actualizar</button><button class="x" id="updateX" aria-label="Cerrar aviso">×</button></div>
 <dialog id="dlg"><form method="dialog" id="dlgForm" onsubmit="return false"></form></dialog>
 
-<script src="config.js?v=1.9.3"></script>
+<script src="config.js?v=1.9.4"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
 <script>
 (() => {
 "use strict";
 // ---------- versión ----------
 // Al subir cambios: actualiza APP_VERSION, APP_DATE, version.json y el ?v= de config.js.
-const APP_VERSION = "1.9.3";
+const APP_VERSION = "1.9.4";
 const APP_DATE = "2026-10-30";
 
 // ---------- utilities ----------
@@ -878,7 +879,7 @@ function chartSvg(bs) {
     }
   });
   const tot = bs.reduce((a, b) => ({ gas: a.gas + b.gas, ing: a.ing + b.ing }), { gas: 0, ing: 0 });
-  return `<div class="scrollx"><svg class="chart" viewBox="0 0 ${W} ${H}" style="min-width:${Math.min(W, 1400)}px" role="img" aria-label="Gráfica de ${show === "ambos" ? "ingresos y gastos" : show === "ingreso" ? "ingresos" : "gastos"}"><line x1="20" x2="${W}" y1="${base + .5}" y2="${base + .5}" stroke="var(--line)"/>${g}</svg></div>
+  return `<div class="scrollx"><svg class="chart" viewBox="0 0 ${W} ${H}" style="${bs.length > 16 ? `min-width:${Math.min(W, 1400)}px` : ""}" role="img" aria-label="Gráfica de ${show === "ambos" ? "ingresos y gastos" : show === "ingreso" ? "ingresos" : "gastos"}"><line x1="20" x2="${W}" y1="${base + .5}" y2="${base + .5}" stroke="var(--line)"/>${g}</svg></div>
     <div class="legend num" style="margin-top:6px">${show !== "gasto" ? `<span><i class="sw" style="background:var(--income)"></i>Ingresos ${fmt(tot.ing)}</span>` : ""}${show !== "ingreso" ? `<span><i class="sw" style="background:var(--spend)"></i>Gastos ${fmt(tot.gas)}</span>` : ""}</div>`;
 }
 function chartCard() {
