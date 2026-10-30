@@ -291,20 +291,25 @@ Hoy Ajustes muestra todas las secciones abiertas una tras otra (categorías, mé
 - [ ] La app recuerda en qué grupo estabas si cambias de pestaña y regresas.
 - **Resuelto:** pantallas separadas, con esos grupos y ese orden (aprobado por el usuario).
 
-### J. Metas: ahorro e inversión, y dónde está el dinero
-- [ ] Se conserva la sección de **Metas** para consultar; sin botón "Aportar" (todo con **+ → Ahorro**).
-- [ ] Cada meta muestra el **historial de sus aportaciones** (fecha, monto, nota) y el total acumulado contra el objetivo.
-- [ ] Cada meta tiene un **tipo: Ahorro o Inversión**.
-- [ ] Cada meta indica **dónde** está el dinero (por ejemplo: cuenta de ahorro, Nu, CETES, GBM, fondo, efectivo). Lista editable, como los métodos de pago, con "+ Agregar nuevo" ahí mismo.
-- [ ] En el formulario de + → Ahorro: elegir la meta; el tipo y el lugar se toman de la meta. Propuesta: permitir cambiar el lugar en una aportación concreta si ese dinero fue a otro lado.
-- [ ] Resumen de metas: total en **ahorro** y total en **inversión**, y desglose por lugar.
-- [ ] La sugerencia de cuánto apartar al mes se mantiene; sigue sin decir **dónde** invertir.
-- Requiere migración nueva: columnas `goals.kind` (ahorro | inversion) y `goals.place_id`, y tabla de lugares (`savings_places`) con RLS; opcional `transactions.place_id` para la excepción por aportación.
+### J. "Apartados": dinero destinado a ahorro e inversión (reemplaza la sección Metas)
+El usuario aparta dinero en distintos lugares (Nu, CETES, GBM, etc.) para no gastarlo, y el lugar **cambia en cada aportación**.
+- [ ] Nombre propuesto por Claude: **Apartados** (pestaña y sección). Abarca ahorro e inversión, y "apartar" es como se dice en México (por confirmar con el usuario; alternativas: Ahorro e inversión, Fondos).
+- [ ] **Lugares:** lista editable (Nu, CETES, GBM, cuenta de ahorro, efectivo…), cada uno con su **tipo: Ahorro o Inversión**. Se pueden crear desde el formulario con "+ Agregar lugar nuevo".
+- [ ] **Aportar:** con **+ → Ahorro** (renombrar a "Apartar"). Se elige **el lugar en cada aportación** (la app sugiere el último usado) y, de forma opcional, una **meta**. Sin botón "Aportar" en la sección.
+- [ ] **Metas opcionales:** objetivo con monto y fecha (por ejemplo "Fondo de emergencia $50,000"). Una meta puede juntar dinero de varios lugares.
+- [ ] **Pantalla Apartados:**
+  - Total apartado, total en ahorro y total en inversión.
+  - Desglose por lugar (cuánto hay en Nu, CETES, GBM…).
+  - Metas con su barra de progreso.
+  - Historial de aportaciones (fecha, monto, lugar, meta) al tocar un lugar o una meta.
+- [ ] La sugerencia mensual de cuánto apartar se mantiene; sigue sin decir **dónde** invertir.
+- Requiere migración nueva: tabla `savings_places` (nombre, tipo ahorro | inversion, color, activo) con RLS, `transactions.place_id`, y `goals` sigue para metas opcionales.
+- Por confirmar: ¿registrar cuando **sacas** dinero de un apartado (por ejemplo, retiras de Nu para un gasto)? ¿Y los **rendimientos** de las inversiones?
 
 ### K. Quitar la pestaña Fijos (aprobado por el usuario)
 Objetivo: no ver lo mismo en varios lados ni tener botones de más.
 - [ ] **Quitar la pestaña Fijos** de la barra inferior.
 - [ ] En **Resumen**, una sola tarjeta **"Fijos del mes"** que junta lo que hoy está repetido (Gastos fijos, Fijos vs. variables, Próximos pagos y la pestaña Fijos): pagado, por pagar y proyectado, y los próximos pagos con "Marcar pagado".
 - [ ] Al tocar esa tarjeta se abre el **detalle de fijos**: la lista completa agrupada por frecuencia, donde se edita, pausa o elimina cada fijo.
-- [ ] La barra inferior queda: **Resumen · Movimientos · Metas · Ajustes**. Metas ocupa el lugar de Fijos porque es información distinta (ahorro e inversión) que hoy está escondida al fondo del Resumen.
+- [ ] La barra inferior queda: **Resumen · Movimientos · Apartados · Ajustes**. Apartados ocupa el lugar de Fijos porque es información distinta (ahorro e inversión) que hoy está escondida al fondo del Resumen.
 - [ ] En Movimientos, filtro rápido "Solo fijos" para ver los pagos de fijos registrados.
