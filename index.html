@@ -258,12 +258,9 @@ a{color:var(--brand)}
 .iresults{display:grid;gap:6px}
 .ires{text-align:left;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);border-radius:10px;padding:10px 12px;cursor:pointer;font:inherit}
 .amt.sacar{color:var(--income)} .amt.rendimiento{color:var(--brand)}
-#view.nav-fwd{animation:navFwd .28s cubic-bezier(.2,.8,.2,1)}
-#view.nav-back{animation:navBack .28s cubic-bezier(.2,.8,.2,1)}
-@keyframes navFwd{from{transform:translateX(40%);opacity:0}to{transform:none;opacity:1}}
-@keyframes navBack{from{transform:translateX(-40%);opacity:0}to{transform:none;opacity:1}}
-@media (prefers-reduced-motion:reduce){#view.nav-fwd,#view.nav-back{animation:none}}
-.wrap{overflow-x:clip}
+.wrap{overflow-x:clip;position:relative}
+#view{background:var(--bg)}
+.navghost{position:fixed;pointer-events:none;background:var(--bg);will-change:transform}
 [hidden]{display:none!important}
 </style>
 </head>
@@ -308,14 +305,14 @@ a{color:var(--brand)}
 <div class="update-bar" id="updateBar" role="status" hidden><span>Hay una nueva versión</span><button class="go" id="updateGo">Actualizar</button><button class="x" id="updateX" aria-label="Cerrar aviso">×</button></div>
 <dialog id="dlg"><form method="dialog" id="dlgForm" onsubmit="return false"></form></dialog>
 
-<script src="config.js?v=1.9.1"></script>
+<script src="config.js?v=1.9.3"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
 <script>
 (() => {
 "use strict";
 // ---------- versión ----------
 // Al subir cambios: actualiza APP_VERSION, APP_DATE, version.json y el ?v= de config.js.
-const APP_VERSION = "1.9.1";
+const APP_VERSION = "1.9.3";
 const APP_DATE = "2026-10-30";
 
 // ---------- utilities ----------
@@ -952,15 +949,65 @@ function render() {
   $("#migBanner").hidden = !S.needsMigration; $("#migFile").textContent = S.needsMigration;
   const v = $("#view");
   if (!S.ready) { v.innerHTML = `<div class="empty">Cargando tus datos…</div>`; return; }
-  ({ resumen: viewResumen, movs: viewMovs, fijos: viewFijos, apartados: viewApartados, cats: viewCats, pend: viewPend })[S.tab](v);
-  if (S.navDir) { v.classList.remove("nav-fwd", "nav-back"); void v.offsetWidth; v.classList.add("nav-" + S.navDir); S.navDir = ""; }
+  const dir = S.navDir, from = S.navFrom || 0; S.navDir = ""; S.navFrom = 0;
+  const ghost = dir && !matchMedia("(prefers-reduced-motion: reduce)").matches ? makeGhost(v, from) : null;
+  VIEWS[S.tab](v);
+  if (ghost) slide(v, ghost, dir, from);
+}
+const VIEWS = { resumen: (v) => viewResumen(v), movs: (v) => viewMovs(v), fijos: (v) => viewFijos(v), apartados: (v) => viewApartados(v), cats: (v) => viewCats(v), pend: (v) => viewPend(v) };
+// Pinta la pantalla anterior detrás de la actual (para el gesto de regresar), sin cambiar de pantalla.
+function peekParent(v) {
+  const t = backTarget(); if (!t) return null;
+  const saved = { tab: S.tab, setPage: S.setPage, apPlace: S.apPlace };
+  const d = document.createElement("div");
+  Object.assign(S, t[1]); S.tab = t[0];
+  try { VIEWS[S.tab](d); } catch { d.innerHTML = ""; } finally { Object.assign(S, saved); }
+  const r = v.getBoundingClientRect();
+  d.className = "navghost"; d.setAttribute("aria-hidden", "true"); d.inert = true;
+  Object.assign(d.style, { top: `${r.top}px`, left: `${r.left}px`, width: `${r.width}px`, zIndex: 0, transform: `translateX(${-r.width * .3}px)`, filter: "brightness(.9)" });
+  v.parentNode.appendChild(d);
+  return d;
+}
+// Copia de la pantalla que se va, en su misma posición, para animar las dos a la vez.
+function makeGhost(v, from) {
+  const g = v.cloneNode(true);
+  g.removeAttribute("id"); g.className = "navghost"; g.setAttribute("aria-hidden", "true"); g.inert = true;
+  const r = v.getBoundingClientRect(); // en pantalla; se descuenta el arrastre del dedo, si lo hay
+  g.style.top = `${r.top}px`; g.style.left = `${r.left - from}px`; g.style.width = `${r.width}px`;
+  if (from) g.style.transform = `translateX(${from}px)`;
+  v.parentNode.appendChild(g);
+  return g;
+}
+const EASE = "cubic-bezier(.32,.72,0,1)"; // curva de las transiciones de iOS
+function slide(v, ghost, dir, from) {
+  const w = v.offsetWidth, ms = from ? 260 : 420, opts = { duration: ms, easing: EASE, fill: "both" };
+  v.style.transform = ""; v.style.opacity = "";
+  if (dir === "fwd") { // la nueva entra desde la derecha, encima; la anterior se recorre un poco a la izquierda
+    ghost.style.zIndex = 1; v.style.position = "relative"; v.style.zIndex = 2;
+    v.animate([{ transform: `translateX(${w}px)`, boxShadow: "-8px 0 24px rgba(0,0,0,.12)" }, { transform: "translateX(0)", boxShadow: "-8px 0 24px rgba(0,0,0,0)" }], opts);
+    ghost.animate([{ transform: "translateX(0)", filter: "brightness(1)" }, { transform: `translateX(${-w * .3}px)`, filter: "brightness(.9)" }], opts);
+  } else { // la que se va sale hacia la derecha, encima; la anterior vuelve desde la izquierda
+    ghost.style.zIndex = 2; v.style.position = "relative"; v.style.zIndex = 1;
+    const start = from || 0;
+    ghost.animate([{ transform: `translateX(${start}px)`, boxShadow: "-8px 0 24px rgba(0,0,0,.12)" }, { transform: `translateX(${w}px)`, boxShadow: "-8px 0 24px rgba(0,0,0,0)" }], opts);
+    v.animate([{ transform: `translateX(${-w * .3 * (1 - start / w)}px)`, filter: "brightness(.9)" }, { transform: "translateX(0)", filter: "brightness(1)" }], opts);
+  }
+  setTimeout(() => { ghost.remove(); v.getAnimations().forEach(a => a.cancel()); v.style.position = v.style.zIndex = ""; }, ms + 30);
 }
 const head = (title, btn) => `<div class="shead"><h2 style="margin:0">${title}</h2>${btn || ""}</div>`;
 const back = (to, label) => `<button type="button" class="backbtn" data-back="${to}">‹ ${label}</button>`;
 const SOURCE = { recurrente:"Fijo", siri:"Siri", gmail:"Correo" };
 const dShort = iso => `${+iso.slice(8)}/${iso.slice(5,7)}`;
 // dir: "fwd" entra a un detalle (desliza desde la derecha) · "back" regresa (desliza desde la izquierda)
-const go = (tab, extra = {}, dir = "") => { Object.assign(S, extra); S.tab = tab; S.navDir = dir; closeMonthPicker(); render(); window.scrollTo(0, 0); };
+const go = (tab, extra = {}, dir = "") => {
+  Object.assign(S, extra); S.tab = tab; S.navDir = dir; closeMonthPicker(); render(); window.scrollTo(0, 0);
+  if (dir === "fwd") history.pushState({ nav: 1 }, ""); // así el "atrás" del sistema también regresa
+};
+// A dónde regresa la pantalla actual (null si ya está en el inicio de su pestaña).
+const backTarget = () => S.tab === "fijos" || S.tab === "pend" ? ["resumen", {}] : S.tab === "apartados" && S.apPlace ? ["apartados", { apPlace: null }] : S.tab === "cats" && S.setPage ? ["cats", { setPage: null }] : null;
+function goBack(dir = "back") { const t = backTarget(); if (t) go(t[0], t[1], dir); }
+const navBack = () => { if (history.state?.nav) history.back(); else goBack(); };
+window.addEventListener("popstate", () => { if (S.skipPop) { S.skipPop = false; return; } goBack(); });
 
 function viewResumen(v) {
   const o = monthOutlook(), s = o.s, list = monthTx(), cats = byCategory(list);
@@ -1804,9 +1851,7 @@ $("#view").addEventListener("click", e => {
   else if (d.editplace) openPlace(place(d.editplace));
   else if (d.realbal) openRealBalance(place(d.realbal));
   else if (d.setpage) go("cats", { setPage: d.setpage }, "fwd");
-  else if (d.back === "ajustes") go("cats", { setPage: null }, "back");
-  else if (d.back === "apartados") go("apartados", { apPlace: null }, "back");
-  else if (d.back) go(d.back, {}, "back");
+  else if (d.back) navBack();
   else if (d.act === "fijos") go("fijos", {}, "fwd");
   else if (d.act === "pend") go("pend");
   else if (d.act === "newmethod") openMethod();
@@ -1815,6 +1860,50 @@ $("#view").addEventListener("click", e => {
   else if (d.act === "prices") refreshPrices(true);
 });
 dlg.addEventListener("click", e => { if (e.target === dlg) close(); });
+
+// Gesto de regresar: arrastrar desde el borde izquierdo (como en las apps del iPhone).
+// Solo con la app instalada; en Safari ya existe el gesto del navegador.
+{
+  const v = $("#view"); let sw = null, under = null;
+  const reset = () => { v.style.transition = ""; v.style.transform = ""; v.style.boxShadow = ""; v.style.position = v.style.zIndex = ""; };
+  document.addEventListener("touchstart", e => {
+    if (!isStandalone() || !backTarget() || e.touches.length > 1 || dlg.open) return;
+    const t = e.touches[0];
+    if (t.clientX > 28) return;
+    sw = { x: t.clientX, y: t.clientY, dx: 0, t: Date.now(), lock: null };
+  }, { passive: true });
+  document.addEventListener("touchmove", e => {
+    if (!sw) return;
+    const t = e.touches[0], dx = t.clientX - sw.x, dy = t.clientY - sw.y;
+    if (!sw.lock) {
+      if (Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(dy)) { sw.lock = "h"; under = peekParent(v); v.style.position = "relative"; v.style.zIndex = 1; }
+      else if (Math.abs(dy) > 8) { sw = null; return; } else return;
+    }
+    e.preventDefault();
+    sw.dx = Math.max(0, dx);
+    v.style.transition = "none";
+    v.style.transform = `translateX(${sw.dx}px)`;
+    v.style.boxShadow = "-8px 0 24px rgba(0,0,0,.12)";
+    if (under) { const w = v.offsetWidth, k = Math.min(1, sw.dx / w); under.style.transform = `translateX(${-w * .3 * (1 - k)}px)`; under.style.filter = `brightness(${.9 + .1 * k})`; }
+  }, { passive: false });
+  document.addEventListener("touchend", () => {
+    if (!sw) return;
+    const { dx, t } = sw, fast = dx > 40 && dx / (Date.now() - t) > .5, u = under;
+    sw = null; under = null;
+    if (dx > innerWidth * .35 || fast) {
+      // Continúa desde donde quedó el dedo: la pantalla termina de salir y la anterior llega desde atrás.
+      S.navFrom = dx; S.skipPop = !!history.state?.nav;
+      goBack("back"); u?.remove(); // la pantalla real ya ocupa su lugar y termina la animación desde ahí
+      if (S.skipPop) history.back();
+    } else {
+      v.style.transition = `transform .3s ${EASE}`;
+      v.style.transform = "";
+      if (u) { u.style.transition = `transform .3s ${EASE}, filter .3s`; u.style.transform = `translateX(${-v.offsetWidth * .3}px)`; u.style.filter = "brightness(.9)"; }
+      setTimeout(() => { reset(); u?.remove(); }, 320);
+    }
+  });
+  document.addEventListener("touchcancel", () => { if (sw) { sw = null; reset(); under?.remove(); under = null; } });
+}
 document.addEventListener("keydown", e => { if (e.key === "Escape") closeMonthPicker(); });
 $("#signin").onclick = () => doAuth(false);
 $("#signup").onclick = () => doAuth(true);
