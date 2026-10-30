@@ -187,6 +187,10 @@ label.f input,label.f select{background:var(--surface-2);border:1px solid var(--
 .update-bar .go{background:var(--brand);color:var(--brand-ink);padding:0 16px}
 .update-bar .x{background:transparent;color:inherit;min-width:44px;font-size:1.2rem;opacity:.7}
 .rowbtns{display:flex;gap:6px}
+.tokbox{display:block;word-break:break-all;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:.85rem;user-select:all}
+.testn{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.testn input,.testn select{background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;color:var(--ink);font-size:1rem;width:100%}
+a{color:var(--brand)}
 .shead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
 .pendbtn{margin-left:auto;border:0;border-radius:999px;background:var(--warn);color:#fff;font-weight:700;min-height:40px;padding:0 14px;cursor:pointer}
 .pendbtn b{display:inline-block;min-width:20px;margin-left:4px;background:rgba(255,255,255,.25);border-radius:999px;padding:1px 6px}
@@ -257,7 +261,7 @@ label.f input,label.f select{background:var(--surface-2);border:1px solid var(--
     <button data-tab="fijos"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Fijos</button>
     <button data-tab="cats"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>Ajustes</button>
   </nav>
-  <div class="banner" id="migBanner" hidden><b>Falta actualizar la base de datos.</b> En Supabase → SQL Editor, corre el archivo <code>migrations/001_metodos_fijos_pendientes_metas.sql</code> del repositorio y vuelve a abrir la app.</div>
+  <div class="banner" id="migBanner" hidden><b>Falta actualizar la base de datos.</b> En Supabase → SQL Editor, corre el archivo <code id="migFile"></code> de la carpeta <code>migrations</code> del repositorio y vuelve a abrir la app.</div>
   <main id="view"></main>
 </div>
 </div>
@@ -266,14 +270,14 @@ label.f input,label.f select{background:var(--surface-2);border:1px solid var(--
 <div class="update-bar" id="updateBar" role="status" hidden><span>Hay una nueva versión</span><button class="go" id="updateGo">Actualizar</button><button class="x" id="updateX" aria-label="Cerrar aviso">×</button></div>
 <dialog id="dlg"><form method="dialog" id="dlgForm" onsubmit="return false"></form></dialog>
 
-<script src="config.js?v=1.7.0"></script>
+<script src="config.js?v=1.8.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
 <script>
 (() => {
 "use strict";
 // ---------- versión ----------
 // Al subir cambios: actualiza APP_VERSION, APP_DATE, version.json y el ?v= de config.js.
-const APP_VERSION = "1.7.0";
+const APP_VERSION = "1.8.0";
 const APP_DATE = "2026-10-30";
 
 // ---------- utilities ----------
@@ -301,11 +305,12 @@ const DEFAULT_METHODS = [["Efectivo","efectivo","#5B8C2A"],["Transferencia","tra
 const CURRENCIES = ["MXN","USD","EUR","COP","ARS","CLP","PEN","GTQ","CRC","DOP"];
 
 // ---------- state ----------
-const S = { tab:"resumen", ym: ymOf(todayISO()), currency:"MXN", categories:[], methods:[], recs:[], pending:[], goals:[], goalSaved:{}, tx:[], filterCat:"", filterMethod:"", search:"", ready:false, needsMigration:false };
+const S = { tab:"resumen", ym: ymOf(todayISO()), currency:"MXN", categories:[], methods:[], recs:[], pending:[], goals:[], goalSaved:{}, tokens:[], profile:null, notify:{}, adminUsers:null, pushOn:false, tx:[], filterCat:"", filterMethod:"", search:"", ready:false, needsMigration:false };
 const fmt = (n, compact) => {
   try { return new Intl.NumberFormat("es-MX", {style:"currency", currency:S.currency || "MXN", maximumFractionDigits: compact ? 0 : 2, minimumFractionDigits: compact ? 0 : 2}).format(n || 0); }
   catch { return "$" + (n || 0).toFixed(2); }
 };
+{ const t = new URLSearchParams(location.search).get("tab"); if (["resumen","movs","fijos","cats","pend"].includes(t)) S.tab = t; }
 const cat = id => S.categories.find(c => c.id === id) || {id, name:"Sin categoría", color:"#8C9A94", kind:"gasto", budget:0};
 const catsOf = kind => S.categories.filter(c => c.kind === kind);
 const method = id => S.methods.find(m => m.id === id);
@@ -369,7 +374,7 @@ let lastGen = 0;
 async function loadBase() {
   if (Date.now() - lastGen > 5 * 60e3) { lastGen = Date.now(); await sb.rpc("generate_pending_entries"); } // crea pendientes de fijos cuya fecha ya llegó
   const [a] = rangeFor(S.ym);
-  const [st, cs, pm, rc, pe, gl, sv] = await Promise.all([
+  const [st, cs, pm, rc, pe, gl, sv, pf, tk] = await Promise.all([
     sb.from("settings").select("*").maybeSingle(),
     sb.from("categories").select("*").order("created_at"),
     sb.from("payment_methods").select("*").order("created_at"),
@@ -377,12 +382,18 @@ async function loadBase() {
     sb.from("pending_entries").select("*").neq("status", "aceptado").or(`status.eq.pendiente,date.gte.${a}`).order("date"),
     sb.from("goals").select("*").order("created_at"),
     sb.from("transactions").select("goal_id,amount").eq("type", "ahorro"),
+    sb.from("profiles").select("role,display_name").eq("user_id", userId).maybeSingle(),
+    sb.from("api_tokens").select("id,name,last_used_at,revoked,created_at").order("created_at"),
   ]);
   if (cs.error) throw cs.error;
-  S.needsMigration = [pm, rc, pe, gl, sv].some(r => missingTable(r.error));
-  const err = [pm, rc, pe, gl, sv].find(r => r.error && !missingTable(r.error));
+  S.needsMigration = [pm, rc, pe, gl, sv].some(r => missingTable(r.error)) ? "001_metodos_fijos_pendientes_metas.sql"
+    : [pf, tk].some(r => missingTable(r.error)) ? "002_notificaciones_usuarios_siri_gmail.sql" : "";
+  const err = [pm, rc, pe, gl, sv, pf, tk].find(r => r.error && !missingTable(r.error));
   if (err) throw err.error;
   S.currency = st.data?.currency || "MXN";
+  S.notify = st.data?.notify || {};
+  S.profile = pf.data || null;
+  S.tokens = tk.data || [];
   S.categories = (cs.data || []).map(toCat);
   S.methods = (pm.data || []).map(toMethod);
   S.recs = (rc.data || []).map(toRec);
@@ -395,7 +406,7 @@ async function loadBase() {
     const { error } = await sb.from("categories").insert(rows);
     if (!error) S.categories = rows.map(toCat);
   }
-  if (!S.methods.length && !S.needsMigration) {
+  if (!S.methods.length && !/^001/.test(S.needsMigration)) {
     const rows = DEFAULT_METHODS.map(([name, kind, color], i) => ({ id: uid(), name, kind, color, active: true, created_at: new Date(Date.now() + i).toISOString() }));
     const { error } = await sb.from("payment_methods").insert(rows);
     if (!error) S.methods = rows.map(toMethod);
@@ -426,7 +437,7 @@ const refreshSoon = () => { clearTimeout(refreshT); refreshT = setTimeout(() => 
 function startRealtime() {
   if (channel) sb.removeChannel(channel);
   channel = sb.channel("finanzas-" + userId);
-  ["transactions","categories","settings","payment_methods","recurrences","pending_entries","goals"].forEach(table =>
+  ["transactions","categories","settings","payment_methods","recurrences","pending_entries","goals","api_tokens"].forEach(table =>
     channel.on("postgres_changes", { event:"*", schema:"public", table, filter:`user_id=eq.${userId}` }, refreshSoon));
   channel.subscribe();
 }
@@ -536,6 +547,111 @@ function openNewPassword(fromEmail) {
   });
 }
 
+// ---------- notificaciones ----------
+const FN_URL = (window.SUPABASE_URL || "") + "/functions/v1";
+const DOCS = "https://github.com/irseve/mis-finanzas/blob/main/docs/";
+const NOTIFY_KINDS = [["recurrente","Fijos por confirmar (renta, colegiatura…)"],["ingreso","Ingresos fijos: capturar el monto (salario)"],["recordatorio","Recordatorios de pagos manuales"],["pendientes","Pendientes de Siri y del correo"],["meta","Sugerencia de ahorro al cobrar"]];
+const isStandalone = () => navigator.standalone === true || matchMedia("(display-mode: standalone)").matches;
+const isIOS = () => /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+const pushSupported = () => "serviceWorker" in navigator && "PushManager" in window && "Notification" in window;
+const swReg = () => navigator.serviceWorker.register("sw.js");
+const b64u = s => { const b = atob((s + "=".repeat((4 - s.length % 4) % 4)).replace(/-/g, "+").replace(/_/g, "/")); return Uint8Array.from(b, c => c.charCodeAt(0)); };
+async function refreshPushState() {
+  if (!pushSupported() || Notification.permission !== "granted") { S.pushOn = false; return; }
+  const reg = await navigator.serviceWorker.getRegistration();
+  S.pushOn = !!(reg && await reg.pushManager.getSubscription());
+}
+// En iOS el permiso solo se puede pedir con un toque y con la app instalada en la pantalla de inicio.
+async function enablePush() {
+  if (isIOS() && !isStandalone()) { toast("Primero agrega la app a tu pantalla de inicio (Compartir → Agregar a inicio) y actívalas desde ahí."); return; }
+  if (!pushSupported()) { toast("Este navegador no permite notificaciones."); return; }
+  const perm = await Notification.requestPermission();
+  if (perm !== "granted") { toast("No se activaron. Puedes permitirlas en Configuración → Notificaciones → Finanzas."); return; }
+  try {
+    const reg = await swReg(); await navigator.serviceWorker.ready;
+    const { data, error } = await sb.functions.invoke("notificaciones", { body: { action: "public-key" } });
+    if (error || !data?.publicKey) { toast("No se pudo activar: falta instalar la función \"notificaciones\" en Supabase."); return; }
+    const sub = await reg.pushManager.getSubscription() || await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64u(data.publicKey) });
+    const j = sub.toJSON();
+    const device = isIOS() ? "iPhone" : /Android/.test(navigator.userAgent) ? "Android" : "Computadora";
+    if (await check(sb.from("push_subscriptions").upsert({ endpoint: j.endpoint, p256dh: j.keys.p256dh, auth: j.keys.auth, device }, { onConflict: "endpoint" }), "Notificaciones activadas en este dispositivo")) { S.pushOn = true; render(); }
+  } catch (e) { console.error(e); toast("No se pudieron activar: " + (e.message || e)); }
+}
+async function disablePush() {
+  const reg = await navigator.serviceWorker.getRegistration(), sub = reg && await reg.pushManager.getSubscription();
+  if (sub) { await sb.from("push_subscriptions").delete().eq("endpoint", sub.endpoint); await sub.unsubscribe(); }
+  S.pushOn = false; toast("Notificaciones desactivadas en este dispositivo"); render();
+}
+const saveNotify = () => check(sb.from("settings").upsert({ user_id: userId, notify: S.notify }), "Preferencias guardadas");
+
+// ---------- tokens para Siri y Gmail ----------
+function openNewToken() {
+  openDialog(`
+    <div class="mhead">Nuevo token personal</div>
+    <div class="mbody">
+      <div class="sub">Sirve para que Siri o tu Gmail registren pendientes en tu cuenta. Usa uno para cada cosa, así puedes revocarlos por separado.</div>
+      <label class="f">Nombre<input name="name" maxlength="40" placeholder="Ej. Siri o Gmail"></label>
+    </div>
+    <div class="mfoot"><span class="spacer"></span><button type="button" class="btn ghost" data-close>Cancelar</button><button type="button" class="btn" data-save>Generar</button></div>`,
+  f => {
+    f.querySelector("[data-close]").onclick = close;
+    f.querySelector("[data-save]").onclick = async () => {
+      const { data: tok, error } = await sb.rpc("create_api_token", { p_name: f.name.value.trim() || "Token" });
+      if (error) { toast("No se pudo generar: " + error.message); return; }
+      refresh();
+      openDialog(`
+        <div class="mhead">Copia tu token ahora</div>
+        <div class="mbody">
+          <div class="warnbox">Solo se muestra esta vez. Guárdalo en el atajo de Siri o en el programa de Gmail; si lo pierdes, revócalo y genera otro.</div>
+          <code class="tokbox" id="tokText">${esc(tok)}</code>
+          <button type="button" class="btn" id="copyTok">Copiar token</button>
+          <div class="sub">Dirección para Siri:<br><code class="tokbox">${esc(FN_URL)}/registrar?origen=siri</code></div>
+          <div class="sub">Guías paso a paso: <a href="${DOCS}siri.md" target="_blank" rel="noopener">Siri</a> · <a href="${DOCS}gmail.md" target="_blank" rel="noopener">Gmail</a></div>
+        </div>
+        <div class="mfoot"><span class="spacer"></span><button type="button" class="btn ghost" data-close>Listo</button></div>`,
+      g => {
+        g.querySelector("[data-close]").onclick = close;
+        g.querySelector("#copyTok").onclick = async () => {
+          try { await navigator.clipboard.writeText(tok); toast("Token copiado"); }
+          catch { const r = document.createRange(); r.selectNodeContents(g.querySelector("#tokText")); getSelection().removeAllRanges(); getSelection().addRange(r); toast("Selecciónalo y cópialo"); }
+        };
+      });
+    };
+    setTimeout(() => f.name.focus(), 50);
+  });
+}
+
+// ---------- administración (solo admins; el servidor también lo verifica) ----------
+const adminCall = async body => {
+  const { data, error } = await sb.functions.invoke("admin-usuarios", { body });
+  if (error) { let m = error.message; try { m = (await error.context.json()).error || m; } catch {} throw new Error(m); }
+  return data;
+};
+async function loadAdminUsers() {
+  try { S.adminUsers = (await adminCall({ action: "list" })).users; }
+  catch (e) { S.adminUsers = []; toast("No se pudo cargar la lista: " + e.message); }
+  render();
+}
+function openInvite() {
+  openDialog(`
+    <div class="mhead">Agregar usuario</div>
+    <div class="mbody">
+      <label class="f">Correo<input name="email" type="email" inputmode="email" autocomplete="off"></label>
+      <label class="f">Contraseña inicial (opcional)<input name="password" type="text" autocomplete="off" placeholder="Déjala vacía para mandar invitación por correo"></label>
+      <div class="sub">Sin contraseña, le llega un correo para crear la suya. Con contraseña, la cuenta queda lista y tú se la compartes. Cada usuario solo ve sus propias finanzas.</div>
+    </div>
+    <div class="mfoot"><span class="spacer"></span><button type="button" class="btn ghost" data-close>Cancelar</button><button type="button" class="btn" data-save>Agregar</button></div>`,
+  f => {
+    f.querySelector("[data-close]").onclick = close;
+    f.querySelector("[data-save]").onclick = async () => {
+      const email = f.email.value.trim(), password = f.password.value;
+      try { await adminCall(password ? { action: "create", email, password } : { action: "invite", email }); close(); toast(password ? "Usuario creado" : "Invitación enviada"); loadAdminUsers(); }
+      catch (e) { toast(e.message); }
+    };
+    setTimeout(() => f.email.focus(), 50);
+  });
+}
+
 // ---------- derived data ----------
 function monthTx(ym = S.ym) { return S.tx.filter(t => ymOf(t.date) === ym); }
 const isFixedTx = t => !!(t.recurrenceId || t.fixedId);
@@ -641,7 +757,7 @@ function render() {
   document.querySelectorAll("#tabs button").forEach(b => b.setAttribute("aria-current", b.dataset.tab === S.tab));
   const n = pendingOpen().length, pb = $("#pendBtn");
   pb.hidden = !n; pb.querySelector("b").textContent = n; pb.setAttribute("aria-current", S.tab === "pend");
-  $("#migBanner").hidden = !S.needsMigration;
+  $("#migBanner").hidden = !S.needsMigration; $("#migFile").textContent = S.needsMigration;
   const v = $("#view");
   if (!S.ready) { v.innerHTML = `<div class="empty">Cargando tus datos…</div>`; return; }
   ({ resumen: viewResumen, movs: viewMovs, fijos: viewFijos, cats: viewCats, pend: viewPend })[S.tab](v);
@@ -891,6 +1007,30 @@ function viewCats(v) {
     <section class="card">${head("Categorías de ingreso", `<button class="btn sm" data-newcat="ingreso">Nueva</button>`)}${sec("ingreso")}</section>
     <section class="card">${head("Métodos de pago", `<button class="btn sm" data-act="newmethod">Nuevo</button>`)}${meth || `<div class="sub">Sin métodos de pago.</div>`}</section>
     <section class="card">
+      <h2>Notificaciones</h2>
+      ${S.pushOn ? `<div class="sub" style="margin-bottom:10px"><span class="pill ok">Activadas en este dispositivo</span></div><button class="btn ghost sm" id="pushOff">Desactivar en este dispositivo</button>`
+        : `<div class="sub" style="margin-bottom:10px">${isIOS() && !isStandalone() ? "En iPhone solo funcionan con la app agregada a la pantalla de inicio. Ábrela desde el icono y actívalas ahí." : "Te avisamos cuando toque confirmar un fijo, capturar tu salario o pagar algo."}</div><button class="btn" id="pushOn" style="min-height:44px">Activar notificaciones</button>`}
+      <div style="display:grid;gap:8px;margin-top:14px">${NOTIFY_KINDS.map(([k, l]) => `<label class="check"><input type="checkbox" data-notify="${k}" ${S.notify[k] !== false ? "checked" : ""}> ${l}</label>`).join("")}</div>
+    </section>
+    <section class="card">
+      ${head("Siri y correo", `<button class="btn sm" id="newTok">Generar token</button>`)}
+      <div class="sub" style="margin-bottom:8px">Registra gastos diciendo "Oye Siri, agrega un gasto" o automáticamente con los correos de BBVA. Llegan como pendientes por confirmar. Guías: <a href="${DOCS}siri.md" target="_blank" rel="noopener">Siri</a> · <a href="${DOCS}gmail.md" target="_blank" rel="noopener">Gmail</a></div>
+      ${S.tokens.map(t => `<div class="fixed-row"><div class="mid"><b>${esc(t.name)}</b><div class="sub">${t.revoked ? "Revocado" : t.last_used_at ? "Último uso " + new Date(t.last_used_at).toLocaleString("es-MX", { dateStyle:"medium", timeStyle:"short" }) : "Sin usar todavía"}</div></div>${t.revoked ? `<button class="btn ghost sm" data-deltok="${esc(t.id)}">Borrar</button>` : `<button class="btn danger sm" data-revtok="${esc(t.id)}">Revocar</button>`}</div>`).join("") || `<div class="sub">Aún no tienes tokens.</div>`}
+    </section>
+    ${S.profile?.role === "admin" ? `<section class="card">
+      ${head("Administración", `<button class="btn sm" id="invite">Agregar usuario</button>`)}
+      <div class="sub" style="margin-bottom:8px">Ser administrador no da acceso a las finanzas de otros usuarios.</div>
+      ${S.adminUsers === null ? `<button class="btn ghost sm" id="loadUsers">Ver usuarios</button>` : S.adminUsers.map(u => `<div class="fixed-row"><div class="mid"><b>${esc(u.email)}</b><div class="sub">${u.role === "admin" ? "Administrador" : "Usuario"}${u.confirmed ? "" : " · invitación pendiente"}${u.last_sign_in_at ? " · entró " + new Date(u.last_sign_in_at).toLocaleDateString("es-MX") : ""}</div></div><button class="btn ghost sm" data-setrole="${esc(u.id)}|${u.role === "admin" ? "user" : "admin"}">${u.role === "admin" ? "Quitar admin" : "Hacer admin"}</button></div>`).join("")}
+      <h2 style="margin-top:20px">Probar notificación</h2>
+      <div class="testn">
+        <label class="f">En<input id="tnAmount" type="number" inputmode="numeric" min="0" value="30"></label>
+        <label class="f">Unidad<select id="tnUnit"><option value="segundos">segundos</option><option value="minutos">minutos</option><option value="horas">horas</option><option value="dias">días</option></select></label>
+        <label class="f" style="grid-column:1/-1">Tipo<select id="tnKind"><option value="gmail">Registro automático por correo (Gmail)</option><option value="siri">Registro de Siri</option><option value="recurrente">Pago recurrente por confirmar</option><option value="recordatorio">Recordatorio de pago manual</option></select></label>
+      </div>
+      <button class="btn" id="tnGo" style="margin-top:10px;min-height:44px">Programar prueba</button>
+      <div class="sub" style="margin-top:6px">Se envía a tus dispositivos con notificaciones activadas. El servidor revisa cada minuto, así que puede tardar hasta 1 minuto más de lo indicado.</div>
+    </section>` : ""}
+    <section class="card">
       <h2>Tema</h2>
       <div class="themes" role="group" aria-label="Tema de colores">${Object.entries(THEMES).map(([k, t]) => { const c = dark ? t.D : t.L;
         return `<button type="button" data-palette="${k}" aria-pressed="${k === pal}" style="background:${c.bg};color:${c.ink}"><b>${esc(t.name)}</b><span class="chips"><i style="background:${c.brand}"></i><i style="background:${c.spend}"></i><i style="background:${c.income}"></i></span></button>`; }).join("")}</div>
@@ -920,6 +1060,23 @@ function viewCats(v) {
   v.querySelectorAll("[data-palette]").forEach(b => b.onclick = () => { applyTheme(b.dataset.palette, mode); render(); });
   v.querySelectorAll("[data-mode]").forEach(b => b.onclick = () => { applyTheme(pal, b.dataset.mode); render(); });
   $("#cur").onchange = e => Store.saveCurrency(e.target.value);
+  $("#pushOn")?.addEventListener("click", enablePush);
+  $("#pushOff")?.addEventListener("click", disablePush);
+  v.querySelectorAll("[data-notify]").forEach(c => c.onchange = () => { S.notify = { ...S.notify, [c.dataset.notify]: c.checked }; saveNotify(); });
+  $("#newTok").onclick = openNewToken;
+  v.querySelectorAll("[data-revtok]").forEach(b => b.onclick = async () => { if (confirm("¿Revocar este token? Lo que lo use (Siri o Gmail) dejará de funcionar.")) { await check(sb.from("api_tokens").update({ revoked: true }).eq("id", b.dataset.revtok), "Token revocado"); refresh(); } });
+  v.querySelectorAll("[data-deltok]").forEach(b => b.onclick = async () => { await check(sb.from("api_tokens").delete().eq("id", b.dataset.deltok)); refresh(); });
+  $("#invite")?.addEventListener("click", openInvite);
+  $("#loadUsers")?.addEventListener("click", loadAdminUsers);
+  v.querySelectorAll("[data-setrole]").forEach(b => b.onclick = async () => {
+    const [id, role] = b.dataset.setrole.split("|");
+    try { await adminCall({ action: "set-role", user_id: id, role }); toast(role === "admin" ? "Ahora es administrador" : "Ya no es administrador"); loadAdminUsers(); } catch (e) { toast(e.message); }
+  });
+  $("#tnGo")?.addEventListener("click", async () => {
+    const { data, error } = await sb.rpc("schedule_test_notification", { p_amount: parseInt($("#tnAmount").value) || 0, p_unit: $("#tnUnit").value, p_kind: $("#tnKind").value });
+    if (error) { toast("No se pudo programar: " + error.message); return; }
+    toast("Prueba programada para las " + new Date(data).toLocaleTimeString("es-MX", { hour:"2-digit", minute:"2-digit", second:"2-digit" }) + (S.pushOn ? "" : " · Activa las notificaciones en este dispositivo para recibirla"));
+  });
   $("#chpass").onclick = () => openNewPassword(false);
   $("#logout").onclick = async () => { if (confirm("¿Cerrar sesión en este dispositivo?")) { if (channel) sb.removeChannel(channel); await sb.auth.signOut(); S.ready = false; } };
 }
@@ -1291,6 +1448,15 @@ $("#updateX").onclick = () => { dismissedVersion = $("#updateBar").dataset.v; $(
 document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") checkForUpdate(); });
 checkForUpdate();
 
+if (pushSupported()) {
+  if (Notification.permission === "granted") swReg().then(() => refreshPushState()).then(render).catch(() => {});
+  navigator.serviceWorker.addEventListener("message", e => {
+    if (e.data?.type !== "open") return;
+    const t = new URL(e.data.url).searchParams.get("tab");
+    if (t) { S.tab = t; render(); window.scrollTo(0, 0); }
+    refresh();
+  });
+}
 sb.auth.getSession().then(({ data }) => onSession(data.session));
 sb.auth.onAuthStateChange((event, session) => { setTimeout(() => {
   if (!session) { userId = null; showLogin(); return; }

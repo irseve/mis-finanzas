@@ -38,12 +38,14 @@ Antes de implementar lo que dependa de estas decisiones, **pregúntale al usuari
 
 | Tema | Pregunta | Valor por defecto |
 |---|---|---|
-| Recurrentes (punto 6) | ~~¿Sugerir el último monto pagado o el original?~~ **Resuelto:** el último monto, siempre editable (ver sección 6). | — |
-| Gmail (punto 10) | ¿De qué banco llegan los correos de retiro/cargo? Se necesita un correo de ejemplo (con datos tapados). | No implementar el parser hasta tener el ejemplo. |
-| Ingresos (punto 4) | ¿Se quiere un acceso más visible para registrar ingresos? | Botón rápido "Ingreso" en el formulario o junto al botón +. |
-| Rediseño (punto 16) | Paleta e icono finales. | Presentar opciones y esperar elección. |
+| Recurrentes (punto 6) | **Resuelto:** el último monto, siempre editable (ver sección 6). | — |
+| Gmail (punto 10) | **Resuelto:** BBVA (correo de ejemplo: retiro de efectivo). | — |
+| Ingresos (punto 4) | **Resuelto:** botones "+ Gasto" (rojo) y "+ Ingreso" (verde) en Resumen. | — |
+| Rediseño (punto 16) | **Resuelto:** 5 temas a elegir; icono opción A. | — |
 
 ---
+
+**Para dejar todo funcionando: [`docs/INSTALACION.md`](docs/INSTALACION.md).**
 
 ## 4. Fases
 
@@ -54,7 +56,7 @@ Problema: la app instalada en la pantalla de inicio del iPhone conserva la versi
 - [x] Al abrir la app y en cada `visibilitychange` → visible: `fetch("version.json?t=" + Date.now(), { cache: "no-store" })`. Si la versión es distinta, mostrar un aviso "Hay una nueva versión · Actualizar".
 - [x] En **Ajustes → Opciones avanzadas**: mostrar la versión instalada y un botón **"Buscar actualizaciones"** que fuerce la descarga sin caché y recargue la app (por ejemplo `location.replace("./?v=" + Date.now())`). Si no hay cambios, mostrar "Ya tienes la versión más reciente".
 - [x] Los recursos propios (`config.js`, CSS y JS separados) se cargan con un parámetro de versión (`?v=APP_VERSION`).
-- [ ] Si se agrega un service worker (necesario en la Fase 4), su estrategia debe ser *network-first* para HTML y `version.json`, y debe activarse de inmediato (`skipWaiting` + `clients.claim`). *(Aún no hay service worker; se aplica en la Fase 4.)*
+- [x] Si se agrega un service worker (necesario en la Fase 4), su estrategia debe ser *network-first* para HTML y `version.json`, y debe activarse de inmediato (`skipWaiting` + `clients.claim`). *(v1.8.0: `sw.js` sin caché, solo notificaciones.)*
 
 **Criterio de aceptación:** después de reinstalar la app una última vez, un cambio subido a `main` aparece en el iPhone con el aviso o con el botón, sin volver a reinstalar.
 
@@ -97,34 +99,34 @@ Problema: la app instalada en la pantalla de inicio del iPhone conserva la versi
 - [x] Punto 4: acceso rápido para registrar ingresos (según la decisión pendiente).
 
 ### Fase 4 · Notificaciones push (base de los puntos 2, 11, 13 y 15)
-- [ ] Service worker (`sw.js`) con manejo de `push` y `notificationclick` (abrir la app en la sección correspondiente: pendientes, recurrentes, etc.).
-- [ ] Botón "Activar notificaciones" en Ajustes. En iOS la solicitud de permiso **debe** hacerse desde un toque del usuario y solo funciona con la app instalada en la pantalla de inicio. Si se abre en el navegador, explicar esto.
-- [ ] Llaves VAPID: la pública en el frontend; la privada como secreto de Supabase.
-- [ ] Tabla `push_subscriptions` (por usuario y dispositivo; varios dispositivos por usuario).
-- [ ] Tabla `scheduled_notifications` (`user_id`, `kind`, `title`, `body`, `url`, `send_at`, `sent_at`).
-- [ ] Edge Function `send-push` + `pg_cron` cada minuto que envía las notificaciones vencidas y elimina las suscripciones inválidas (410/404).
-- [ ] Notificaciones reales:
+- [x] Service worker (`sw.js`) con manejo de `push` y `notificationclick` (abrir la app en la sección correspondiente: pendientes, recurrentes, etc.).
+- [x] Botón "Activar notificaciones" en Ajustes. En iOS la solicitud de permiso **debe** hacerse desde un toque del usuario y solo funciona con la app instalada en la pantalla de inicio. Si se abre en el navegador, explicar esto.
+- [x] Llaves VAPID: se generan solas en la función `notificaciones` y se guardan en `app_secrets` (tabla sin acceso para usuarios); la app pide la pública.
+- [x] Tabla `push_subscriptions` (por usuario y dispositivo; varios dispositivos por usuario).
+- [x] Tabla `scheduled_notifications` (`user_id`, `kind`, `title`, `body`, `url`, `send_at`, `sent_at`).
+- [x] Edge Function `notificaciones` (acción send) + `pg_cron` cada minuto (solo la llama si hay avisos vencidos) que envía las notificaciones vencidas y elimina las suscripciones inválidas (410/404).
+- [x] Notificaciones reales:
   - Pendientes acumulados: "Tienes N gastos pendientes por confirmar", indicando el origen (Siri, correo o recurrente).
   - Recordatorio de pago manual (punto 13): "Recuerda pagar: Predial · $X".
   - Recurrente por confirmar llegado su día.
-- [ ] Preferencias en Ajustes para activar o desactivar cada tipo.
+- [x] Preferencias en Ajustes para activar o desactivar cada tipo.
 
 ### Fase 5 · Usuarios y administradores (puntos 14 y 15)
-- [ ] Tabla `profiles` (`user_id`, `display_name`, `role` en `admin | user`). El usuario actual (dueño) es `admin`.
-- [ ] Un admin puede ver la lista de usuarios, **invitar o crear usuarios** (Edge Function con la service role, nunca desde el frontend) y **asignar o quitar el rol admin**. No permitir quitar el último admin.
-- [ ] **Privacidad:** el rol admin **no** da acceso a las finanzas de otros usuarios. Las políticas RLS de datos financieros siguen siendo `user_id = auth.uid()` sin excepción.
-- [ ] Sección **Administración** visible solo para admins (verificado también del lado del servidor).
-- [ ] **Probar notificación** (punto 15), solo para admins:
+- [x] Tabla `profiles` (`user_id`, `display_name`, `role` en `admin | user`). El usuario actual (dueño) es `admin`.
+- [x] Un admin puede ver la lista de usuarios, **invitar o crear usuarios** (Edge Function con la service role, nunca desde el frontend) y **asignar o quitar el rol admin**. No permitir quitar el último admin.
+- [x] **Privacidad:** el rol admin **no** da acceso a las finanzas de otros usuarios. Las políticas RLS de datos financieros siguen siendo `user_id = auth.uid()` sin excepción.
+- [x] Sección **Administración** visible solo para admins (verificado también del lado del servidor).
+- [x] **Probar notificación** (punto 15), solo para admins:
   - Al tocarlo, pide **en cuánto tiempo**: número + unidad (segundos, minutos, horas o días).
   - Pide el **tipo**: registro automático por correo (Gmail), registro de Siri, pago recurrente por confirmar o recordatorio de pago manual.
   - Programa una fila en `scheduled_notifications` para el usuario actual, con el texto real de ese tipo marcado como prueba.
   - Nota para el usuario: con `pg_cron` las pruebas en segundos pueden tardar hasta ~1 minuto. Si `pg_cron` admite intervalos en segundos, úsalos.
 
 ### Fase 6 · Registro con Siri automático (punto 7)
-- [ ] Tabla `api_tokens` (`user_id`, `name`, `token_hash`, `last_used_at`, `revoked`). En Ajustes, el usuario genera un **token personal** (se muestra una sola vez) y puede revocarlo.
-- [ ] Edge Function `siri-add` (POST con `Authorization: Bearer <token>`): recibe `monto`, `concepto` y, opcionalmente, `metodo` y `categoria`. Crea un **pendiente** (`source = siri`), intenta adivinar la categoría por el concepto y el historial, y responde un texto corto para que Siri lo diga ("Listo, guardé $250 de gasolina para confirmar").
-- [ ] Si el pendiente no se confirma en unas horas, programar la notificación "Tienes gastos de Siri pendientes por confirmar".
-- [ ] **Guía paso a paso en español** para crear el Atajo en la app Atajos del iPhone, con el menor número de pasos:
+- [x] Tabla `api_tokens` (`user_id`, `name`, `token_hash`, `last_used_at`, `revoked`). En Ajustes, el usuario genera un **token personal** (se muestra una sola vez) y puede revocarlo.
+- [x] Edge Function `registrar?origen=siri` (POST con `Authorization: Bearer <token>`): recibe `monto`, `concepto` y, opcionalmente, `metodo` y `categoria`. Crea un **pendiente** (`source = siri`), intenta adivinar la categoría por el concepto y el historial, y responde un texto corto para que Siri lo diga ("Listo, guardé $250 de gasolina para confirmar").
+- [x] Si el pendiente no se confirma en unas horas, programar la notificación "Tienes gastos de Siri pendientes por confirmar".
+- [x] **Guía paso a paso en español** para crear el Atajo en la app Atajos del iPhone, con el menor número de pasos:
   - Frase: "Agrega un gasto".
   - Preguntas: monto (teclado numérico) y concepto (dictado); método de pago opcional.
   - Acción "Obtener contenido de URL" (POST JSON) y "Decir" con la respuesta.
@@ -136,14 +138,14 @@ Problema: la app instalada en la pantalla de inicio del iPhone conserva la versi
 - [x] Barra de progreso por meta.
 - [x] **Sugerencia inteligente del mes:** ingreso del mes − gastos esperados (Fase 3) − promedio del gasto variable de los últimos 3 meses − un margen de seguridad (por ejemplo 10% del ingreso). Nunca negativa; redondear a múltiplos de $50 o $100. Mostrar en qué se basa el cálculo.
 - [x] En Resumen: renglón "Sugerencia de inversión del mes: $X · Pendiente / Apartado".
-- [ ] *(Fase 4)* Notificación mensual, por ejemplo al registrar el salario: "Ya llegó tu ingreso. Te sugiero apartar $X para tu meta".
-- [ ] La app sugiere **cuánto** apartar, no **dónde** invertir.
+- [x] Notificación, por ejemplo al registrar el salario: "Ya llegó tu ingreso. Te sugiero apartar $X para tu meta".
+- [x] La app sugiere **cuánto** apartar, no **dónde** invertir.
 
-### Fase 8 · Registro automático desde Gmail (punto 10) · REQUIERE DECISIÓN
-- [ ] Antes de empezar, pedir al usuario el banco y un correo de ejemplo (con datos tapados).
-- [ ] Google Apps Script en la **cuenta personal de Google** del usuario: revisa cada 5–10 minutos los correos del banco (filtro y etiqueta de Gmail), extrae monto, fecha y tipo (retiro o cargo) y hace POST a la Edge Function `ingest-email` con token personal.
-- [ ] `ingest-email` crea un pendiente (`source = gmail`) usando el ID del mensaje como `external_id` para no duplicar. Los retiros de cajero llegan como `type = retiro`.
-- [ ] Guía paso a paso en `docs/gmail.md` para instalar el script.
+### Fase 8 · Registro automático desde Gmail (punto 10) · BBVA
+- [x] Antes de empezar, pedir al usuario el banco y un correo de ejemplo (con datos tapados).
+- [x] Google Apps Script en la **cuenta personal de Google** del usuario: revisa cada 5–10 minutos los correos del banco (filtro y etiqueta de Gmail), extrae monto, fecha y tipo (retiro o cargo) y hace POST a la Edge Function `registrar?origen=gmail` con token personal (la lectura del correo se hace en el servidor). Archivo: `scripts/gmail-bbva.gs`.
+- [x] `registrar?origen=gmail` crea un pendiente (`source = gmail`) usando el ID del mensaje como `external_id` para no duplicar. Los retiros de cajero llegan como `type = retiro`.
+- [x] Guía paso a paso en `docs/gmail.md` para instalar el script.
 
 ### Fase 9 · Rediseño visual (puntos 16 y 12)
 - [x] **Antes de aplicar nada**, presentar 3–4 propuestas, cada una con icono, paleta en modo claro y paleta en modo oscuro, colores más llamativos que los actuales, vistas lado a lado como se verían en un iPhone. Esperar la elección del usuario.
@@ -159,23 +161,23 @@ Problema: la app instalada en la pantalla de inicio del iPhone conserva la versi
 | # | Cambio | Fase | Estado |
 |---|---|---|---|
 | 1 | Marcar gasto como recurrente al registrarlo | 2 | Hecho (v1.5.0) |
-| 2 | Aviso para confirmar el recurrente al llegar su fecha | 2 / 4 | Pendiente |
+| 2 | Aviso para confirmar el recurrente al llegar su fecha | 2 / 4 | Hecho (v1.8.0) |
 | 3 | Editar el monto al confirmar | 2 | Hecho (v1.5.0) |
 | 4 | Registrar ingresos (ya existe; acceso más visible) | 3 | Hecho (v1.5.0) |
 | 5 | Editar categorías | — | Hecho |
 | 6 | Editar un mes no modifica los meses pasados | 1 / 2 | Hecho (v1.5.0) |
-| 7 | Siri automático, con confirmación en la app | 6 | Pendiente |
+| 7 | Siri automático, con confirmación en la app | 6 | Hecho (v1.8.0) |
 | 8 | Métodos de pago | 1 | Hecho (v1.5.0) |
 | 9 | Retiros de efectivo | 1 | Hecho (v1.5.0) |
-| 10 | Registro automático desde Gmail | 8 | Requiere decisión |
-| 11 | Bandeja de pendientes + notificación | 2 / 4 | Bandeja hecha (v1.5.0); falta notificación |
+| 10 | Registro automático desde Gmail | 8 | Hecho (v1.8.0, BBVA) |
+| 11 | Bandeja de pendientes + notificación | 2 / 4 | Hecho (v1.8.0) |
 | 12 | Tema claro/oscuro automático (barra de estado) | 9 | Hecho (v1.6.0) |
-| 13 | Recordatorios de pagos manuales | 1 / 4 | Pendiente |
-| 14 | Usuarios y administradores | 5 | Pendiente |
-| 15 | Botón "Probar notificación" (solo admins) | 5 | Pendiente |
+| 13 | Recordatorios de pagos manuales | 1 / 4 | Hecho (v1.8.0) |
+| 14 | Usuarios y administradores | 5 | Hecho (v1.8.0) |
+| 15 | Botón "Probar notificación" (solo admins) | 5 | Hecho (v1.8.0) |
 | 16 | Rediseño de icono y colores | 9 | Hecho (temas v1.6.0, icono v1.7.0) |
 | 17 | Gastado vs. esperado del mes | 3 | Hecho (v1.5.0) |
-| 18 | Metas de ahorro e inversión con sugerencia | 7 | Hecho (v1.5.0); falta notificación |
+| 18 | Metas de ahorro e inversión con sugerencia | 7 | Hecho (v1.8.0) |
 | 19 | Barra inferior más alta con iconos | — | Hecho |
 | 20 | Actualizaciones de la app (botón y aviso) | 0 | Hecho (v1.4.0) |
 | 21 | Recuperar contraseña por correo y cambiarla desde Ajustes | — | Hecho (v1.7.0). Requiere la URL de la app en Supabase → Authentication → URL Configuration |
@@ -210,7 +212,7 @@ Dictados por el usuario el 2026-10-30. Solo anotados; **no ejecutar** hasta que 
 
 ### E. Ingresos fijos (por ejemplo, el salario)
 - [x] Los **ingresos también pueden ser fijos**, con las mismas frecuencias que los gastos.
-- [ ] El monto puede cambiar en cada pago (por ejemplo, por horas extra). Por eso, **cada vez que toca un ingreso fijo llega una notificación** para que el usuario indique la cantidad real recibida.
+- [x] El monto puede cambiar en cada pago (por ejemplo, por horas extra). Por eso, **cada vez que toca un ingreso fijo llega una notificación** para que el usuario indique la cantidad real recibida.
 - [x] Al registrarlo se puede escribir el monto del momento. Sugerir el último monto, siempre editable.
 
 ### Decisiones confirmadas por el usuario
