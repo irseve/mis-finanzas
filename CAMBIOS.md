@@ -38,7 +38,7 @@ Antes de implementar lo que dependa de estas decisiones, **pregúntale al usuari
 
 | Tema | Pregunta | Valor por defecto |
 |---|---|---|
-| Recurrentes (punto 6) | Si el usuario cambia el monto de un recurrente al confirmarlo, ¿el próximo mes se sugiere el último monto pagado o el original? | El último monto pagado, siempre editable. |
+| Recurrentes (punto 6) | ~~¿Sugerir el último monto pagado o el original?~~ **Resuelto:** el último monto, siempre editable (ver sección 6). | — |
 | Gmail (punto 10) | ¿De qué banco llegan los correos de retiro/cargo? Se necesita un correo de ejemplo (con datos tapados). | No implementar el parser hasta tener el ejemplo. |
 | Ingresos (punto 4) | ¿Se quiere un acceso más visible para registrar ingresos? | Botón rápido "Ingreso" en el formulario o junto al botón +. |
 | Rediseño (punto 16) | Paleta e icono finales. | Presentar opciones y esperar elección. |
@@ -185,6 +185,8 @@ Problema: la app instalada en la pantalla de inicio del iPhone conserva la versi
 
 Dictados por el usuario el 2026-10-30. Solo anotados; **no ejecutar** hasta que el usuario lo indique.
 
+**Dónde encajan:** A, B y E se implementan con la Fase 1 (tabla de fijos/recurrentes con frecuencias diario, semanal, quincenal, mensual y salario 15/último día) y la Fase 2 (opción "Es fijo" en el formulario y aviso para capturar el monto). C y D se implementan junto con la Fase 1. Donde esta sección contradiga las fases anteriores, **manda esta sección** (por ejemplo, la pestaña se sigue llamando "Fijos").
+
 ### A. Pestaña "Fijos" (se conserva el nombre)
 - [ ] Mantener la pestaña **Fijos** (sustituye el cambio de nombre a "Recurrentes" de la Fase 1).
 - [ ] Mostrar un **resumen de gastos fijos**: "Estos son tus gastos fijos" y el **total al mes**.
@@ -218,3 +220,9 @@ Dictados por el usuario el 2026-10-30. Solo anotados; **no ejecutar** hasta que 
   - Semanal y diario: igual, a partir de la fecha del registro.
 - **Total del mes en Fijos:** solo **suma lo ya registrado** en el mes, sin promedios ni equivalentes. Lo **proyectado** según los fijos configurados se muestra aparte (Fase 3, "esperado del mes").
 - **Ingresos fijos:** sí existen (ver punto E).
+
+---
+
+## 7. Pendientes para después (al final, cuando todo lo demás esté pulido)
+
+- [ ] **Asistente de voz dentro de la app.** Un botón de micrófono para dar órdenes habladas: "agrega un gasto de 250 de gasolina con BBVA", "borra el gasto de ayer del Oxxo", "cambia la colegiatura a 2,100". La voz se convierte en texto y una IA interpreta la orden en una Edge Function, con la llave guardada como secreto en Supabase. La app **siempre muestra lo que entendió y pide confirmar** antes de guardar, borrar o modificar. Costo aproximado: centavos por orden.
