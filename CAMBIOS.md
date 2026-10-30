@@ -269,6 +269,8 @@ Hoy hay muchos lugares para agregar: el botón flotante **+**, "+ Gasto" y "+ In
 - [ ] El formulario del + ya permite elegir Gasto, Ingreso, Retiro o Ahorro y marcar "Es fijo", así que cubre todos los casos, incluidos los fijos.
 - [ ] Botones que **no** son para agregar movimientos se quedan: "Marcar pagado", "Confirmar", "Editar", y en Ajustes "Nueva categoría", "Nuevo método", etc.
 - Por confirmar con el usuario:
-  - En Fijos, ¿quitar también "Nuevo fijo"? (Antes pidió poder agregar fijos desde esa pestaña; se podría dejar solo el + con "Es fijo" ya marcado al abrirlo desde Fijos.)
+  - ~~En Fijos, ¿quitar también "Nuevo fijo"?~~ **Resuelto:** sí. Todo se agrega con el +, que permite marcar "Es fijo" y elegir la categoría.
   - En Metas, ¿quitar "Aportar"? (Se aportaría con + → Ahorro.)
   - Color del +: hoy es rojo (abre un gasto). Si es el único botón para todo, ¿se queda rojo o usa el color del tema?
+- [ ] **Pestaña Fijos solo informativa:** sin botón "Nuevo fijo" ni "Registrar los pendientes del mes". Muestra el resumen (pagado, proyectado, por frecuencia) y la lista de fijos. Se conserva tocar un fijo para **editarlo, pausarlo o eliminarlo**, porque es el único lugar donde se administran.
+- Por confirmar: el usuario comentó que "en la pantalla principal también pone gastos" (frase incompleta). Posible duplicado entre Resumen (Próximos pagos, Gastos fijos, Fijos vs. variables) y la pestaña Fijos. Preguntar qué quiere quitar o juntar.
