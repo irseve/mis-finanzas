@@ -255,7 +255,9 @@ El usuario propone unificarlas en una sola.
   - **Semana:** las semanas del mes seleccionado (como la gráfica actual).
   - **Mes:** los últimos 6 o 12 meses (por definir), uno por barra.
   - **Año:** un año por barra, con los años que tengan registros.
-- [ ] Mantener la comparación **ingresos (verde) contra gastos (rojo)** en Mes y Año, que hoy solo está en la de 6 meses. En Semana, opcional.
 - [ ] Recordar en el dispositivo el último periodo elegido.
 - [ ] Al quitar la gráfica de 6 meses, la de categorías y "Fijos vs. variables" se acomodan para no dejar huecos.
-- Por confirmar: en la vista Mes, ¿6 o 12 meses? ¿En Semana también se muestran los ingresos?
+- [ ] Segundo selector **Mostrar: Gastos · Ingresos · Ambos** (rojo para gastos, verde para ingresos), disponible en Semana, Mes y Año.
+- [ ] El usuario **elige el periodo de tiempo** que abarca la gráfica (desde – hasta). Sugerencia: atajos rápidos (este mes, últimos 3, 6 o 12 meses, este año, todo) y la opción de elegir fechas, usando el mismo selector de mes en cuadrícula del punto F. Con esto se resuelve cuántos meses mostrar.
+- [ ] Recordar en el dispositivo la última combinación elegida (agrupación, qué mostrar y periodo).
+- Nota técnica: hoy la app carga 6 meses de movimientos; para periodos más largos hay que cargar el rango elegido o pedir totales agrupados al servidor.
