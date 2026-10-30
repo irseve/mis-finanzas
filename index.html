@@ -4,7 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Mis finanzas</title>
-<meta name="theme-color" content="#1F6F5C">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#EDF2EF">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#101815">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -126,7 +127,7 @@ svg text{fill:var(--muted);font-size:11px;font-family:inherit}
 .fixed-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--line);flex-wrap:wrap}
 .fixed-row:first-child{border-top:0}
 .fixed-row .mid{flex:1;min-width:150px}
-.pill{font-size:.78rem;font-weight:700;padding:3px 9px;border-radius:999px}
+.pill{font-size:.78rem;font-weight:700;padding:3px 9px;border-radius:999px;background:var(--surface-2);color:var(--muted)}
 .pill.ok{background:color-mix(in srgb,var(--income) 16%,transparent);color:var(--income)}
 .pill.pend{background:color-mix(in srgb,var(--warn) 16%,transparent);color:var(--warn)}
 
@@ -140,7 +141,7 @@ dialog::backdrop{background:rgba(10,20,16,.45)}
 label.f{display:grid;gap:5px;font-size:.85rem;font-weight:600;color:var(--muted)}
 label.f input,label.f select{background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;color:var(--ink);font-weight:500;font-size:1rem;width:100%}
 .big input{font-size:1.6rem!important;font-weight:800!important}
-.seg{display:grid;grid-template-columns:1fr 1fr;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:3px}
+.seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:3px}
 .seg button{border:0;background:transparent;padding:8px;border-radius:8px;font-weight:700;cursor:pointer;color:var(--muted)}
 .seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
 .colors{display:flex;flex-wrap:wrap;gap:8px}
@@ -162,6 +163,33 @@ label.f input,label.f select{background:var(--surface-2);border:1px solid var(--
 .update-bar button{border:0;border-radius:10px;min-height:44px;cursor:pointer;font-weight:700}
 .update-bar .go{background:var(--brand);color:var(--brand-ink);padding:0 16px}
 .update-bar .x{background:transparent;color:inherit;min-width:44px;font-size:1.2rem;opacity:.7}
+.rowbtns{display:flex;gap:6px}
+.shead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
+.pendbtn{margin-left:auto;border:0;border-radius:999px;background:var(--warn);color:#fff;font-weight:700;min-height:40px;padding:0 14px;cursor:pointer}
+.pendbtn b{display:inline-block;min-width:20px;margin-left:4px;background:rgba(255,255,255,.25);border-radius:999px;padding:1px 6px}
+.pendcard{display:grid;gap:4px;text-align:left;width:100%;cursor:pointer;border-color:var(--warn);color:var(--ink);font:inherit}
+.quick{display:flex;gap:8px}
+.btn.inc{background:var(--income);color:#fff}
+.expect{margin-top:16px}
+.strip.two{margin:0 0 10px;height:22px}
+.strip i.todo,.sw.todo{background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--spend) 45%,transparent) 0 5px,color-mix(in srgb,var(--spend) 18%,transparent) 5px 10px)}
+.after{margin-top:14px;padding:10px 12px;border-radius:10px;background:var(--surface-2);font-size:.92rem}
+.suggest{padding:10px 12px;border-radius:10px;background:var(--surface-2);font-size:.9rem;margin-bottom:6px}
+.suggest details{margin-top:6px}
+.suggest summary{cursor:pointer;color:var(--brand);font-weight:600;min-height:32px;display:flex;align-items:center}
+.cash{margin-top:12px;padding:10px 12px;border-radius:10px;background:var(--surface-2)}
+.ftotals{display:flex;gap:22px;flex-wrap:wrap;margin:10px 0 6px}
+.ftotals div{display:flex;flex-direction:column}
+.ftotals b{font-size:1.15rem}
+.fgroup{margin-top:14px}
+.fghead{display:flex;justify-content:space-between;font-size:.8rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;padding-bottom:4px;border-bottom:1px solid var(--line)}
+.amt.retiro{color:var(--muted)} .amt.ahorro{color:var(--brand)}
+.inline-new{display:flex;gap:8px;flex-wrap:wrap;margin-top:-4px}
+.inline-new input{flex:1 1 160px;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;color:var(--ink);font-size:1rem}
+.warnbox{border:1px solid var(--warn);border-radius:10px;padding:10px 12px;font-size:.9rem}
+.fijobox{border-top:1px solid var(--line);padding-top:12px;display:grid;gap:12px}
+.check input{width:22px;height:22px}
+@media (max-width:720px){.btn.sm{min-height:40px}}
 [hidden]{display:none!important}
 </style>
 </head>
@@ -183,6 +211,7 @@ label.f input,label.f select{background:var(--surface-2);border:1px solid var(--
       <div class="brand">Mis finanzas</div>
       <div class="sync" id="sync"><span class="dot"></span><span>Conectando…</span></div>
     </div>
+    <button class="pendbtn" id="pendBtn" hidden>Pendientes <b>0</b></button>
     <div class="month" role="group" aria-label="Mes">
       <button id="prevM" aria-label="Mes anterior">‹</button>
       <span id="monthLabel"></span>
@@ -195,6 +224,7 @@ label.f input,label.f select{background:var(--surface-2);border:1px solid var(--
     <button data-tab="fijos"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Fijos</button>
     <button data-tab="cats"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>Ajustes</button>
   </nav>
+  <div class="banner" id="migBanner" hidden><b>Falta actualizar la base de datos.</b> En Supabase → SQL Editor, corre el archivo <code>migrations/001_metodos_fijos_pendientes_metas.sql</code> del repositorio y vuelve a abrir la app.</div>
   <main id="view"></main>
 </div>
 </div>
@@ -203,14 +233,14 @@ label.f input,label.f select{background:var(--surface-2);border:1px solid var(--
 <div class="update-bar" id="updateBar" role="status" hidden><span>Hay una nueva versión</span><button class="go" id="updateGo">Actualizar</button><button class="x" id="updateX" aria-label="Cerrar aviso">×</button></div>
 <dialog id="dlg"><form method="dialog" id="dlgForm" onsubmit="return false"></form></dialog>
 
-<script src="config.js?v=1.4.0"></script>
+<script src="config.js?v=1.5.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
 <script>
 (() => {
 "use strict";
 // ---------- versión ----------
 // Al subir cambios: actualiza APP_VERSION, APP_DATE, version.json y el ?v= de config.js.
-const APP_VERSION = "1.4.0";
+const APP_VERSION = "1.5.0";
 const APP_DATE = "2026-10-30";
 
 // ---------- utilities ----------
@@ -234,27 +264,66 @@ const DEFAULT_CATS = [
   ["Ropa","gasto","#D08C9E"],["Educación","gasto","#3E7CB1"],["Otros","gasto","#5E6E67"],
   ["Salario","ingreso","#5B8C2A"],["Otros ingresos","ingreso","#1F6F5C"],
 ];
+const DEFAULT_METHODS = [["Efectivo","efectivo","#5B8C2A"],["Transferencia","transferencia","#2F5D9E"],["SPAY","spay","#7A5BB0"]];
 const CURRENCIES = ["MXN","USD","EUR","COP","ARS","CLP","PEN","GTQ","CRC","DOP"];
 
 // ---------- state ----------
-const S = { tab:"resumen", ym: ymOf(todayISO()), currency:"MXN", categories:[], tx:[], fixed:[], filterCat:"", search:"", ready:false };
+const S = { tab:"resumen", ym: ymOf(todayISO()), currency:"MXN", categories:[], methods:[], recs:[], pending:[], goals:[], goalSaved:{}, tx:[], filterCat:"", filterMethod:"", search:"", ready:false, needsMigration:false };
 const fmt = (n, compact) => {
   try { return new Intl.NumberFormat("es-MX", {style:"currency", currency:S.currency || "MXN", maximumFractionDigits: compact ? 0 : 2, minimumFractionDigits: compact ? 0 : 2}).format(n || 0); }
   catch { return "$" + (n || 0).toFixed(2); }
 };
 const cat = id => S.categories.find(c => c.id === id) || {id, name:"Sin categoría", color:"#8C9A94", kind:"gasto", budget:0};
 const catsOf = kind => S.categories.filter(c => c.kind === kind);
+const method = id => S.methods.find(m => m.id === id);
+const goal = id => S.goals.find(g => g.id === id);
+const isSalaryCat = id => /salario|sueldo|n[oó]mina/i.test(cat(id).name);
+const lastMethodKey = "finanzas.lastMethod";
+const lastMethod = () => { try { return localStorage.getItem(lastMethodKey) || ""; } catch { return ""; } };
+const rememberMethod = id => { try { if (id) localStorage.setItem(lastMethodKey, id); } catch {} };
+
+// ---------- calendario de fijos ----------
+// Mismo cálculo que public.recurrence_on_or_after en la base de datos.
+const isoAdd = (iso, n) => { const [y, m, d] = iso.split("-").map(Number); return new Date(Date.UTC(y, m-1, d+n)).toISOString().slice(0, 10); };
+const isoDiff = (a, b) => { const p = s => s.split("-").map(Number), [y1,m1,d1] = p(a), [y2,m2,d2] = p(b); return Math.round((Date.UTC(y1,m1-1,d1) - Date.UTC(y2,m2-1,d2)) / 864e5); };
+const FREQS = { diario:"Diario", semanal:"Semanal", quincenal:"Quincenal", mensual:"Mensual", salario:"Quincena de salario" };
+function occOnOrAfter(r, from) {
+  const d = from > r.start ? from : r.start;
+  if (r.freq === "diario") return d;
+  if (r.freq === "semanal" || r.freq === "quincenal") { const st = r.freq === "semanal" ? 7 : 15; return isoAdd(r.start, st * Math.ceil(isoDiff(d, r.start) / st)); }
+  const ym = ymOf(d), last = `${ym}-${pad(daysIn(ym))}`;
+  if (r.freq === "salario") return d <= `${ym}-15` ? `${ym}-15` : d <= last ? last : `${ymAdd(ym, 1)}-15`;
+  let c;
+  for (let i = 0, m = ym; i < 2; i++, m = ymAdd(m, 1)) { c = `${m}-${pad(Math.min(r.day || +r.start.slice(8), daysIn(m)))}`; if (c >= d) return c; }
+  return c;
+}
+function occInMonth(r, ym) {
+  const out = [], end = `${ym}-${pad(daysIn(ym))}`;
+  for (let d = occOnOrAfter(r, ym + "-01"); d <= end && out.length < 40; d = occOnOrAfter(r, isoAdd(d, 1))) out.push(d);
+  return out;
+}
+const freqText = r => {
+  const dm = s => `${+s.slice(8)}/${s.slice(5,7)}`;
+  return { diario:"Todos los días", semanal:`Cada semana desde ${dm(r.start)}`, quincenal:`Cada 15 días desde ${dm(r.start)}`,
+    mensual:`El día ${r.day || +r.start.slice(8)} de cada mes`, salario:"Día 15 y último día de cada mes" }[r.freq];
+};
 
 // ---------- Supabase ----------
 const configured = window.SUPABASE_URL && !/PEGA_AQUI/.test(window.SUPABASE_URL) && window.SUPABASE_KEY && !/PEGA_AQUI/.test(window.SUPABASE_KEY);
 const sb = configured ? supabase.createClient(window.SUPABASE_URL, window.SUPABASE_KEY, { auth: { persistSession: true, autoRefreshToken: true } }) : null;
 let userId = null, channel = null;
 
-const toTx = r => ({ id:r.id, type:r.type, amount:+r.amount, categoryId:r.category_id, date:r.date, note:r.note || "", fixedId:r.fixed_id, created:r.created_at });
-const toFixed = r => ({ id:r.id, name:r.name, amount:+r.amount, categoryId:r.category_id, day:r.day, active:r.active });
+const toTx = r => ({ id:r.id, type:r.type, amount:+r.amount, categoryId:r.category_id, date:r.date, note:r.note || "", fixedId:r.fixed_id, methodId:r.payment_method_id, recurrenceId:r.recurrence_id, dueDate:r.due_date, goalId:r.goal_id, created:r.created_at });
+const txDb = t => ({ id:t.id, type:t.type, amount:t.amount, category_id:t.categoryId || null, date:t.date, note:t.note || "", fixed_id:t.fixedId || null, payment_method_id:t.methodId || null, recurrence_id:t.recurrenceId || null, due_date:t.dueDate || null, goal_id:t.goalId || null });
+const toRec = r => ({ id:r.id, name:r.name, type:r.type, amount:+r.amount, original:+r.original_amount, categoryId:r.category_id, methodId:r.payment_method_id, freq:r.freq, start:r.start_date, day:r.day, mode:r.mode, next:r.next_date, active:r.active });
+const recDb = r => ({ id:r.id, name:r.name, type:r.type, amount:r.amount, original_amount:r.original ?? r.amount, category_id:r.categoryId || null, payment_method_id:r.methodId || null, freq:r.freq, start_date:r.start, day:r.freq === "mensual" ? (r.day || +r.start.slice(8)) : null, mode:r.mode, next_date:r.next || null, active:r.active });
+const toPend = r => ({ id:r.id, source:r.source, type:r.type, amount:+r.amount, categoryId:r.category_id, methodId:r.payment_method_id, date:r.date, note:r.note || "", recurrenceId:r.recurrence_id, status:r.status });
 const toCat = r => ({ id:r.id, name:r.name, kind:r.kind, color:r.color, budget:+r.budget });
+const toMethod = r => ({ id:r.id, name:r.name, kind:r.kind, color:r.color, active:r.active });
+const toGoal = r => ({ id:r.id, name:r.name, target:+r.target_amount, targetDate:r.target_date, color:r.color, active:r.active });
 
 function rangeFor(ym) { return [ymAdd(ym, -5) + "-01", ym + "-" + pad(daysIn(ym))]; }
+const missingTable = e => e && (e.code === "42P01" || e.code === "PGRST205" || e.code === "42703" || /does not exist|could not find/i.test(e.message || ""));
 
 async function check(p, okMsg) {
   const { error } = await p;
@@ -263,20 +332,40 @@ async function check(p, okMsg) {
   return true;
 }
 
+let lastGen = 0;
 async function loadBase() {
-  const [st, cs, fx] = await Promise.all([
+  if (Date.now() - lastGen > 5 * 60e3) { lastGen = Date.now(); await sb.rpc("generate_pending_entries"); } // crea pendientes de fijos cuya fecha ya llegó
+  const [a] = rangeFor(S.ym);
+  const [st, cs, pm, rc, pe, gl, sv] = await Promise.all([
     sb.from("settings").select("*").maybeSingle(),
     sb.from("categories").select("*").order("created_at"),
-    sb.from("fixed_expenses").select("*").order("day"),
+    sb.from("payment_methods").select("*").order("created_at"),
+    sb.from("recurrences").select("*").order("created_at"),
+    sb.from("pending_entries").select("*").neq("status", "aceptado").or(`status.eq.pendiente,date.gte.${a}`).order("date"),
+    sb.from("goals").select("*").order("created_at"),
+    sb.from("transactions").select("goal_id,amount").eq("type", "ahorro"),
   ]);
-  if (cs.error || fx.error) throw cs.error || fx.error;
+  if (cs.error) throw cs.error;
+  S.needsMigration = [pm, rc, pe, gl, sv].some(r => missingTable(r.error));
+  const err = [pm, rc, pe, gl, sv].find(r => r.error && !missingTable(r.error));
+  if (err) throw err.error;
   S.currency = st.data?.currency || "MXN";
   S.categories = (cs.data || []).map(toCat);
-  S.fixed = (fx.data || []).map(toFixed);
+  S.methods = (pm.data || []).map(toMethod);
+  S.recs = (rc.data || []).map(toRec);
+  S.pending = (pe.data || []).map(toPend);
+  S.goals = (gl.data || []).map(toGoal);
+  S.goalSaved = {};
+  for (const r of sv.data || []) if (r.goal_id) S.goalSaved[r.goal_id] = (S.goalSaved[r.goal_id] || 0) + +r.amount;
   if (!S.categories.length) {
     const rows = DEFAULT_CATS.map(([name, kind, color], i) => ({ id: uid(), name, kind, color, budget: 0, created_at: new Date(Date.now() + i).toISOString() }));
     const { error } = await sb.from("categories").insert(rows);
     if (!error) S.categories = rows.map(toCat);
+  }
+  if (!S.methods.length && !S.needsMigration) {
+    const rows = DEFAULT_METHODS.map(([name, kind, color], i) => ({ id: uid(), name, kind, color, active: true, created_at: new Date(Date.now() + i).toISOString() }));
+    const { error } = await sb.from("payment_methods").insert(rows);
+    if (!error) S.methods = rows.map(toMethod);
   }
 }
 async function loadTx() {
@@ -304,19 +393,42 @@ const refreshSoon = () => { clearTimeout(refreshT); refreshT = setTimeout(() => 
 function startRealtime() {
   if (channel) sb.removeChannel(channel);
   channel = sb.channel("finanzas-" + userId);
-  ["transactions","fixed_expenses","categories","settings"].forEach(table =>
+  ["transactions","categories","settings","payment_methods","recurrences","pending_entries","goals"].forEach(table =>
     channel.on("postgres_changes", { event:"*", schema:"public", table, filter:`user_id=eq.${userId}` }, refreshSoon));
   channel.subscribe();
 }
 
 const Store = {
-  saveTx: (t, msg) => check(sb.from("transactions").upsert({ id:t.id, type:t.type, amount:t.amount, category_id:t.categoryId || null, date:t.date, note:t.note || "", fixed_id:t.fixedId || null }), msg).then(ok => (ok && refresh(false), ok)),
-  delTx: (id, msg) => check(sb.from("transactions").delete().eq("id", id), msg).then(ok => (ok && refresh(false), ok)),
-  saveFixed: (f, msg) => check(sb.from("fixed_expenses").upsert({ id:f.id, name:f.name, amount:f.amount, category_id:f.categoryId || null, day:f.day, active:f.active }), msg).then(ok => (ok && refresh(), ok)),
-  delFixed: (id, msg) => check(sb.from("fixed_expenses").delete().eq("id", id), msg).then(ok => (ok && refresh(), ok)),
+  saveTx: (t, msg) => check(sb.from("transactions").upsert(txDb(t)), msg).then(ok => (ok && refresh(t.type === "ahorro"), ok)),
+  delTx: (id, msg) => check(sb.from("transactions").delete().eq("id", id), msg).then(ok => (ok && refresh(), ok)),
+  saveRec: (r, msg) => check(sb.from("recurrences").upsert(recDb(r)), msg).then(ok => (ok && refresh(), ok)),
+  delRec: async (id, msg) => {
+    await sb.from("pending_entries").delete().eq("recurrence_id", id).eq("status", "pendiente");
+    return check(sb.from("recurrences").delete().eq("id", id), msg).then(ok => (ok && refresh(), ok));
+  },
   saveCat: (c, msg) => check(sb.from("categories").upsert({ id:c.id, name:c.name, kind:c.kind, color:c.color, budget:c.budget || 0 }), msg).then(ok => (ok && refresh(), ok)),
   delCat: (id, msg) => check(sb.from("categories").delete().eq("id", id), msg).then(ok => (ok && refresh(), ok)),
+  saveMethod: (m, msg) => check(sb.from("payment_methods").upsert({ id:m.id, name:m.name, kind:m.kind, color:m.color, active:m.active }), msg).then(ok => (ok && refresh(), ok)),
+  saveGoal: (g, msg) => check(sb.from("goals").upsert({ id:g.id, name:g.name, target_amount:g.target, target_date:g.targetDate || null, color:g.color, active:g.active }), msg).then(ok => (ok && refresh(), ok)),
+  delGoal: (id, msg) => check(sb.from("goals").delete().eq("id", id), msg).then(ok => (ok && refresh(), ok)),
   saveCurrency: cur => { S.currency = cur; render(); return check(sb.from("settings").upsert({ user_id:userId, currency:cur }), "Moneda guardada"); },
+  // Acepta un pendiente: crea el movimiento y, si cambió el monto de un fijo, lo guarda como sugerencia para la próxima vez.
+  acceptPending: async (p, vals, msg = "Movimiento registrado") => {
+    const t = { id: uid(), type: vals.type, amount: vals.amount, categoryId: vals.categoryId, methodId: vals.methodId, date: vals.date, note: vals.note, recurrenceId: p.recurrenceId, dueDate: p.recurrenceId ? p.date : null };
+    if (!await check(sb.from("transactions").insert(txDb(t)))) return false;
+    await check(sb.from("pending_entries").update({ status: "aceptado" }).eq("id", p.id));
+    const r = S.recs.find(x => x.id === p.recurrenceId);
+    if (r && r.amount !== t.amount) await check(sb.from("recurrences").update({ amount: t.amount }).eq("id", r.id));
+    rememberMethod(t.methodId);
+    toast(msg); refresh(); return true;
+  },
+  discardPending: p => check(sb.from("pending_entries").update({ status: "descartado" }).eq("id", p.id), "Pendiente descartado").then(ok => (ok && refresh(), ok)),
+  // Registra el pago de una fecha programada de un fijo (sin pendiente).
+  payOccurrence: (r, due, msg) => {
+    const today = todayISO(), date = due > today && ymOf(due) === ymOf(today) ? today : due;
+    rememberMethod(r.methodId);
+    return Store.saveTx({ id: uid(), type: r.type, amount: r.amount, categoryId: r.categoryId, methodId: r.methodId, date, note: r.name, recurrenceId: r.id, dueDate: due }, msg || `${r.name} registrado`);
+  },
 };
 
 function setSync(state, text) { $("#sync").innerHTML = `<span class="dot ${state}"></span><span>${esc(text)}</span>`; }
@@ -352,21 +464,73 @@ async function doAuth(signup) {
 
 // ---------- derived data ----------
 function monthTx(ym = S.ym) { return S.tx.filter(t => ymOf(t.date) === ym); }
+const isFixedTx = t => !!(t.recurrenceId || t.fixedId);
 function sums(list) {
-  let gasto = 0, ingreso = 0, fijo = 0;
-  for (const t of list) { if (t.type === "ingreso") ingreso += t.amount; else { gasto += t.amount; if (t.fixedId) fijo += t.amount; } }
-  return { gasto, ingreso, fijo, balance: ingreso - gasto };
+  let gasto = 0, ingreso = 0, fijo = 0, retiro = 0, ahorro = 0;
+  for (const t of list) {
+    if (t.type === "ingreso") ingreso += t.amount;
+    else if (t.type === "retiro") retiro += t.amount;
+    else if (t.type === "ahorro") ahorro += t.amount;
+    else { gasto += t.amount; if (isFixedTx(t)) fijo += t.amount; }
+  }
+  return { gasto, ingreso, fijo, retiro, ahorro, balance: ingreso - gasto };
 }
 function byCategory(list) {
   const m = new Map();
-  for (const t of list) if (t.type !== "ingreso") m.set(t.categoryId, (m.get(t.categoryId) || 0) + t.amount);
+  for (const t of list) if (t.type === "gasto") m.set(t.categoryId, (m.get(t.categoryId) || 0) + t.amount);
   return [...m.entries()].map(([id, v]) => ({ c: cat(id), v })).sort((a, b) => b.v - a.v);
+}
+// Fechas programadas de los fijos en el mes, con su estado, más los pendientes sueltos (Siri, correo).
+// status: pagado | confirmar (hay pendiente) | porpagar | omitido (pendiente descartado)
+function monthPlan(ym = S.ym) {
+  const items = [], used = new Set();
+  for (const r of S.recs) {
+    if (!r.active) continue;
+    for (const date of occInMonth(r, ym)) {
+      const tx = S.tx.find(t => t.recurrenceId === r.id && t.dueDate === date);
+      const pe = S.pending.find(p => p.recurrenceId === r.id && p.date === date);
+      if (pe) used.add(pe.id);
+      const status = tx ? "pagado" : pe ? (pe.status === "pendiente" ? "confirmar" : "omitido") : "porpagar";
+      items.push({ r, date, tx, pe, status, type: r.type, name: r.name, amount: tx ? tx.amount : pe ? pe.amount : r.amount });
+    }
+  }
+  for (const p of S.pending) if (p.status === "pendiente" && !used.has(p.id) && ymOf(p.date) === ym)
+    items.push({ r: S.recs.find(x => x.id === p.recurrenceId) || null, date: p.date, pe: p, status: "confirmar", type: p.type, name: p.note || cat(p.categoryId).name, amount: p.amount });
+  return items.sort((a, b) => a.date.localeCompare(b.date));
+}
+const isOpen = it => it.status === "porpagar" || it.status === "confirmar";
+function monthOutlook(ym = S.ym) {
+  const s = sums(monthTx(ym)), plan = monthPlan(ym);
+  const porPagar = plan.filter(it => it.type === "gasto" && isOpen(it)).reduce((a, it) => a + it.amount, 0);
+  const porRecibir = plan.filter(it => it.type === "ingreso" && isOpen(it)).reduce((a, it) => a + it.amount, 0);
+  const fijosEsperados = s.fijo + porPagar;
+  return { s, plan, porPagar, porRecibir, esperado: s.gasto + porPagar, quedan: s.ingreso + porRecibir - s.gasto - porPagar - s.ahorro, fijosEsperados };
+}
+// Sugerencia de ahorro: ingreso esperado − fijos esperados − promedio de gasto variable (3 meses previos) − 10% de margen.
+function savingSuggestion(o) {
+  const ingreso = o.s.ingreso + o.porRecibir;
+  const prev = [1, 2, 3].map(i => sums(monthTx(ymAdd(S.ym, -i)))).filter(x => x.gasto || x.ingreso);
+  const promVar = prev.length ? prev.reduce((a, x) => a + (x.gasto - x.fijo), 0) / prev.length : o.s.gasto - o.s.fijo;
+  const margen = ingreso * 0.10, raw = ingreso - o.fijosEsperados - promVar - margen;
+  const step = raw >= 2000 ? 100 : 50, sug = Math.max(0, Math.floor(raw / step) * step);
+  return { sug, ingreso, promVar, margen, meses: prev.length, apartado: o.s.ahorro };
+}
+function byMethod(list) {
+  const m = new Map();
+  for (const t of list) if (t.type === "gasto") m.set(t.methodId || "", (m.get(t.methodId || "") || 0) + t.amount);
+  return [...m.entries()].sort((a, b) => b[1] - a[1]);
+}
+function cashBalance(list) {
+  const cash = new Set(S.methods.filter(m => m.kind === "efectivo").map(m => m.id));
+  let retiros = 0, gastos = 0;
+  for (const t of list) { if (t.type === "retiro") retiros += t.amount; else if (t.type === "gasto" && cash.has(t.methodId)) gastos += t.amount; }
+  return { retiros, gastos, saldo: retiros - gastos };
 }
 
 // ---------- charts ----------
 function weekChart(list) {
   const weeks = [0,0,0,0,0];
-  for (const t of list) if (t.type !== "ingreso") { const d = +t.date.slice(8,10); weeks[Math.min(4, Math.floor((d-1)/7))] += t.amount; }
+  for (const t of list) if (t.type === "gasto") { const d = +t.date.slice(8,10); weeks[Math.min(4, Math.floor((d-1)/7))] += t.amount; }
   const n = daysIn(S.ym) > 28 ? 5 : 4, data = weeks.slice(0, n);
   const max = Math.max(1, ...data), W = 360, H = 170, bw = 44, gap = (W - 30 - n*bw) / n;
   let bars = "";
@@ -397,16 +561,23 @@ function trendChart() {
 }
 
 // ---------- views ----------
+const pendingOpen = () => S.pending.filter(p => p.status === "pendiente");
 function render() {
   $("#monthLabel").textContent = monthName(S.ym);
   document.querySelectorAll("#tabs button").forEach(b => b.setAttribute("aria-current", b.dataset.tab === S.tab));
+  const n = pendingOpen().length, pb = $("#pendBtn");
+  pb.hidden = !n; pb.querySelector("b").textContent = n; pb.setAttribute("aria-current", S.tab === "pend");
+  $("#migBanner").hidden = !S.needsMigration;
   const v = $("#view");
   if (!S.ready) { v.innerHTML = `<div class="empty">Cargando tus datos…</div>`; return; }
-  ({ resumen: viewResumen, movs: viewMovs, fijos: viewFijos, cats: viewCats })[S.tab](v);
+  ({ resumen: viewResumen, movs: viewMovs, fijos: viewFijos, cats: viewCats, pend: viewPend })[S.tab](v);
 }
+const head = (title, btn) => `<div class="shead"><h2 style="margin:0">${title}</h2>${btn || ""}</div>`;
+const SOURCE = { recurrente:"Fijo", siri:"Siri", gmail:"Correo" };
+const dShort = iso => `${+iso.slice(8)}/${iso.slice(5,7)}`;
 
 function viewResumen(v) {
-  const list = monthTx(), s = sums(list), cats = byCategory(list);
+  const o = monthOutlook(), s = o.s, list = monthTx(), cats = byCategory(list);
   const pctIncome = s.ingreso ? Math.round(s.gasto / s.ingreso * 100) : null;
   const strip = cats.map(({c, v}) => `<i style="flex-grow:${v};background:${c.color}" title="${esc(c.name)} ${fmt(v)}"></i>`).join("");
   const legend = cats.slice(0, 8).map(({c, v}) => `<span><i class="sw" style="background:${c.color}"></i>${esc(c.name)} <b class="num">${Math.round(v/s.gasto*100)}%</b></span>`).join("");
@@ -423,8 +594,11 @@ function viewResumen(v) {
         <div class="bar"><i style="width:${Math.min(100, used)}%;background:${b && v > b ? "var(--warn)" : c.color}"></i></div>
       </div>`;
     }).join("");
+  const np = pendingOpen().length;
+  const upcoming = o.plan.filter(isOpen);
   v.innerHTML = `
   <div class="grid">
+    ${np ? `<button class="card pendcard" data-act="pend"><b>Tienes ${np} pendiente${np > 1 ? "s" : ""} por confirmar</b><span class="sub">Revísalos y acepta o descarta cada uno ›</span></button>` : ""}
     <section class="card hero">
       <div class="hero-top">
         <div>
@@ -432,25 +606,66 @@ function viewResumen(v) {
           <div class="spent num">${fmt(s.gasto)}</div>
           ${budgetTotal ? `<div class="sub num" style="margin-top:6px">${Math.round(s.gasto/budgetTotal*100)}% de tu presupuesto de ${fmt(budgetTotal)}</div>` : ""}
         </div>
-        <div class="hero-stats num">
-          <div><span class="sub">Ingresos</span><b style="color:var(--income)">${fmt(s.ingreso)}</b></div>
-          <div><span class="sub">Balance</span><b style="color:${s.balance < 0 ? "var(--warn)" : "var(--ink)"}">${fmt(s.balance)}</b></div>
-          <div><span class="sub">Gastos fijos</span><b>${fmt(s.fijo)}</b></div>
-          ${pctIncome !== null ? `<div><span class="sub">Del ingreso gastado</span><b>${pctIncome}%</b></div>` : ""}
-        </div>
+        <div class="quick"><button class="btn sm" data-act="add-gasto">+ Gasto</button><button class="btn sm inc" data-act="add-ingreso">+ Ingreso</button></div>
       </div>
+      <div class="expect" aria-label="Gastado contra esperado del mes">
+        <div class="strip two"><i style="flex-grow:${s.gasto};background:var(--spend)"></i><i class="todo" style="flex-grow:${o.porPagar}"></i></div>
+        <div class="legend num"><span><i class="sw" style="background:var(--spend)"></i>Gastado ${fmt(s.gasto)}</span><span><i class="sw todo"></i>Por pagar ${fmt(o.porPagar)}</span><span><b>Esperado ${fmt(o.esperado)}</b></span></div>
+      </div>
+      <div class="hero-stats num" style="margin-top:16px">
+        <div><span class="sub">Ingresos</span><b style="color:var(--income)">${fmt(s.ingreso)}</b>${o.porRecibir ? `<span class="sub">+${fmt(o.porRecibir)} por recibir</span>` : ""}</div>
+        <div><span class="sub">Balance</span><b style="color:${s.balance < 0 ? "var(--warn)" : "var(--ink)"}">${fmt(s.balance)}</b></div>
+        <div><span class="sub">Gastos fijos</span><b>${fmt(s.fijo)}</b></div>
+        ${pctIncome !== null ? `<div><span class="sub">Del ingreso gastado</span><b>${pctIncome}%</b></div>` : ""}
+      </div>
+      ${s.ingreso || o.porRecibir ? `<div class="after num">Después de los pagos pendientes te quedarán <b style="color:${o.quedan < 0 ? "var(--warn)" : "var(--income)"}">${fmt(o.quedan)}</b></div>` : ""}
       ${s.gasto ? `<div class="strip" aria-label="Distribución de gastos por categoría">${strip}</div><div class="legend">${legend}</div>`
-        : `<div class="empty" style="padding:24px 0 4px">Aún no hay gastos en este mes.<br><button class="btn" data-act="add">Agregar el primero</button></div>`}
+        : `<div class="empty" style="padding:20px 0 4px">Aún no hay gastos en este mes.<br><button class="btn" data-act="add">Agregar el primero</button></div>`}
     </section>
+    <div class="grid g2">
+      <section class="card">${head("Próximos pagos del mes")}${upcoming.length ? upcoming.slice(0, 6).map(planRow).join("") + (upcoming.length > 6 ? `<button class="btn ghost sm" style="margin-top:10px" data-act="fijos">Ver los ${upcoming.length} en Fijos</button>` : "") : `<div class="sub">No hay pagos pendientes este mes.</div>`}</section>
+      <section class="card">${goalsCard(o)}</section>
+    </div>
     <div class="grid g2">
       <section class="card"><h2>Gastos por semana</h2>${weekChart(list)}</section>
       <section class="card"><h2>Últimos 6 meses</h2>${trendChart()}</section>
     </div>
     <div class="grid g2">
       <section class="card"><h2>Por categoría</h2>${rows || `<div class="sub">Sin gastos registrados.</div>`}</section>
-      <section class="card"><h2>Fijos vs. variables</h2>${fixedVsVar(s)}<h2 style="margin-top:20px">Gastos más grandes</h2>${topTx(list)}</section>
+      <section class="card"><h2>Fijos vs. variables</h2>${fixedVsVar(s)}<h2 style="margin-top:20px">Por método de pago</h2>${methodBreakdown(list)}</section>
     </div>
+    <section class="card"><h2>Gastos más grandes</h2>${topTx(list)}</section>
   </div>`;
+}
+function planRow(it) {
+  const c = cat(it.r ? it.r.categoryId : it.pe?.categoryId), inc = it.type === "ingreso";
+  const btn = it.status === "confirmar" ? `<button class="btn sm" data-openpend="${esc(it.pe.id)}">Confirmar</button>`
+    : it.status === "porpagar" ? `<button class="btn sm ${inc ? "inc" : ""}" data-payocc="${esc(it.r.id)}|${it.date}">${inc ? "Marcar recibido" : "Marcar pagado"}</button>`
+    : it.status === "pagado" ? `<span class="pill ok">${inc ? "Recibido" : "Pagado"}</span>` : `<span class="pill">Omitido</span>`;
+  return `<div class="fixed-row">
+    <span class="sw" style="background:${c.color};width:12px;height:12px"></span>
+    <div class="mid"><b>${esc(it.name)}</b><div class="sub">${dShort(it.date)}${it.date < todayISO() && isOpen(it) ? ` · <span class="over">vencido</span>` : ""}${it.pe && it.status === "confirmar" ? ` · por confirmar (${SOURCE[it.pe.source] || ""})` : ""}</div></div>
+    <b class="num amt ${it.type}">${inc ? "+" : ""}${fmt(it.amount)}</b>${btn}
+  </div>`;
+}
+function goalsCard(o) {
+  const g = savingSuggestion(o), goals = S.goals.filter(x => x.active);
+  const rows = goals.map(x => {
+    const saved = S.goalSaved[x.id] || 0, pct = x.target ? Math.min(100, saved / x.target * 100) : 0;
+    return `<div class="crow">
+      <div class="nm"><i class="sw" style="background:${x.color}"></i>${esc(x.name)}</div>
+      <div class="vals num"><b>${fmt(saved)}</b> <span class="sub">de ${fmt(x.target, true)}</span></div>
+      <div class="sub num" style="grid-column:1/-1">${pct.toFixed(0)}%${x.targetDate ? ` · meta al ${dShort(x.targetDate)}/${x.targetDate.slice(0,4)}` : ""}</div>
+      <div class="bar"><i style="width:${pct}%;background:${x.color}"></i></div>
+      <div style="grid-column:1/-1;display:flex;gap:8px;margin-top:8px"><button class="btn sm" data-addsave="${esc(x.id)}">Aportar</button><button class="btn ghost sm" data-editgoal="${esc(x.id)}">Editar</button></div>
+    </div>`;
+  }).join("");
+  const pend = Math.max(0, g.sug - g.apartado);
+  return `${head("Metas de ahorro", `<button class="btn sm" data-act="newgoal">Nueva meta</button>`)}
+    <div class="suggest num">Sugerencia de inversión del mes: <b>${fmt(g.sug, true)}</b> · ${g.apartado >= g.sug && g.sug ? `<span class="pill ok">Apartado</span>` : `Apartado ${fmt(g.apartado, true)} · Pendiente ${fmt(pend, true)}`}
+      <details><summary>¿Cómo se calcula?</summary><div class="sub">Ingreso esperado ${fmt(g.ingreso, true)} − gastos fijos esperados ${fmt(o.fijosEsperados, true)} − gasto variable promedio ${fmt(g.promVar, true)} (${g.meses ? `últimos ${g.meses} meses` : "este mes"}) − margen de seguridad del 10% ${fmt(g.margen, true)}. Se redondea hacia abajo y nunca es negativa. Es cuánto apartar, no dónde invertir.</div></details>
+    </div>
+    ${rows || `<div class="sub" style="margin-top:10px">Crea una meta (por ejemplo, "Fondo de emergencia") y registra tus aportaciones.</div>`}`;
 }
 function fixedVsVar(s) {
   if (!s.gasto) return `<div class="sub">Sin gastos registrados.</div>`;
@@ -458,41 +673,55 @@ function fixedVsVar(s) {
   return `<div class="strip" style="margin:4px 0 10px;height:22px"><i style="flex-grow:${s.fijo};background:var(--brand)"></i><i style="flex-grow:${s.gasto - s.fijo};background:var(--spend)"></i></div>
     <div class="legend num"><span><i class="sw" style="background:var(--brand)"></i>Fijos ${fmt(s.fijo)} · ${f.toFixed(0)}%</span><span><i class="sw" style="background:var(--spend)"></i>Variables ${fmt(s.gasto - s.fijo)} · ${(100-f).toFixed(0)}%</span></div>`;
 }
+function methodBreakdown(list) {
+  const rows = byMethod(list), total = rows.reduce((a, [, v]) => a + v, 0), cb = cashBalance(list);
+  const html = rows.map(([id, v]) => { const m = method(id) || { name:"Sin método", color:"#8C9A94" };
+    return `<div class="crow"><div class="nm"><i class="sw" style="background:${m.color}"></i>${esc(m.name)}</div><div class="vals num"><b>${fmt(v)}</b> <span class="sub">${(v/total*100).toFixed(0)}%</span></div></div>`; }).join("");
+  const cash = cb.retiros || cb.gastos ? `<div class="cash num"><b>Efectivo estimado: ${fmt(cb.saldo)}</b><div class="sub">Retiros ${fmt(cb.retiros)} − gastos en efectivo ${fmt(cb.gastos)} en el mes</div></div>` : "";
+  return (html || `<div class="sub">Sin gastos registrados.</div>`) + cash;
+}
 function topTx(list) {
-  const top = list.filter(t => t.type !== "ingreso").sort((a, b) => b.amount - a.amount).slice(0, 5);
+  const top = list.filter(t => t.type === "gasto").sort((a, b) => b.amount - a.amount).slice(0, 5);
   return top.length ? top.map(txRow).join("") : `<div class="sub">Nada todavía.</div>`;
 }
 function txRow(t) {
-  const c = cat(t.categoryId);
+  const c = cat(t.categoryId), m = method(t.methodId), g = goal(t.goalId);
+  const name = t.type === "retiro" ? "Retiro de efectivo" : t.type === "ahorro" ? `Ahorro${g ? " · " + g.name : ""}` : c.name;
+  const color = t.type === "retiro" ? "var(--muted)" : t.type === "ahorro" ? (g?.color || "var(--brand)") : c.color;
+  const sign = t.type === "ingreso" ? "+" : t.type === "retiro" ? "↔ " : "−";
   return `<button class="tx" data-edit="${esc(t.id)}">
-    <span class="ic" style="background:${c.color}">${esc(c.name.slice(0,1))}</span>
-    <span class="mid"><div>${esc(t.note || c.name)}${t.fixedId ? `<span class="tag">Fijo</span>` : ""}</div><div class="sub">${esc(c.name)} · ${esc(t.date.slice(8,10))}/${esc(t.date.slice(5,7))}</div></span>
-    <span class="amt num ${t.type}">${t.type === "ingreso" ? "+" : "−"}${fmt(t.amount)}</span>
+    <span class="ic" style="background:${color}">${esc(name.slice(0,1))}</span>
+    <span class="mid"><div>${esc(t.note || name)}${isFixedTx(t) ? `<span class="tag">Fijo</span>` : ""}</div><div class="sub">${esc(name)}${m ? " · " + esc(m.name) : ""} · ${esc(t.date.slice(8,10))}/${esc(t.date.slice(5,7))}</div></span>
+    <span class="amt num ${t.type}">${sign}${fmt(t.amount)}</span>
   </button>`;
 }
 
 function viewMovs(v) {
   let list = monthTx();
   if (S.filterCat) list = list.filter(t => t.categoryId === S.filterCat);
+  if (S.filterMethod) list = list.filter(t => (t.methodId || "-") === S.filterMethod);
   if (S.search) { const q = S.search.toLowerCase(); list = list.filter(t => t.note.toLowerCase().includes(q) || cat(t.categoryId).name.toLowerCase().includes(q)); }
   list.sort((a, b) => b.date.localeCompare(a.date) || String(b.created).localeCompare(String(a.created)));
   const s = sums(list), groups = {};
   list.forEach(t => (groups[t.date] = groups[t.date] || []).push(t));
   const opts = `<option value="">Todas las categorías</option>` + S.categories.map(c => `<option value="${esc(c.id)}" ${S.filterCat === c.id ? "selected" : ""}>${esc(c.name)}</option>`).join("");
+  const mopts = `<option value="">Todos los métodos</option>` + S.methods.map(m => `<option value="${esc(m.id)}" ${S.filterMethod === m.id ? "selected" : ""}>${esc(m.name)}</option>`).join("") + `<option value="-" ${S.filterMethod === "-" ? "selected" : ""}>Sin método</option>`;
   v.innerHTML = `
     <div class="toolbar">
       <input id="q" type="search" placeholder="Buscar por nota o categoría" value="${esc(S.search)}" aria-label="Buscar">
       <select id="fc" aria-label="Filtrar categoría">${opts}</select>
+      <select id="fm" aria-label="Filtrar método de pago">${mopts}</select>
       <button class="btn ghost sm" id="csv">Exportar CSV</button>
     </div>
-    <div class="sub num" style="margin:0 4px 6px">${list.length} movimientos · Gastos ${fmt(s.gasto)} · Ingresos ${fmt(s.ingreso)}</div>
+    <div class="sub num" style="margin:0 4px 6px">${list.length} movimientos · Gastos ${fmt(s.gasto)} · Ingresos ${fmt(s.ingreso)}${s.retiro ? ` · Retiros ${fmt(s.retiro)}` : ""}</div>
     ${list.length ? Object.keys(groups).map(d => `<div class="day">${esc(dayName(d))}</div>${groups[d].map(txRow).join("")}`).join("")
-      : `<div class="empty">No hay movimientos ${S.filterCat || S.search ? "con ese filtro" : "en este mes"}.<br><button class="btn" data-act="add">Agregar movimiento</button></div>`}`;
+      : `<div class="empty">No hay movimientos ${S.filterCat || S.filterMethod || S.search ? "con ese filtro" : "en este mes"}.<br><button class="btn" data-act="add">Agregar movimiento</button></div>`}`;
   $("#q").addEventListener("input", e => { S.search = e.target.value; const pos = e.target.selectionStart; render(); const n = $("#q"); n.focus(); n.setSelectionRange(pos, pos); });
   $("#fc").addEventListener("change", e => { S.filterCat = e.target.value; render(); });
+  $("#fm").addEventListener("change", e => { S.filterMethod = e.target.value; render(); });
   $("#csv").addEventListener("click", () => {
-    const rows = [["Fecha","Tipo","Categoría","Nota","Monto","Fijo"]].concat(list.map(t => [t.date, t.type, cat(t.categoryId).name, t.note, t.amount, t.fixedId ? "sí" : "no"]));
-    const csv = "\ufeff" + rows.map(r => r.map(x => `"${String(x).replace(/"/g, '""')}"`).join(",")).join("\n");
+    const rows = [["Fecha","Tipo","Categoría","Método","Nota","Monto","Fijo"]].concat(list.map(t => [t.date, t.type, t.type === "gasto" || t.type === "ingreso" ? cat(t.categoryId).name : "", method(t.methodId)?.name || "", t.note, t.amount, isFixedTx(t) ? "sí" : "no"]));
+    const csv = "﻿" + rows.map(r => r.map(x => `"${String(x).replace(/"/g, '""')}"`).join(",")).join("\n");
     const a = document.createElement("a");
     a.href = URL.createObjectURL(new Blob([csv], {type:"text/csv"})); a.download = `finanzas-${S.ym}.csv`; a.click();
     setTimeout(() => URL.revokeObjectURL(a.href), 2000);
@@ -500,50 +729,93 @@ function viewMovs(v) {
 }
 
 function viewFijos(v) {
-  const list = monthTx();
-  const items = [...S.fixed].sort((a, b) => a.day - b.day).map(f => {
-    const paid = list.find(t => t.fixedId === f.id), c = cat(f.categoryId);
+  const list = monthTx(), plan = monthPlan(), month = esc(monthName(S.ym, {month:"long"}));
+  const recRow = r => {
+    const its = plan.filter(it => it.r === r), done = its.filter(it => it.status === "pagado").length, next = its.find(isOpen), c = cat(r.categoryId), inc = r.type === "ingreso";
+    const state = !r.active ? `<span class="pill">Pausado</span>` : !its.length ? `<span class="sub">Sin fechas este mes</span>`
+      : next ? (next.status === "confirmar" ? `<button class="btn sm" data-openpend="${esc(next.pe.id)}">Confirmar · ${dShort(next.date)}</button>`
+        : `<button class="btn sm ${inc ? "inc" : ""}" data-payocc="${esc(r.id)}|${next.date}">${inc ? "Marcar recibido" : "Marcar pagado"} · ${dShort(next.date)}</button>`)
+      : `<span class="pill ok">${inc ? "Recibido" : "Pagado"}</span>`;
     return `<div class="fixed-row">
       <span class="sw" style="background:${c.color};width:12px;height:12px"></span>
-      <div class="mid"><b>${esc(f.name)}</b><div class="sub">${esc(c.name)} · día ${f.day}${f.active ? "" : " · pausado"}</div></div>
-      <b class="num">${fmt(f.amount)}</b>
-      ${!f.active ? "" : paid ? `<span class="pill ok">Pagado</span>` : `<span class="pill pend">Pendiente</span><button class="btn sm" data-pay="${esc(f.id)}">Marcar pagado</button>`}
-      <button class="btn ghost sm" data-editfixed="${esc(f.id)}">Editar</button>
+      <div class="mid"><b>${esc(r.name)}</b><div class="sub">${esc(c.name)} · ${esc(freqText(r))}${r.mode === "recordatorio" ? " · pago manual" : ""}${its.length > 1 ? ` · ${done} de ${its.length} este mes` : ""}</div></div>
+      <b class="num">${fmt(r.amount)}</b>${state}
+      <button class="btn ghost sm" data-editrec="${esc(r.id)}">Editar</button>
     </div>`;
-  }).join("");
-  const active = S.fixed.filter(f => f.active);
-  const total = active.reduce((a, f) => a + f.amount, 0);
-  const pending = active.filter(f => !list.some(t => t.fixedId === f.id));
+  };
+  const section = type => {
+    const recs = S.recs.filter(r => r.type === type);
+    if (!recs.length) return "";
+    const paid = list.filter(t => t.type === type && isFixedTx(t)).reduce((a, t) => a + t.amount, 0);
+    const proj = plan.filter(it => it.type === type && it.status !== "omitido").reduce((a, it) => a + it.amount, 0);
+    const groups = Object.keys(FREQS).map(f => {
+      const rs = recs.filter(r => r.freq === f);
+      if (!rs.length) return "";
+      const sub = list.filter(t => t.type === type && rs.some(r => r.id === t.recurrenceId)).reduce((a, t) => a + t.amount, 0);
+      return `<div class="fgroup"><div class="fghead"><span>${FREQS[f]}</span><span class="num">${fmt(sub)} ${type === "ingreso" ? "recibido" : "pagado"}</span></div>${rs.map(recRow).join("")}</div>`;
+    }).join("");
+    const inc = type === "ingreso";
+    return `<section class="card">
+      <h2 style="margin:0">${inc ? "Tus ingresos fijos" : "Estos son tus gastos fijos"}</h2>
+      <div class="ftotals num"><div><span class="sub">${inc ? "Recibido" : "Pagado"} en ${month}</span><b>${fmt(paid)}</b></div><div><span class="sub">Proyectado del mes</span><b>${fmt(proj)}</b></div></div>
+      ${groups}
+    </section>`;
+  };
+  const pendingRegs = plan.filter(it => it.type === "gasto" && isOpen(it));
   v.innerHTML = `
-  <section class="card">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:8px">
-      <div><h2 style="margin:0">Gastos fijos</h2><div class="sub num">Total mensual ${fmt(total)} · ${pending.length} pendientes en ${esc(monthName(S.ym, {month:"long"}))}</div></div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        ${pending.length ? `<button class="btn ghost sm" id="payAll">Registrar todos los pendientes</button>` : ""}
-        <button class="btn sm" id="addFixed">Nuevo gasto fijo</button>
-      </div>
+  <div class="grid">
+    <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end">
+      ${pendingRegs.length ? `<button class="btn ghost sm" id="payAll">Registrar los ${pendingRegs.length} pendientes del mes</button>` : ""}
+      <button class="btn sm" id="addFixed">Nuevo fijo</button>
     </div>
-    ${items || `<div class="empty">Agrega gastos que se repiten cada mes, como la renta, el internet o el gimnasio. Luego márcalos como pagados con un toque.</div>`}
-  </section>`;
-  $("#addFixed").onclick = () => openFixed();
+    ${section("gasto") || `<section class="card"><h2>Gastos fijos</h2><div class="empty">Agrega gastos que se repiten, como la renta, el internet o la colegiatura. También puedes marcar un gasto como fijo al registrarlo.</div></section>`}
+    ${section("ingreso")}
+  </div>`;
+  $("#addFixed").onclick = () => openRec();
   $("#payAll")?.addEventListener("click", async () => {
-    const rows = pending.map(f => ({ id: uid(), type:"gasto", amount:f.amount, category_id:f.categoryId || null, date:`${S.ym}-${pad(Math.min(f.day, daysIn(S.ym)))}`, note:f.name, fixed_id:f.id }));
-    if (await check(sb.from("transactions").insert(rows), `Registrados ${rows.length} gastos fijos`)) refresh(false);
+    if (!confirm(`¿Registrar como pagados los ${pendingRegs.length} gastos fijos pendientes de ${monthName(S.ym, {month:"long"})}?`)) return;
+    const rows = pendingRegs.filter(it => it.status === "porpagar").map(it => txDb({ id: uid(), type:"gasto", amount:it.amount, categoryId:it.r.categoryId, methodId:it.r.methodId, date:it.date, note:it.r.name, recurrenceId:it.r.id, dueDate:it.date }));
+    const pes = pendingRegs.filter(it => it.status === "confirmar");
+    for (const it of pes) rows.push(txDb({ id: uid(), type:"gasto", amount:it.pe.amount, categoryId:it.pe.categoryId, methodId:it.pe.methodId, date:it.pe.date, note:it.pe.note, recurrenceId:it.pe.recurrenceId, dueDate:it.pe.recurrenceId ? it.pe.date : null }));
+    if (!await check(sb.from("transactions").insert(rows))) return;
+    if (pes.length) await check(sb.from("pending_entries").update({ status:"aceptado" }).in("id", pes.map(it => it.pe.id)));
+    toast(`Registrados ${rows.length} gastos fijos`); refresh();
   });
 }
-const payFixed = f => Store.saveTx({ id: uid(), type:"gasto", amount:f.amount, categoryId:f.categoryId, date:`${S.ym}-${pad(Math.min(f.day, daysIn(S.ym)))}`, note:f.name, fixedId:f.id }, `${f.name} registrado`);
+
+function viewPend(v) {
+  const list = pendingOpen();
+  v.innerHTML = `<section class="card">${head("Pendientes por confirmar")}
+    <div class="sub" style="margin-bottom:8px">Revisa cada uno: puedes cambiar el monto, la categoría o la fecha antes de aceptarlo.</div>
+    ${list.length ? list.map(p => { const c = cat(p.categoryId), inc = p.type === "ingreso";
+      return `<div class="fixed-row">
+        <span class="sw" style="background:${p.type === "retiro" ? "var(--muted)" : c.color};width:12px;height:12px"></span>
+        <div class="mid"><b>${esc(p.note || c.name)}</b><div class="sub">${SOURCE[p.source]} · ${p.type === "retiro" ? "Retiro" : esc(c.name)} · ${dShort(p.date)}</div></div>
+        <b class="num amt ${p.type}">${inc ? "+" : ""}${fmt(p.amount)}</b>
+        <button class="btn sm" data-openpend="${esc(p.id)}">Revisar</button>
+      </div>`; }).join("") : `<div class="empty">No tienes pendientes. ¡Todo al día!</div>`}
+  </section>`;
+}
 
 function viewCats(v) {
   const sec = kind => catsOf(kind).map(c => `<div class="fixed-row">
       <span class="sw" style="background:${c.color};width:14px;height:14px"></span>
       <div class="mid"><b>${esc(c.name)}</b>${kind === "gasto" ? `<div class="sub num">${c.budget ? "Presupuesto " + fmt(c.budget) + " al mes" : "Sin presupuesto"}</div>` : ""}</div>
-      <button class="btn ghost sm" data-editcat="${esc(c.id)}">Editar</button>
+      <span class="rowbtns"><button class="btn ghost sm" data-editcat="${esc(c.id)}">Editar</button><button class="btn danger sm" data-delcat="${esc(c.id)}">Eliminar</button></span>
+    </div>`).join("");
+  const KIND = { credito:"Crédito", debito:"Débito", transferencia:"Transferencia", spay:"SPAY", efectivo:"Efectivo", otro:"Otro" };
+  const meth = S.methods.map(m => `<div class="fixed-row">
+      <span class="sw" style="background:${m.color};width:14px;height:14px"></span>
+      <div class="mid"><b>${esc(m.name)}</b><div class="sub">${KIND[m.kind] || ""}${m.active ? "" : " · desactivado"}</div></div>
+      <button class="btn ghost sm" data-editmethod="${esc(m.id)}">Editar</button>
     </div>`).join("");
   v.innerHTML = `
   <div class="grid g2">
-    <section class="card"><div style="display:flex;justify-content:space-between;align-items:center"><h2 style="margin:0">Categorías de gasto</h2><button class="btn sm" data-newcat="gasto">Nueva</button></div>${sec("gasto")}</section>
-    <section class="card"><div style="display:flex;justify-content:space-between;align-items:center"><h2 style="margin:0">Categorías de ingreso</h2><button class="btn sm" data-newcat="ingreso">Nueva</button></div>${sec("ingreso")}
-      <h2 style="margin-top:24px">Moneda</h2>
+    <section class="card">${head("Categorías de gasto", `<button class="btn sm" data-newcat="gasto">Nueva</button>`)}${sec("gasto")}</section>
+    <section class="card">${head("Categorías de ingreso", `<button class="btn sm" data-newcat="ingreso">Nueva</button>`)}${sec("ingreso")}</section>
+    <section class="card">${head("Métodos de pago", `<button class="btn sm" data-act="newmethod">Nuevo</button>`)}${meth || `<div class="sub">Sin métodos de pago.</div>`}</section>
+    <section class="card">
+      <h2>Moneda</h2>
       <select id="cur" class="num" style="background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:10px 12px">${CURRENCIES.map(c => `<option ${c === S.currency ? "selected" : ""}>${c}</option>`).join("")}</select>
       <h2 style="margin-top:24px">Cuenta</h2>
       <button class="btn ghost sm" id="logout">Cerrar sesión</button>
@@ -567,68 +839,196 @@ function viewCats(v) {
 
 // ---------- dialogs ----------
 const dlg = $("#dlg"), form = $("#dlgForm");
-function openDialog(html, bind) { form.innerHTML = html; bind(form); dlg.showModal(); }
+function openDialog(html, bind) { form.innerHTML = html; bind(form); if (!dlg.open) dlg.showModal(); }
 const close = () => dlg.close();
-const foot = (isNew) => `<div class="mfoot">${isNew ? "" : `<button type="button" class="btn danger" data-del>Eliminar</button>`}<span class="spacer"></span><button type="button" class="btn ghost" data-close>Cancelar</button><button type="button" class="btn" data-save>${isNew ? "Agregar" : "Guardar cambios"}</button></div>`;
+const foot = (isNew, saveLabel) => `<div class="mfoot">${isNew ? "" : `<button type="button" class="btn danger" data-del>Eliminar</button>`}<span class="spacer"></span><button type="button" class="btn ghost" data-close>Cancelar</button><button type="button" class="btn" data-save>${saveLabel || (isNew ? "Agregar" : "Guardar cambios")}</button></div>`;
+const NEW = "__nuevo";
+const catOptions = (kind, sel) => catsOf(kind).map(c => `<option value="${esc(c.id)}" ${c.id === sel ? "selected" : ""}>${esc(c.name)}</option>`).join("") + `<option value="${NEW}">+ Agregar categoría nueva</option>`;
+const methodOptions = (sel, filter = () => true) => `<option value="">Sin método</option>` + S.methods.filter(m => (m.active || m.id === sel) && filter(m)).map(m => `<option value="${esc(m.id)}" ${m.id === sel ? "selected" : ""}>${esc(m.name)}</option>`).join("") + `<option value="${NEW}">+ Agregar método nuevo</option>`;
+const amountField = (label, val) => `<label class="f big">${label}<input name="amount" type="number" inputmode="decimal" step="0.01" min="0" value="${esc(val)}" placeholder="0.00"></label>`;
+const freqField = (r, salary) => `<label class="f">Frecuencia<select name="freq">${Object.entries(FREQS).filter(([k]) => k !== "salario" || salary || r.freq === "salario").map(([k, l]) => `<option value="${k}" ${k === r.freq ? "selected" : ""}>${k === "quincenal" ? "Quincenal (cada 15 días)" : k === "salario" ? "Quincena de salario (día 15 y último día del mes)" : l}</option>`).join("")}</select></label>`;
+const modeField = r => `<label class="f">Cuando toque<select name="mode"><option value="confirmar" ${r.mode !== "recordatorio" ? "selected" : ""}>Avisarme para confirmar el monto</option><option value="recordatorio" ${r.mode === "recordatorio" ? "selected" : ""}>Solo recordarme (lo registro yo)</option></select></label>`;
 
-function openTx(t) {
+// "+ Agregar categoría/método nuevo" dentro de un select: muestra un campo para crearlo ahí mismo y lo deja seleccionado.
+function inlineNew(f, sel, kind) {
+  let prev = sel.value === NEW ? "" : sel.value;
+  sel.addEventListener("change", () => {
+    if (sel.value !== NEW) { prev = sel.value; return; }
+    const box = document.createElement("div");
+    box.className = "inline-new";
+    box.innerHTML = `<input type="text" maxlength="40" placeholder="${kind === "method" ? "Ej. BBVA Crédito" : "Ej. Colegiatura"}" aria-label="Nombre"><button type="button" class="btn sm">Crear</button><button type="button" class="btn ghost sm">Cancelar</button>`;
+    sel.closest("label").after(box);
+    sel.disabled = true;
+    const [inp, ok, no] = box.children;
+    const done = () => { box.remove(); sel.disabled = false; };
+    no.onclick = () => { sel.value = prev; done(); };
+    ok.onclick = async () => {
+      const name = inp.value.trim(); if (!name) { inp.focus(); return; }
+      ok.disabled = true;
+      const id = uid(), k = typeof kind === "function" ? kind() : kind;
+      if (k === "method") {
+        const m = { id, name, kind: /efectivo/i.test(name) ? "efectivo" : /cr[eé]dito/i.test(name) ? "credito" : /d[eé]bito/i.test(name) ? "debito" : "otro", color: PALETTE[S.methods.length % PALETTE.length], active: true };
+        if (!await Store.saveMethod(m, "Método agregado")) { ok.disabled = false; return; }
+        if (!S.methods.some(x => x.id === id)) S.methods.push(m);
+        sel.innerHTML = methodOptions(id);
+      } else {
+        const c = { id, name, kind: k, color: PALETTE[S.categories.length % PALETTE.length], budget: 0 };
+        if (!await Store.saveCat(c, "Categoría agregada")) { ok.disabled = false; return; }
+        if (!S.categories.some(x => x.id === id)) S.categories.push(c);
+        sel.innerHTML = catOptions(k, id);
+      }
+      sel.value = id; prev = id; done(); sel.dispatchEvent(new Event("change"));
+    };
+    setTimeout(() => inp.focus(), 30);
+  });
+}
+
+function openTx(t, preset = {}) {
   const isNew = !t;
-  t = t || { id: uid(), type:"gasto", amount:"", categoryId: catsOf("gasto")[0]?.id, date: ymOf(todayISO()) === S.ym ? todayISO() : `${S.ym}-01`, note:"" };
+  t = t || { id: uid(), type: preset.type || "gasto", amount:"", categoryId: catsOf(preset.type === "ingreso" ? "ingreso" : "gasto")[0]?.id, methodId: lastMethod(), goalId: preset.goalId || S.goals.find(g => g.active)?.id, date: ymOf(todayISO()) === S.ym ? todayISO() : `${S.ym}-01`, note:"" };
   let type = t.type;
-  const catOpts = k => catsOf(k).map(c => `<option value="${esc(c.id)}" ${c.id === t.categoryId ? "selected" : ""}>${esc(c.name)}</option>`).join("");
+  const rec = S.recs.find(r => r.id === (t.recurrenceId || t.fixedId));
+  const linked = rec || t.fixedId;
+  const types = [["gasto","Gasto"],["ingreso","Ingreso"],["retiro","Retiro"],["ahorro","Ahorro"]];
   openDialog(`
     <div class="mhead">${isNew ? "Nuevo movimiento" : "Editar movimiento"}</div>
     <div class="mbody">
-      <div class="seg" role="group"><button type="button" data-type="gasto" aria-pressed="${type==="gasto"}">Gasto</button><button type="button" data-type="ingreso" aria-pressed="${type==="ingreso"}">Ingreso</button></div>
-      <label class="f big">Monto<input name="amount" type="number" inputmode="decimal" step="0.01" min="0" value="${esc(t.amount)}" placeholder="0.00"></label>
-      <label class="f">Categoría<select name="categoryId">${catOpts(type)}</select></label>
+      <div class="seg" role="group">${types.map(([k, l]) => `<button type="button" data-type="${k}" aria-pressed="${type === k}">${l}</button>`).join("")}</div>
+      ${amountField("Monto", t.amount)}
+      <label class="f" data-for="cat">Categoría<select name="categoryId"></select></label>
+      <label class="f" data-for="goal">Meta<select name="goalId">${S.goals.filter(g => g.active || g.id === t.goalId).map(g => `<option value="${esc(g.id)}" ${g.id === t.goalId ? "selected" : ""}>${esc(g.name)}</option>`).join("")}</select></label>
+      <div class="sub" data-for="nogoal">Primero crea una meta en Resumen → Metas de ahorro.</div>
+      <label class="f"><span data-mlabel>Método de pago</span><select name="methodId"></select></label>
       <label class="f">Fecha<input name="date" type="date" value="${esc(t.date)}"></label>
       <label class="f">Nota<input name="note" type="text" maxlength="120" value="${esc(t.note)}" placeholder="Ej. supermercado"></label>
-      ${t.fixedId ? `<div class="sub">Registrado desde el gasto fijo ${esc((S.fixed.find(f => f.id === t.fixedId) || {}).name || "")}.</div>` : ""}
+      <div class="sub" data-for="retiro">Un retiro pasa dinero de tu cuenta a efectivo. No cuenta como gasto; registra después lo que pagues en efectivo con el método Efectivo.</div>
+      ${isNew ? `<div data-for="fijo" class="fijobox">
+        <label class="check"><input type="checkbox" name="isFixed"> <span data-fijolabel>Es fijo (se repite)</span></label>
+        <div data-fijo hidden style="display:grid;gap:12px"><div data-freqbox></div>${modeField({})}</div>
+      </div>` : linked ? `<div class="sub">Registrado desde el fijo ${esc(rec?.name || "")}${t.dueDate ? ` del ${dShort(t.dueDate)}` : ""}.</div>` : ""}
     </div>${foot(isNew)}`,
   f => {
+    const show = (k, on) => f.querySelectorAll(`[data-for="${k}"]`).forEach(x => x.hidden = !on);
+    const setMethods = () => { f.methodId.innerHTML = methodOptions(f.methodId.value || t.methodId, m => type !== "retiro" || m.kind !== "efectivo"); f.querySelector("[data-mlabel]").textContent = type === "retiro" ? "Retirado de" : type === "ingreso" ? "Recibido en" : type === "ahorro" ? "Desde" : "Método de pago"; };
+    // Con categoría de salario se sugiere la quincena de salario (15 y último día); esa opción solo existe para el salario.
+    const setFreq = () => { const box = f.querySelector("[data-freqbox]"); if (!box) return; const sal = isSalaryCat(f.categoryId.value), cur = f.freq?.value; box.innerHTML = freqField({ freq: sal && (!cur || cur === "mensual") ? "salario" : !sal && cur === "salario" ? "mensual" : cur || "mensual" }, sal); };
+    const apply = () => {
+      const cats = type === "gasto" || type === "ingreso";
+      show("cat", cats); show("goal", type === "ahorro" && S.goals.length); show("nogoal", type === "ahorro" && !S.goals.length);
+      show("retiro", type === "retiro"); show("fijo", cats);
+      if (cats) { const keep = catsOf(type).some(c => c.id === f.categoryId.value) ? f.categoryId.value : t.type === type ? t.categoryId : catsOf(type)[0]?.id; f.categoryId.innerHTML = catOptions(type, keep); }
+      setMethods(); setFreq();
+      const fl = f.querySelector("[data-fijolabel]"); if (fl) fl.textContent = type === "ingreso" ? "Es un ingreso fijo (se repite)" : "Es un gasto fijo (se repite)";
+    };
+    apply();
+    inlineNew(f, f.categoryId, () => type);
+    f.categoryId.addEventListener("change", () => { if (f.categoryId.value !== NEW) setFreq(); });
+    inlineNew(f, f.methodId, "method");
     f.querySelectorAll("[data-type]").forEach(b => b.onclick = () => {
       type = b.dataset.type;
       f.querySelectorAll("[data-type]").forEach(x => x.setAttribute("aria-pressed", x === b));
-      f.categoryId.innerHTML = catOpts(type);
+      apply();
     });
+    f.isFixed?.addEventListener("change", () => { f.querySelector("[data-fijo]").hidden = !f.isFixed.checked; setFreq(); });
     f.querySelector("[data-close]").onclick = close;
     f.querySelector("[data-del]")?.addEventListener("click", () => { if (confirm("¿Eliminar este movimiento?")) { close(); Store.delTx(t.id, "Movimiento eliminado"); } });
     f.querySelector("[data-save]").onclick = async () => {
       const amount = parseFloat(f.amount.value);
       if (!(amount > 0)) { f.amount.focus(); toast("Escribe un monto mayor que cero"); return; }
       if (!f.date.value) { f.date.focus(); return; }
-      const rec = { ...t, type, amount: Math.round(amount*100)/100, categoryId: f.categoryId.value, date: f.date.value, note: f.note.value.trim() };
+      if (type === "ahorro" && !f.goalId.value) { toast("Primero crea una meta de ahorro"); return; }
+      if ((type === "gasto" || type === "ingreso") && (!f.categoryId.value || f.categoryId.value === NEW)) { toast("Elige una categoría"); return; }
+      const methodId = f.methodId.value === NEW ? "" : f.methodId.value;
+      const rec = { ...t, type, amount: Math.round(amount*100)/100, categoryId: type === "gasto" || type === "ingreso" ? f.categoryId.value : null, goalId: type === "ahorro" ? f.goalId.value : null, methodId, date: f.date.value, note: f.note.value.trim() };
+      if (isNew && f.isFixed?.checked && (type === "gasto" || type === "ingreso")) {
+        const r = { id: uid(), name: rec.note || cat(rec.categoryId).name, type, amount: rec.amount, original: rec.amount, categoryId: rec.categoryId, methodId, freq: f.freq.value, start: rec.date, day: +rec.date.slice(8), mode: f.mode.value, active: true };
+        r.next = occOnOrAfter(r, isoAdd(rec.date, 1));
+        if (!await check(sb.from("recurrences").insert(recDb(r)))) return;
+        S.recs.push(r);
+        rec.recurrenceId = r.id; rec.dueDate = rec.date;
+      }
       close();
+      rememberMethod(methodId);
       if (isNew && ymOf(rec.date) !== S.ym) S.ym = ymOf(rec.date);
-      await Store.saveTx(rec, isNew ? "Movimiento agregado" : "Cambios guardados");
+      await Store.saveTx(rec, isNew ? (rec.recurrenceId ? "Movimiento agregado y guardado como fijo" : "Movimiento agregado") : "Cambios guardados");
+      if (rec.recurrenceId) refresh();
     };
     setTimeout(() => f.amount.focus(), 50);
   });
 }
 
-function openFixed(fx) {
-  const isNew = !fx;
-  fx = fx || { id: uid(), name:"", amount:"", categoryId: catsOf("gasto")[0]?.id, day:1, active:true };
+function openPending(p) {
+  let type = p.type;
   openDialog(`
-    <div class="mhead">${isNew ? "Nuevo gasto fijo" : "Editar gasto fijo"}</div>
+    <div class="mhead">Confirmar ${type === "ingreso" ? "ingreso" : type === "retiro" ? "retiro" : "gasto"}</div>
     <div class="mbody">
-      <label class="f">Nombre<input name="name" maxlength="60" value="${esc(fx.name)}" placeholder="Ej. Renta"></label>
-      <label class="f big">Monto mensual<input name="amount" type="number" inputmode="decimal" step="0.01" min="0" value="${esc(fx.amount)}" placeholder="0.00"></label>
-      <label class="f">Categoría<select name="categoryId">${catsOf("gasto").map(c => `<option value="${esc(c.id)}" ${c.id === fx.categoryId ? "selected" : ""}>${esc(c.name)}</option>`).join("")}</select></label>
-      <label class="f">Día de pago<input name="day" type="number" inputmode="numeric" min="1" max="31" value="${esc(fx.day)}"></label>
-      <label class="check"><input type="checkbox" name="active" ${fx.active ? "checked" : ""}> Activo</label>
+      <div class="sub">${SOURCE[p.source]}${p.recurrenceId ? ` · programado para el ${dShort(p.date)}` : ""}. Revisa el monto antes de aceptar.</div>
+      ${amountField("Monto", p.amount)}
+      ${type !== "retiro" ? `<label class="f">Categoría<select name="categoryId">${catOptions(type, p.categoryId)}</select></label>` : ""}
+      <label class="f">Método de pago<select name="methodId">${methodOptions(p.methodId)}</select></label>
+      <label class="f">Fecha<input name="date" type="date" value="${esc(p.date)}"></label>
+      <label class="f">Nota<input name="note" type="text" maxlength="120" value="${esc(p.note)}"></label>
+    </div>
+    <div class="mfoot"><button type="button" class="btn danger" data-discard>Descartar</button><span class="spacer"></span><button type="button" class="btn ghost" data-close>Después</button><button type="button" class="btn" data-save>Aceptar</button></div>`,
+  f => {
+    if (f.categoryId) inlineNew(f, f.categoryId, () => type);
+    inlineNew(f, f.methodId, "method");
+    f.querySelector("[data-close]").onclick = close;
+    f.querySelector("[data-discard]").onclick = () => { if (confirm("¿Descartar este pendiente? No se registrará ningún movimiento.")) { close(); Store.discardPending(p); } };
+    f.querySelector("[data-save]").onclick = async () => {
+      const amount = parseFloat(f.amount.value);
+      if (!(amount > 0)) { f.amount.focus(); toast("Escribe un monto mayor que cero"); return; }
+      if (f.categoryId && (!f.categoryId.value || f.categoryId.value === NEW)) { toast("Elige una categoría"); return; }
+      close();
+      await Store.acceptPending(p, { type, amount: Math.round(amount*100)/100, categoryId: f.categoryId ? f.categoryId.value : null, methodId: f.methodId.value === NEW ? "" : f.methodId.value, date: f.date.value || p.date, note: f.note.value.trim() });
+    };
+    setTimeout(() => f.amount.select(), 50);
+  });
+}
+
+function openRec(r) {
+  const isNew = !r;
+  r = r || { id: uid(), name:"", type:"gasto", amount:"", categoryId: catsOf("gasto")[0]?.id, methodId: lastMethod(), freq:"mensual", start: todayISO(), mode:"confirmar", active:true };
+  let type = r.type;
+  openDialog(`
+    <div class="mhead">${isNew ? "Nuevo fijo" : "Editar fijo"}</div>
+    <div class="mbody">
+      <div class="seg" role="group"><button type="button" data-type="gasto" aria-pressed="${type === "gasto"}">Gasto fijo</button><button type="button" data-type="ingreso" aria-pressed="${type === "ingreso"}">Ingreso fijo</button></div>
+      <label class="f">Nombre<input name="name" maxlength="60" value="${esc(r.name)}" placeholder="Ej. Renta"></label>
+      ${amountField(isNew ? "Monto" : "Monto (se sugiere al confirmar)", r.amount)}
+      <label class="f">Categoría<select name="categoryId">${catOptions(type, r.categoryId)}</select></label>
+      <label class="f">Método de pago<select name="methodId">${methodOptions(r.methodId)}</select></label>
+      <div data-freqbox>${freqField(r, isSalaryCat(r.categoryId))}</div>
+      <label class="f"><span data-startlabel>${r.freq === "mensual" ? "Primera fecha (se repite ese día cada mes)" : "Primera fecha"}</span><input name="start" type="date" value="${esc(r.start)}"></label>
+      ${modeField(r)}
+      <label class="check"><input type="checkbox" name="active" ${r.active ? "checked" : ""}> Activo</label>
     </div>${foot(isNew)}`,
   f => {
+    const label = () => f.querySelector("[data-startlabel]").textContent = f.freq.value === "mensual" ? "Primera fecha (se repite ese día cada mes)" : f.freq.value === "salario" ? "A partir de" : "Primera fecha";
+    const setFreq = () => { const sal = isSalaryCat(f.categoryId.value), cur = f.freq.value; f.querySelector("[data-freqbox]").innerHTML = freqField({ freq: sal && cur === "mensual" ? "salario" : !sal && cur === "salario" ? "mensual" : cur }, sal); f.freq.onchange = label; label(); };
+    f.freq.onchange = label;
+    inlineNew(f, f.categoryId, () => type);
+    f.categoryId.addEventListener("change", () => { if (f.categoryId.value !== NEW) setFreq(); });
+    inlineNew(f, f.methodId, "method");
+    f.querySelectorAll("[data-type]").forEach(b => b.onclick = () => {
+      type = b.dataset.type;
+      f.querySelectorAll("[data-type]").forEach(x => x.setAttribute("aria-pressed", x === b));
+      f.categoryId.innerHTML = catOptions(type, catsOf(type)[0]?.id); setFreq();
+    });
     f.querySelector("[data-close]").onclick = close;
-    f.querySelector("[data-del]")?.addEventListener("click", () => { if (confirm("¿Eliminar este gasto fijo? Los pagos ya registrados se conservan.")) { close(); Store.delFixed(fx.id, "Gasto fijo eliminado"); } });
+    f.querySelector("[data-del]")?.addEventListener("click", () => { if (confirm(`¿Eliminar el fijo "${r.name}"? Los movimientos ya registrados se conservan.`)) { close(); Store.delRec(r.id, "Fijo eliminado"); } });
     f.querySelector("[data-save]").onclick = () => {
       const amount = parseFloat(f.amount.value), name = f.name.value.trim();
       if (!name) { f.name.focus(); toast("Escribe un nombre"); return; }
       if (!(amount > 0)) { f.amount.focus(); toast("Escribe un monto mayor que cero"); return; }
-      const day = Math.min(31, Math.max(1, parseInt(f.day.value) || 1));
+      if (!f.categoryId.value || f.categoryId.value === NEW) { toast("Elige una categoría"); return; }
+      if (!f.start.value) { f.start.focus(); return; }
+      const nr = { ...r, name, type, amount: Math.round(amount*100)/100, categoryId: f.categoryId.value, methodId: f.methodId.value === NEW ? "" : f.methodId.value, freq: f.freq.value, start: f.start.value, day: +f.start.value.slice(8), mode: f.mode.value, active: f.active.checked };
+      if (isNew) nr.original = nr.amount;
+      // Los pendientes se generan desde el inicio de este mes (o desde la primera fecha si es posterior), sin acumular meses pasados.
+      if (isNew || nr.freq !== r.freq || nr.start !== r.start) { const m0 = ymOf(todayISO()) + "-01"; nr.next = occOnOrAfter(nr, isNew ? m0 : todayISO()); }
       close();
-      Store.saveFixed({ ...fx, name, amount: Math.round(amount*100)/100, categoryId: f.categoryId.value, day, active: f.active.checked }, isNew ? "Gasto fijo agregado" : "Cambios guardados");
+      Store.saveRec(nr, isNew ? "Fijo agregado" : "Cambios guardados");
     };
   });
 }
@@ -647,10 +1047,7 @@ function openCat(c, kind) {
   f => {
     f.querySelectorAll("[data-color]").forEach(b => b.onclick = () => { color = b.dataset.color; f.querySelectorAll("[data-color]").forEach(x => x.setAttribute("aria-pressed", x === b)); });
     f.querySelector("[data-close]").onclick = close;
-    f.querySelector("[data-del]")?.addEventListener("click", () => {
-      if (catsOf(c.kind).length <= 1) { toast("Debe quedar al menos una categoría"); return; }
-      if (confirm("¿Eliminar esta categoría? Sus movimientos quedarán como Sin categoría.")) { close(); Store.delCat(c.id, "Categoría eliminada"); }
-    });
+    f.querySelector("[data-del]")?.addEventListener("click", () => deleteCat(c));
     f.querySelector("[data-save]").onclick = () => {
       const name = f.name.value.trim();
       if (!name) { f.name.focus(); toast("Escribe un nombre"); return; }
@@ -661,21 +1058,120 @@ function openCat(c, kind) {
   });
 }
 
+// Eliminar categoría: si tiene movimientos o fijos, muestra cuáles y pide a qué categoría moverlos.
+async function deleteCat(c) {
+  if (catsOf(c.kind).length <= 1) { toast("Debe quedar al menos una categoría"); return; }
+  const { data, count, error } = await sb.from("transactions").select("id,type,amount,date,note", { count:"exact" }).eq("category_id", c.id).order("date", { ascending:false }).limit(8);
+  if (error) { toast("No se pudo revisar la categoría: " + error.message); return; }
+  const recs = S.recs.filter(r => r.categoryId === c.id), pends = pendingOpen().filter(p => p.categoryId === c.id);
+  if (!count && !recs.length && !pends.length) {
+    if (confirm(`¿Eliminar la categoría "${c.name}"? No tiene movimientos registrados.`)) { close(); Store.delCat(c.id, "Categoría eliminada"); }
+    return;
+  }
+  const others = catsOf(c.kind).filter(x => x.id !== c.id);
+  const fallback = others.find(x => /^otros/i.test(x.name)) || others[0];
+  openDialog(`
+    <div class="mhead">Eliminar "${esc(c.name)}"</div>
+    <div class="mbody">
+      <div class="warnbox">Hay movimientos registrados en esta categoría. Elige a dónde moverlos antes de eliminarla; no se borrará ningún movimiento.</div>
+      ${recs.map(r => `<div class="sub">• Tienes un ${r.type === "ingreso" ? "ingreso" : "gasto"} fijo de <b>${esc(r.name)}</b> de <b class="num">${fmt(r.amount)}</b> (${esc(freqText(r).toLowerCase())}).</div>`).join("")}
+      ${count ? `<div><div class="sub" style="font-weight:700;margin-bottom:4px">${count} movimiento${count > 1 ? "s" : ""}:</div>${data.map(t => `<div class="sub num">• ${dShort(t.date)}/${t.date.slice(0,4)} · ${esc(t.note || c.name)} · ${fmt(+t.amount)}</div>`).join("")}${count > data.length ? `<div class="sub">… y ${count - data.length} más.</div>` : ""}</div>` : ""}
+      ${pends.length ? `<div class="sub">• ${pends.length} pendiente${pends.length > 1 ? "s" : ""} por confirmar.</div>` : ""}
+      <label class="f">¿A dónde los quieres mover?<select name="target">${catOptions(c.kind, fallback?.id).replace(`<option value="${esc(c.id)}"`, `<option hidden value="${esc(c.id)}"`)}</select></label>
+    </div>
+    <div class="mfoot"><span class="spacer"></span><button type="button" class="btn ghost" data-close>Cancelar</button><button type="button" class="btn danger" data-save>Mover y eliminar</button></div>`,
+  f => {
+    inlineNew(f, f.target, c.kind);
+    f.querySelector("[data-close]").onclick = close;
+    f.querySelector("[data-save]").onclick = async () => {
+      const to = f.target.value;
+      if (!to || to === NEW || to === c.id) { toast("Elige la categoría destino"); return; }
+      close();
+      if (await check(sb.rpc("reassign_and_delete_category", { p_old: c.id, p_new: to }), `Movido a "${cat(to).name}" y categoría eliminada`)) refresh();
+    };
+  });
+}
+
+function openMethod(m) {
+  const isNew = !m;
+  m = m || { id: uid(), name:"", kind:"credito", color: PALETTE[S.methods.length % PALETTE.length], active:true };
+  let color = m.color;
+  const KINDS = [["credito","Tarjeta de crédito"],["debito","Tarjeta de débito"],["transferencia","Transferencia"],["spay","SPAY"],["efectivo","Efectivo"],["otro","Otro"]];
+  openDialog(`
+    <div class="mhead">${isNew ? "Nuevo método de pago" : "Editar método de pago"}</div>
+    <div class="mbody">
+      <label class="f">Nombre<input name="name" maxlength="40" value="${esc(m.name)}" placeholder="Ej. BBVA Crédito"></label>
+      <label class="f">Tipo<select name="kind">${KINDS.map(([k, l]) => `<option value="${k}" ${k === m.kind ? "selected" : ""}>${l}</option>`).join("")}</select></label>
+      <div style="display:grid;gap:6px;font-size:.85rem;font-weight:600;color:var(--muted)">Color<div class="colors">${PALETTE.map(p => `<button type="button" style="background:${p}" data-color="${p}" aria-pressed="${p === color}" aria-label="Color ${p}"></button>`).join("")}</div></div>
+      ${isNew ? "" : `<label class="check"><input type="checkbox" name="active" ${m.active ? "checked" : ""}> Activo (si lo desactivas ya no aparece al registrar, pero se conserva el historial)</label>`}
+    </div>${foot(true, isNew ? "Agregar" : "Guardar cambios")}`,
+  f => {
+    f.querySelectorAll("[data-color]").forEach(b => b.onclick = () => { color = b.dataset.color; f.querySelectorAll("[data-color]").forEach(x => x.setAttribute("aria-pressed", x === b)); });
+    f.querySelector("[data-close]").onclick = close;
+    f.querySelector("[data-save]").onclick = () => {
+      const name = f.name.value.trim();
+      if (!name) { f.name.focus(); toast("Escribe un nombre"); return; }
+      close();
+      Store.saveMethod({ ...m, name, kind: f.kind.value, color, active: f.active ? f.active.checked : true }, isNew ? "Método agregado" : "Cambios guardados");
+    };
+    setTimeout(() => f.name.focus(), 50);
+  });
+}
+
+function openGoal(g) {
+  const isNew = !g;
+  g = g || { id: uid(), name:"", target:"", targetDate:"", color: PALETTE[(S.goals.length + 3) % PALETTE.length], active:true };
+  let color = g.color;
+  openDialog(`
+    <div class="mhead">${isNew ? "Nueva meta de ahorro" : "Editar meta"}</div>
+    <div class="mbody">
+      <label class="f">Nombre<input name="name" maxlength="40" value="${esc(g.name)}" placeholder="Ej. Fondo de emergencia"></label>
+      ${amountField("Monto objetivo", g.target)}
+      <label class="f">Fecha objetivo (opcional)<input name="targetDate" type="date" value="${esc(g.targetDate || "")}"></label>
+      <div style="display:grid;gap:6px;font-size:.85rem;font-weight:600;color:var(--muted)">Color<div class="colors">${PALETTE.map(p => `<button type="button" style="background:${p}" data-color="${p}" aria-pressed="${p === color}" aria-label="Color ${p}"></button>`).join("")}</div></div>
+    </div>${foot(isNew)}`,
+  f => {
+    f.querySelectorAll("[data-color]").forEach(b => b.onclick = () => { color = b.dataset.color; f.querySelectorAll("[data-color]").forEach(x => x.setAttribute("aria-pressed", x === b)); });
+    f.querySelector("[data-close]").onclick = close;
+    f.querySelector("[data-del]")?.addEventListener("click", () => { if (confirm(`¿Eliminar la meta "${g.name}"? Las aportaciones registradas se conservan como movimientos.`)) { close(); Store.delGoal(g.id, "Meta eliminada"); } });
+    f.querySelector("[data-save]").onclick = () => {
+      const name = f.name.value.trim(), target = parseFloat(f.amount.value);
+      if (!name) { f.name.focus(); toast("Escribe un nombre"); return; }
+      if (!(target > 0)) { f.amount.focus(); toast("Escribe el monto objetivo"); return; }
+      close();
+      Store.saveGoal({ ...g, name, target: Math.round(target*100)/100, targetDate: f.targetDate.value || null, color }, isNew ? "Meta creada" : "Cambios guardados");
+    };
+    setTimeout(() => f.name.focus(), 50);
+  });
+}
+
 // ---------- events ----------
 $("#tabs").addEventListener("click", e => { const b = e.target.closest("button[data-tab]"); if (!b) return; S.tab = b.dataset.tab; render(); window.scrollTo(0, 0); });
+$("#pendBtn").onclick = () => { S.tab = "pend"; render(); window.scrollTo(0, 0); };
 const goMonth = n => { S.ym = ymAdd(S.ym, n); render(); refresh(false); };
 $("#prevM").onclick = () => goMonth(-1);
 $("#nextM").onclick = () => goMonth(1);
 $("#fab").onclick = () => openTx();
 $("#view").addEventListener("click", e => {
-  const t = e.target.closest("[data-edit],[data-pay],[data-editfixed],[data-editcat],[data-newcat],[data-act]");
+  const t = e.target.closest("[data-edit],[data-payocc],[data-openpend],[data-editrec],[data-editcat],[data-delcat],[data-newcat],[data-editmethod],[data-editgoal],[data-addsave],[data-act]");
   if (!t) return;
-  if (t.dataset.edit) openTx(S.tx.find(x => x.id === t.dataset.edit));
-  else if (t.dataset.pay) payFixed(S.fixed.find(x => x.id === t.dataset.pay));
-  else if (t.dataset.editfixed) openFixed(S.fixed.find(x => x.id === t.dataset.editfixed));
-  else if (t.dataset.editcat) openCat(S.categories.find(x => x.id === t.dataset.editcat));
-  else if (t.dataset.newcat) openCat(null, t.dataset.newcat);
-  else if (t.dataset.act === "add") openTx();
+  const d = t.dataset;
+  if (d.edit) openTx(S.tx.find(x => x.id === d.edit));
+  else if (d.payocc) { const [id, due] = d.payocc.split("|"), r = S.recs.find(x => x.id === id); if (r) Store.payOccurrence(r, due); }
+  else if (d.openpend) { const p = S.pending.find(x => x.id === d.openpend); if (p) openPending(p); }
+  else if (d.editrec) openRec(S.recs.find(x => x.id === d.editrec));
+  else if (d.editcat) openCat(S.categories.find(x => x.id === d.editcat));
+  else if (d.delcat) deleteCat(S.categories.find(x => x.id === d.delcat));
+  else if (d.newcat) openCat(null, d.newcat);
+  else if (d.editmethod) openMethod(S.methods.find(x => x.id === d.editmethod));
+  else if (d.editgoal) openGoal(S.goals.find(x => x.id === d.editgoal));
+  else if (d.addsave) openTx(null, { type:"ahorro", goalId: d.addsave });
+  else if (d.act === "add" || d.act === "add-gasto") openTx();
+  else if (d.act === "add-ingreso") openTx(null, { type:"ingreso" });
+  else if (d.act === "fijos") { S.tab = "fijos"; render(); window.scrollTo(0, 0); }
+  else if (d.act === "pend") { S.tab = "pend"; render(); window.scrollTo(0, 0); }
+  else if (d.act === "newmethod") openMethod();
+  else if (d.act === "newgoal") openGoal();
 });
 dlg.addEventListener("click", e => { if (e.target === dlg) close(); });
 $("#signin").onclick = () => doAuth(false);

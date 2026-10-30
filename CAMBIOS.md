@@ -61,40 +61,40 @@ Problema: la app instalada en la pantalla de inicio del iPhone conserva la versi
 ### Fase 1 · Modelo de datos ampliado (puntos 8, 9 y la base de los puntos 1–3, 6, 13 y 18)
 
 **Métodos de pago (punto 8)**
-- [ ] Tabla `payment_methods` (`id`, `user_id`, `name`, `kind` en `credito | debito | transferencia | spay | efectivo | otro`, `color`, `active`).
-- [ ] Métodos por defecto: Efectivo, Transferencia, SPAY. El usuario agrega sus tarjetas con nombre propio (por ejemplo "BBVA Crédito").
-- [ ] Columna `payment_method_id` en `transactions`. Selector en el formulario (recordar el último usado). Filtro por método en Movimientos y desglose por método en Resumen.
-- [ ] Sección de métodos de pago en Ajustes (crear, editar, desactivar), igual que las categorías.
+- [x] Tabla `payment_methods` (`id`, `user_id`, `name`, `kind` en `credito | debito | transferencia | spay | efectivo | otro`, `color`, `active`).
+- [x] Métodos por defecto: Efectivo, Transferencia, SPAY. El usuario agrega sus tarjetas con nombre propio (por ejemplo "BBVA Crédito").
+- [x] Columna `payment_method_id` en `transactions`. Selector en el formulario (recordar el último usado). Filtro por método en Movimientos y desglose por método en Resumen.
+- [x] Sección de métodos de pago en Ajustes (crear, editar, desactivar), igual que las categorías.
 
 **Retiros de efectivo (punto 9)**
-- [ ] Nuevo `type` en `transactions`: `retiro` (además de `gasto`, `ingreso` y `ahorro`, este último usado en la Fase 7).
-- [ ] Un retiro **no cuenta como gasto**: es un movimiento de una cuenta/método a "Efectivo". Los gastos pagados en efectivo se registran con el método Efectivo.
-- [ ] Mostrar el saldo estimado de efectivo: retiros − gastos en efectivo del periodo.
+- [x] Nuevo `type` en `transactions`: `retiro` (además de `gasto`, `ingreso` y `ahorro`, este último usado en la Fase 7).
+- [x] Un retiro **no cuenta como gasto**: es un movimiento de una cuenta/método a "Efectivo". Los gastos pagados en efectivo se registran con el método Efectivo.
+- [x] Mostrar el saldo estimado de efectivo: retiros − gastos en efectivo del periodo.
 
 **Recurrentes y recordatorios (base de los puntos 1–3, 6 y 13)**
-- [ ] Generalizar `fixed_expenses` en una tabla `recurrences` (migrar los datos existentes sin perder nada) con:
+- [x] Generalizar `fixed_expenses` en una tabla `recurrences` (migrar los datos existentes sin perder nada) con:
   - `name`, `amount` (último monto), `original_amount`, `category_id`, `payment_method_id`.
   - `type` (`gasto | ingreso`).
-  - Frecuencia: `every` (número) + `unit` (`day | week | month`); para mensual, el día del mes.
+  - Frecuencia: columna `freq` (`diario | semanal | quincenal | mensual | salario`) + `start_date`; para mensual, `day` (día del mes). Ver sección 6.
   - `mode`: `confirmar` (genera un pendiente por confirmar) o `recordatorio` (pago manual, solo avisa).
   - `next_date`, `active`.
-- [ ] Cada transacción generada por un recurrente guarda `recurrence_id`. **Editar el monto de un mes no modifica meses pasados** (punto 6): cada mes es un registro independiente.
-- [ ] Renombrar la pestaña "Fijos" a **"Recurrentes"**.
+- [x] Cada transacción generada por un recurrente guarda `recurrence_id`. **Editar el monto de un mes no modifica meses pasados** (punto 6): cada mes es un registro independiente.
+- [x] ~~Renombrar la pestaña "Fijos" a "Recurrentes"~~: por decisión del usuario se queda como **"Fijos"** (sección 6).
 
 ### Fase 2 · Recurrentes desde el formulario y bandeja de pendientes (puntos 1, 2, 3, 6 y 11)
-- [ ] En el formulario de gasto/ingreso, un interruptor **"Repetir cada mes"** (con opción de otra frecuencia) que crea el recurrente con la fecha del registro como base (punto 1).
-- [ ] Tabla `pending_entries` (`id`, `user_id`, `source` en `recurrente | siri | gmail`, `type`, `amount`, `category_id`, `payment_method_id`, `date`, `note`, `raw` jsonb, `recurrence_id`, `external_id` único para no duplicar, `status` en `pendiente | aceptado | descartado`, `created_at`).
-- [ ] Generación de pendientes de recurrentes con `mode = confirmar` cuando llega su fecha (punto 2). Hacerlo del lado del servidor con `pg_cron`, para que exista aunque la app no se abra.
-- [ ] **Bandeja "Pendientes por confirmar"** (punto 11): contador visible (badge) en la barra inferior o en el encabezado. Cada pendiente se puede editar (monto, categoría, método, fecha y nota) y luego **Aceptar** (se crea la transacción) o **Descartar** (puntos 3 y 11).
-- [ ] Al aceptar un recurrente con monto distinto, actualizar `recurrences.amount` al nuevo monto, solo para sugerencias futuras (ver decisiones pendientes).
+- [x] En el formulario de gasto/ingreso, un interruptor **"Repetir cada mes"** (con opción de otra frecuencia) que crea el recurrente con la fecha del registro como base (punto 1).
+- [x] Tabla `pending_entries` (`id`, `user_id`, `source` en `recurrente | siri | gmail`, `type`, `amount`, `category_id`, `payment_method_id`, `date`, `note`, `raw` jsonb, `recurrence_id`, `external_id` único para no duplicar, `status` en `pendiente | aceptado | descartado`, `created_at`).
+- [x] Generación de pendientes de recurrentes con `mode = confirmar` cuando llega su fecha (punto 2). Hacerlo del lado del servidor con `pg_cron`, para que exista aunque la app no se abra.
+- [x] **Bandeja "Pendientes por confirmar"** (punto 11): contador visible (badge) en la barra inferior o en el encabezado. Cada pendiente se puede editar (monto, categoría, método, fecha y nota) y luego **Aceptar** (se crea la transacción) o **Descartar** (puntos 3 y 11).
+- [x] Al aceptar un recurrente con monto distinto, actualizar `recurrences.amount` al nuevo monto, solo para sugerencias futuras (ver decisiones pendientes).
 
 ### Fase 3 · Gastado vs. esperado del mes (puntos 17 y 4)
-- [ ] En Resumen: barra con dos segmentos, **gastado** (sólido) y **por pagar** (claro o rayado). El total es lo **esperado del mes**.
-- [ ] Números: "Gastado $X · Por pagar $Y · Esperado $Z".
-- [ ] "Por pagar" = recurrentes y recordatorios con fecha en lo que resta del mes que aún no tienen transacción, más los pendientes no aceptados.
-- [ ] Lista de **próximos pagos** del mes con fecha, nombre y monto, cada uno con acción "Marcar pagado".
-- [ ] Comparación con el ingreso del mes: "Después de los pagos pendientes te quedarán $W".
-- [ ] Punto 4: acceso rápido para registrar ingresos (según la decisión pendiente).
+- [x] En Resumen: barra con dos segmentos, **gastado** (sólido) y **por pagar** (claro o rayado). El total es lo **esperado del mes**.
+- [x] Números: "Gastado $X · Por pagar $Y · Esperado $Z".
+- [x] "Por pagar" = recurrentes y recordatorios con fecha en lo que resta del mes que aún no tienen transacción, más los pendientes no aceptados.
+- [x] Lista de **próximos pagos** del mes con fecha, nombre y monto, cada uno con acción "Marcar pagado".
+- [x] Comparación con el ingreso del mes: "Después de los pagos pendientes te quedarán $W".
+- [x] Punto 4: acceso rápido para registrar ingresos (según la decisión pendiente).
 
 ### Fase 4 · Notificaciones push (base de los puntos 2, 11, 13 y 15)
 - [ ] Service worker (`sw.js`) con manejo de `push` y `notificationclick` (abrir la app en la sección correspondiente: pendientes, recurrentes, etc.).
@@ -132,11 +132,11 @@ Problema: la app instalada en la pantalla de inicio del iPhone conserva la versi
   Escríbela en `docs/siri.md` y muéstrala también dentro de la app, en Ajustes.
 
 ### Fase 7 · Metas de ahorro e inversión (punto 18)
-- [ ] Tabla `goals` (`name`, `target_amount`, `target_date` opcional, `color`). Las aportaciones son transacciones con `type = ahorro` y `goal_id`; no cuentan como gasto, pero sí se descuentan del disponible.
-- [ ] Barra de progreso por meta.
-- [ ] **Sugerencia inteligente del mes:** ingreso del mes − gastos esperados (Fase 3) − promedio del gasto variable de los últimos 3 meses − un margen de seguridad (por ejemplo 10% del ingreso). Nunca negativa; redondear a múltiplos de $50 o $100. Mostrar en qué se basa el cálculo.
-- [ ] En Resumen: renglón "Sugerencia de inversión del mes: $X · Pendiente / Apartado".
-- [ ] Notificación mensual, por ejemplo al registrar el salario: "Ya llegó tu ingreso. Te sugiero apartar $X para tu meta".
+- [x] Tabla `goals` (`name`, `target_amount`, `target_date` opcional, `color`). Las aportaciones son transacciones con `type = ahorro` y `goal_id`; no cuentan como gasto, pero sí se descuentan del disponible.
+- [x] Barra de progreso por meta.
+- [x] **Sugerencia inteligente del mes:** ingreso del mes − gastos esperados (Fase 3) − promedio del gasto variable de los últimos 3 meses − un margen de seguridad (por ejemplo 10% del ingreso). Nunca negativa; redondear a múltiplos de $50 o $100. Mostrar en qué se basa el cálculo.
+- [x] En Resumen: renglón "Sugerencia de inversión del mes: $X · Pendiente / Apartado".
+- [ ] *(Fase 4)* Notificación mensual, por ejemplo al registrar el salario: "Ya llegó tu ingreso. Te sugiero apartar $X para tu meta".
 - [ ] La app sugiere **cuánto** apartar, no **dónde** invertir.
 
 ### Fase 8 · Registro automático desde Gmail (punto 10) · REQUIERE DECISIÓN
@@ -148,7 +148,7 @@ Problema: la app instalada en la pantalla de inicio del iPhone conserva la versi
 ### Fase 9 · Rediseño visual (puntos 16 y 12)
 - [ ] **Antes de aplicar nada**, presentar 3–4 propuestas, cada una con icono, paleta en modo claro y paleta en modo oscuro, colores más llamativos que los actuales, vistas lado a lado como se verían en un iPhone. Esperar la elección del usuario.
 - [ ] Aplicar la paleta elegida con variables CSS en `:root` y `@media (prefers-color-scheme: dark)`.
-- [ ] Punto 12: que la barra de estado del iPhone combine con el tema (`theme-color` con `media` para claro y oscuro; revisar `apple-mobile-web-app-status-bar-style`).
+- [x] Punto 12 (parcial, v1.5.0: `theme-color` claro/oscuro ya aplicado; falta ajustarlo a la paleta nueva): que la barra de estado del iPhone combine con el tema (`theme-color` con `media` para claro y oscuro; revisar `apple-mobile-web-app-status-bar-style`).
 - [ ] Regenerar `apple-touch-icon.png`, `icon-192.png` e `icon-512.png` con el icono elegido y actualizar `manifest.json`.
 - [ ] Ajustar los iconos de la barra inferior a la nueva paleta.
 
@@ -158,24 +158,24 @@ Problema: la app instalada en la pantalla de inicio del iPhone conserva la versi
 
 | # | Cambio | Fase | Estado |
 |---|---|---|---|
-| 1 | Marcar gasto como recurrente al registrarlo | 2 | Pendiente |
+| 1 | Marcar gasto como recurrente al registrarlo | 2 | Hecho (v1.5.0) |
 | 2 | Aviso para confirmar el recurrente al llegar su fecha | 2 / 4 | Pendiente |
-| 3 | Editar el monto al confirmar | 2 | Pendiente |
-| 4 | Registrar ingresos (ya existe; acceso más visible) | 3 | Parcial |
+| 3 | Editar el monto al confirmar | 2 | Hecho (v1.5.0) |
+| 4 | Registrar ingresos (ya existe; acceso más visible) | 3 | Hecho (v1.5.0) |
 | 5 | Editar categorías | — | Hecho |
-| 6 | Editar un mes no modifica los meses pasados | 1 / 2 | Pendiente |
+| 6 | Editar un mes no modifica los meses pasados | 1 / 2 | Hecho (v1.5.0) |
 | 7 | Siri automático, con confirmación en la app | 6 | Pendiente |
-| 8 | Métodos de pago | 1 | Pendiente |
-| 9 | Retiros de efectivo | 1 | Pendiente |
+| 8 | Métodos de pago | 1 | Hecho (v1.5.0) |
+| 9 | Retiros de efectivo | 1 | Hecho (v1.5.0) |
 | 10 | Registro automático desde Gmail | 8 | Requiere decisión |
-| 11 | Bandeja de pendientes + notificación | 2 / 4 | Pendiente |
+| 11 | Bandeja de pendientes + notificación | 2 / 4 | Bandeja hecha (v1.5.0); falta notificación |
 | 12 | Tema claro/oscuro automático (barra de estado) | 9 | Parcial |
 | 13 | Recordatorios de pagos manuales | 1 / 4 | Pendiente |
 | 14 | Usuarios y administradores | 5 | Pendiente |
 | 15 | Botón "Probar notificación" (solo admins) | 5 | Pendiente |
 | 16 | Rediseño de icono y colores | 9 | Pendiente |
-| 17 | Gastado vs. esperado del mes | 3 | Pendiente |
-| 18 | Metas de ahorro e inversión con sugerencia | 7 | Pendiente |
+| 17 | Gastado vs. esperado del mes | 3 | Hecho (v1.5.0) |
+| 18 | Metas de ahorro e inversión con sugerencia | 7 | Hecho (v1.5.0); falta notificación |
 | 19 | Barra inferior más alta con iconos | — | Hecho |
 | 20 | Actualizaciones de la app (botón y aviso) | 0 | Hecho (v1.4.0) |
 
@@ -188,29 +188,29 @@ Dictados por el usuario el 2026-10-30. Solo anotados; **no ejecutar** hasta que 
 **Dónde encajan:** A, B y E se implementan con la Fase 1 (tabla de fijos/recurrentes con frecuencias diario, semanal, quincenal, mensual y salario 15/último día) y la Fase 2 (opción "Es fijo" en el formulario y aviso para capturar el monto). C y D se implementan junto con la Fase 1. Donde esta sección contradiga las fases anteriores, **manda esta sección** (por ejemplo, la pestaña se sigue llamando "Fijos").
 
 ### A. Pestaña "Fijos" (se conserva el nombre)
-- [ ] Mantener la pestaña **Fijos** (sustituye el cambio de nombre a "Recurrentes" de la Fase 1).
-- [ ] Mostrar un **resumen de gastos fijos**: "Estos son tus gastos fijos" y el **total al mes**.
-- [ ] Agrupar por frecuencia: diario, semanal, quincenal, mensual. **Solo mostrar los grupos que tengan gastos** (si no hay semanales, no aparece el grupo semanal).
-- [ ] Se puede seguir agregando gastos fijos desde esta pestaña.
+- [x] Mantener la pestaña **Fijos** (sustituye el cambio de nombre a "Recurrentes" de la Fase 1).
+- [x] Mostrar un **resumen de gastos fijos**: "Estos son tus gastos fijos" y el **total al mes**.
+- [x] Agrupar por frecuencia: diario, semanal, quincenal, mensual. **Solo mostrar los grupos que tengan gastos** (si no hay semanales, no aparece el grupo semanal).
+- [x] Se puede seguir agregando gastos fijos desde esta pestaña.
 
 ### B. Gastos fijos desde "Agregar movimiento"
-- [ ] Al agregar un movimiento de tipo **gasto**, opción **"Es fijo"**.
-- [ ] Si es fijo, elegir la frecuencia: **diario, semanal, quincenal o mensual**.
-- [ ] Ese gasto aparece en la pestaña Fijos. Es decir, los gastos fijos se configuran tanto desde Fijos como desde Movimientos.
+- [x] Al agregar un movimiento de tipo **gasto**, opción **"Es fijo"**.
+- [x] Si es fijo, elegir la frecuencia: **diario, semanal, quincenal o mensual**.
+- [x] Ese gasto aparece en la pestaña Fijos. Es decir, los gastos fijos se configuran tanto desde Fijos como desde Movimientos.
 
 ### C. Agregar categoría desde el formulario
-- [ ] En la lista de categorías del formulario de movimiento, agregar al final una opción **"+ Agregar categoría nueva"** que permita crearla ahí mismo y quede seleccionada.
+- [x] En la lista de categorías del formulario de movimiento, agregar al final una opción **"+ Agregar categoría nueva"** que permita crearla ahí mismo y quede seleccionada.
 
 ### D. Eliminar categorías en Ajustes, con reasignación
-- [ ] En Ajustes se listan todas las categorías guardadas y se puede **eliminar** cualquiera.
-- [ ] Si la categoría tiene movimientos o gastos fijos registrados, mostrar una advertencia: "Hay movimientos registrados en esta categoría", con la **lista de esos movimientos** (por ejemplo: "Tienes un gasto fijo de Colegiatura de $2,000").
-- [ ] Preguntar **a qué categoría moverlos**: elegir una existente (por ejemplo "Otros") o **crear una categoría nueva** en ese momento.
-- [ ] Solo después de reasignar se elimina la categoría. Nunca se borran movimientos.
+- [x] En Ajustes se listan todas las categorías guardadas y se puede **eliminar** cualquiera.
+- [x] Si la categoría tiene movimientos o gastos fijos registrados, mostrar una advertencia: "Hay movimientos registrados en esta categoría", con la **lista de esos movimientos** (por ejemplo: "Tienes un gasto fijo de Colegiatura de $2,000").
+- [x] Preguntar **a qué categoría moverlos**: elegir una existente (por ejemplo "Otros") o **crear una categoría nueva** en ese momento.
+- [x] Solo después de reasignar se elimina la categoría. Nunca se borran movimientos.
 
 ### E. Ingresos fijos (por ejemplo, el salario)
-- [ ] Los **ingresos también pueden ser fijos**, con las mismas frecuencias que los gastos.
+- [x] Los **ingresos también pueden ser fijos**, con las mismas frecuencias que los gastos.
 - [ ] El monto puede cambiar en cada pago (por ejemplo, por horas extra). Por eso, **cada vez que toca un ingreso fijo llega una notificación** para que el usuario indique la cantidad real recibida.
-- [ ] Al registrarlo se puede escribir el monto del momento. Sugerir el último monto, siempre editable.
+- [x] Al registrarlo se puede escribir el monto del momento. Sugerir el último monto, siempre editable.
 
 ### Decisiones confirmadas por el usuario
 - **Frecuencias, contadas desde la fecha del registro:**
