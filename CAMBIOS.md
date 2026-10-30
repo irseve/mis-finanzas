@@ -232,18 +232,18 @@ Dictados por el usuario el 2026-10-30. Solo anotados; **no ejecutar** hasta que 
 
 ---
 
-## 8. Cambios anotados el 2026-10-30 (sin implementar todavía)
+## 8. Cambios del 2026-10-30 — implementados en v1.9.0
 
-Solo anotados; **no ejecutar** hasta que el usuario lo indique.
+Pendiente de esta lista: tasa de CETES automática con Banxico (requiere token; por ahora la tasa se escribe a mano) y decidir si descontar el ISR (por ahora se muestra rendimiento bruto).
 
 ### F. Selector de mes en cuadrícula
 Hoy el encabezado muestra el mes actual ("Octubre de 2026") con flechas ‹ › a los lados para ir mes por mes.
-- [ ] Las flechas ‹ › se quedan como están.
-- [ ] Al **tocar el nombre del mes** (la parte de en medio) se despliega hacia abajo una ventana pequeña.
-- [ ] Arriba de esa ventana va el **año** (por defecto el año en curso, por ejemplo 2026) con flechas para ir al **año anterior y al siguiente**.
-- [ ] Debajo, los **12 meses en cuadrícula** (por ejemplo 3 columnas × 4 filas o 4 × 3), no en lista, para saltar fácil de un mes a otro (de octubre a enero, por ejemplo).
-- [ ] Al tocar un mes se cierra la ventana y la app muestra ese mes. Resaltar el mes seleccionado y marcar de forma distinta el mes actual.
-- [ ] Se cierra también al tocar fuera de la ventana. Zonas de toque de al menos 44 px; debe verse bien en los 5 temas, claro y oscuro.
+- [x] Las flechas ‹ › se quedan como están.
+- [x] Al **tocar el nombre del mes** (la parte de en medio) se despliega hacia abajo una ventana pequeña.
+- [x] Arriba de esa ventana va el **año** (por defecto el año en curso, por ejemplo 2026) con flechas para ir al **año anterior y al siguiente**.
+- [x] Debajo, los **12 meses en cuadrícula** (por ejemplo 3 columnas × 4 filas o 4 × 3), no en lista, para saltar fácil de un mes a otro (de octubre a enero, por ejemplo).
+- [x] Al tocar un mes se cierra la ventana y la app muestra ese mes. Resaltar el mes seleccionado y marcar de forma distinta el mes actual.
+- [x] Se cierra también al tocar fuera de la ventana. Zonas de toque de al menos 44 px; debe verse bien en los 5 temas, claro y oscuro.
 
 ### G. Una sola gráfica de gastos con periodo a elegir
 Hoy hay dos gráficas en Resumen:
@@ -251,35 +251,35 @@ Hoy hay dos gráficas en Resumen:
 - **Últimos 6 meses:** ingresos contra gastos, mes por mes.
 
 El usuario propone unificarlas en una sola.
-- [ ] Una sola tarjeta de gráfica en Resumen, con un selector arriba: **Semana · Mes · Año**.
+- [x] Una sola tarjeta de gráfica en Resumen, con un selector arriba: **Semana · Mes · Año**.
   - **Semana:** las semanas del mes seleccionado (como la gráfica actual).
   - **Mes:** los últimos 6 o 12 meses (por definir), uno por barra.
   - **Año:** un año por barra, con los años que tengan registros.
-- [ ] Recordar en el dispositivo el último periodo elegido.
-- [ ] Al quitar la gráfica de 6 meses, la de categorías y "Fijos vs. variables" se acomodan para no dejar huecos.
-- [ ] Segundo selector **Mostrar: Gastos · Ingresos · Ambos** (rojo para gastos, verde para ingresos), disponible en Semana, Mes y Año.
-- [ ] El usuario **elige el periodo de tiempo** que abarca la gráfica (desde – hasta). Sugerencia: atajos rápidos (este mes, últimos 3, 6 o 12 meses, este año, todo) y la opción de elegir fechas, usando el mismo selector de mes en cuadrícula del punto F. Con esto se resuelve cuántos meses mostrar.
-- [ ] Recordar en el dispositivo la última combinación elegida (agrupación, qué mostrar y periodo).
+- [x] Recordar en el dispositivo el último periodo elegido.
+- [x] Al quitar la gráfica de 6 meses, la de categorías y "Fijos vs. variables" se acomodan para no dejar huecos.
+- [x] Segundo selector **Mostrar: Gastos · Ingresos · Ambos** (rojo para gastos, verde para ingresos), disponible en Semana, Mes y Año.
+- [x] El usuario **elige el periodo de tiempo** que abarca la gráfica (desde – hasta). Sugerencia: atajos rápidos (este mes, últimos 3, 6 o 12 meses, este año, todo) y la opción de elegir fechas, usando el mismo selector de mes en cuadrícula del punto F. Con esto se resuelve cuántos meses mostrar.
+- [x] Recordar en el dispositivo la última combinación elegida (agrupación, qué mostrar y periodo).
 - Nota técnica: hoy la app carga 6 meses de movimientos; para periodos más largos hay que cargar el rango elegido o pedir totales agrupados al servidor.
 
 ### H. Un solo botón para agregar
 Hoy hay muchos lugares para agregar: el botón flotante **+**, "+ Gasto" y "+ Ingreso" en Resumen, "Agregar el primero" o "Agregar movimiento" cuando no hay datos, "Nuevo fijo" en Fijos, "Aportar" en Metas, etc. El usuario quiere simplificar.
-- [ ] El **botón flotante +** es la única forma de agregar movimientos. Visible en todas las pestañas, en la misma posición.
-- [ ] Quitar "+ Gasto" y "+ Ingreso" del Resumen y los botones de agregar de los mensajes vacíos (dejar solo un texto como "Toca + para agregar tu primer movimiento").
-- [ ] El formulario del + ya permite elegir Gasto, Ingreso, Retiro o Ahorro y marcar "Es fijo", así que cubre todos los casos, incluidos los fijos.
-- [ ] Botones que **no** son para agregar movimientos se quedan: "Marcar pagado", "Confirmar", "Editar", y en Ajustes "Nueva categoría", "Nuevo método", etc.
+- [x] El **botón flotante +** es la única forma de agregar movimientos. Visible en todas las pestañas, en la misma posición.
+- [x] Quitar "+ Gasto" y "+ Ingreso" del Resumen y los botones de agregar de los mensajes vacíos (dejar solo un texto como "Toca + para agregar tu primer movimiento").
+- [x] El formulario del + ya permite elegir Gasto, Ingreso, Retiro o Ahorro y marcar "Es fijo", así que cubre todos los casos, incluidos los fijos.
+- [x] Botones que **no** son para agregar movimientos se quedan: "Marcar pagado", "Confirmar", "Editar", y en Ajustes "Nueva categoría", "Nuevo método", etc.
 - Por confirmar con el usuario:
   - ~~En Fijos, ¿quitar también "Nuevo fijo"?~~ **Resuelto:** sí. Todo se agrega con el +, que permite marcar "Es fijo" y elegir la categoría.
   - ~~En Metas, ¿quitar "Aportar"?~~ **Resuelto:** sí. Cada aportación se hace con **+ → Ahorro**; la sección de metas se queda para consultar.
   - ~~Color del +~~ **Resuelto:** el + usa el **color principal del tema** (ya no rojo). Dentro del formulario, Gasto sigue en rojo e Ingreso en verde.
-- [ ] **Pestaña Fijos solo informativa:** sin botón "Nuevo fijo" ni "Registrar los pendientes del mes". Muestra el resumen (pagado, proyectado, por frecuencia) y la lista de fijos. Se conserva tocar un fijo para **editarlo, pausarlo o eliminarlo**, porque es el único lugar donde se administran.
+- [x] **Pestaña Fijos solo informativa:** sin botón "Nuevo fijo" ni "Registrar los pendientes del mes". Muestra el resumen (pagado, proyectado, por frecuencia) y la lista de fijos. Se conserva tocar un fijo para **editarlo, pausarlo o eliminarlo**, porque es el único lugar donde se administran.
 - Por confirmar: el usuario comentó que "en la pantalla principal también pone gastos" (frase incompleta). Posible duplicado entre Resumen (Próximos pagos, Gastos fijos, Fijos vs. variables) y la pestaña Fijos. Preguntar qué quiere quitar o juntar.
 
 ### I. Ajustes agrupados, sin mostrar todo de golpe
 Hoy Ajustes muestra todas las secciones abiertas una tras otra (categorías, métodos, notificaciones, Siri, administración, tema, moneda, cuenta, versión) y se ve muy cargado.
-- [ ] Al entrar a Ajustes se ve solo una **lista corta de grupos**, estilo Ajustes del iPhone: icono, nombre, un resumen pequeño (por ejemplo "11 categorías", "Activadas", "Bosque · Automática") y una flecha ›.
-- [ ] Al tocar un grupo se abre su pantalla con el botón **‹ Ajustes** para regresar. Recomendado sobre un acordeón (que se despliega en la misma lista) porque es lo que el usuario ya conoce del iPhone y no alarga la página.
-- [ ] Grupos propuestos:
+- [x] Al entrar a Ajustes se ve solo una **lista corta de grupos**, estilo Ajustes del iPhone: icono, nombre, un resumen pequeño (por ejemplo "11 categorías", "Activadas", "Bosque · Automática") y una flecha ›.
+- [x] Al tocar un grupo se abre su pantalla con el botón **‹ Ajustes** para regresar. Recomendado sobre un acordeón (que se despliega en la misma lista) porque es lo que el usuario ya conoce del iPhone y no alarga la página.
+- [x] Grupos propuestos:
   1. **Categorías:** de gasto y de ingreso (crear, editar, eliminar con reasignación).
   2. **Métodos de pago.**
   3. **Notificaciones:** activar en este dispositivo y qué avisos recibir.
@@ -288,52 +288,52 @@ Hoy Ajustes muestra todas las secciones abiertas una tras otra (categorías, mé
   6. **Cuenta:** correo con el que entras, moneda, cambiar contraseña, cerrar sesión.
   7. **Administración** (solo administradores): usuarios y probar notificación.
   8. **Acerca de:** versión instalada y "Buscar actualizaciones".
-- [ ] La app recuerda en qué grupo estabas si cambias de pestaña y regresas.
+- [x] La app recuerda en qué grupo estabas si cambias de pestaña y regresas.
 - **Resuelto:** pantallas separadas, con esos grupos y ese orden (aprobado por el usuario).
 
 ### J. "Apartados": dinero destinado a ahorro e inversión (reemplaza la sección Metas)
 El usuario aparta dinero en distintos lugares (Nu, CETES, GBM, etc.) para no gastarlo, y el lugar **cambia en cada aportación**.
-- [ ] Nombre propuesto por Claude: **Apartados** (pestaña y sección). Abarca ahorro e inversión, y "apartar" es como se dice en México (por confirmar con el usuario; alternativas: Ahorro e inversión, Fondos).
-- [ ] **Lugares:** lista editable (Nu, CETES, GBM, cuenta de ahorro, efectivo…), cada uno con su **tipo: Ahorro o Inversión**. Se pueden crear desde el formulario con "+ Agregar lugar nuevo".
-- [ ] **Aportar:** con **+ → Ahorro** (renombrar a "Apartar"). Se elige **el lugar en cada aportación** (la app sugiere el último usado) y, de forma opcional, una **meta**. Sin botón "Aportar" en la sección.
-- [ ] **Metas opcionales:** objetivo con monto y fecha (por ejemplo "Fondo de emergencia $50,000"). Una meta puede juntar dinero de varios lugares.
-- [ ] **Pantalla Apartados:**
+- [x] Nombre propuesto por Claude: **Apartados** (pestaña y sección). Abarca ahorro e inversión, y "apartar" es como se dice en México (por confirmar con el usuario; alternativas: Ahorro e inversión, Fondos).
+- [x] **Lugares:** lista editable (Nu, CETES, GBM, cuenta de ahorro, efectivo…), cada uno con su **tipo: Ahorro o Inversión**. Se pueden crear desde el formulario con "+ Agregar lugar nuevo".
+- [x] **Aportar:** con **+ → Ahorro** (renombrar a "Apartar"). Se elige **el lugar en cada aportación** (la app sugiere el último usado) y, de forma opcional, una **meta**. Sin botón "Aportar" en la sección.
+- [x] **Metas opcionales:** objetivo con monto y fecha (por ejemplo "Fondo de emergencia $50,000"). Una meta puede juntar dinero de varios lugares.
+- [x] **Pantalla Apartados:**
   - Total apartado, total en ahorro y total en inversión.
   - Desglose por lugar (cuánto hay en Nu, CETES, GBM…).
   - Metas con su barra de progreso.
   - Historial de aportaciones (fecha, monto, lugar, meta) al tocar un lugar o una meta.
-- [ ] La sugerencia mensual de cuánto apartar se mantiene; sigue sin decir **dónde** invertir.
+- [x] La sugerencia mensual de cuánto apartar se mantiene; sigue sin decir **dónde** invertir.
 - Requiere migración nueva: tabla `savings_places` (nombre, tipo ahorro | inversion, color, activo) con RLS, `transactions.place_id`, y `goals` sigue para metas opcionales.
 - **Resuelto:** el nombre **Apartados** fue aprobado por el usuario.
-- [ ] **Sacar dinero de un apartado** (aprobado): movimiento "Sacar de apartado" con monto, lugar y meta opcional. Resta del total de ese lugar y de la meta. No cuenta como ingreso; si luego se gasta, ese gasto se registra aparte con su método.
+- [x] **Sacar dinero de un apartado** (aprobado): movimiento "Sacar de apartado" con monto, lugar y meta opcional. Resta del total de ese lugar y de la meta. No cuenta como ingreso; si luego se gasta, ese gasto se registra aparte con su método.
 
 ### L. Rendimientos estimados de los apartados
 Objetivo: que el saldo de cada lugar crezca solo con un **estimado** de sus rendimientos, sabiendo que no es exacto.
-- [ ] Cada lugar tiene un **rendimiento anual estimado (%)**. La app calcula el saldo estimado con interés compuesto diario sobre cada aportación desde su fecha (restando lo que se sacó).
-- [ ] **Origen de la tasa**, según el lugar:
+- [x] Cada lugar tiene un **rendimiento anual estimado (%)**. La app calcula el saldo estimado con interés compuesto diario sobre cada aportación desde su fecha (restando lo que se sacó).
+- [x] **Origen de la tasa**, según el lugar:
   - **CETES:** automático con la tasa oficial publicada por **Banxico** (API SIE, gratuita; requiere registrar un token de consulta y guardarlo como secreto en Supabase). Se actualiza sola una vez al día con `pg_cron`. Plazos: 28, 91, 182 y 364 días.
   - **Nu, cuentas de ahorro y otras cajitas:** la tasa es pública, pero no hay un servicio oficial para consultarla. El usuario la escribe (por ejemplo 9% anual) y la cambia cuando el banco la cambie. Mostrar la fecha de la última actualización.
   - **GBM, acciones, ETF y fondos:** se ligan al **instrumento** (ver punto M) para calcular el valor con precios de mercado.
-- [ ] **Actualizar saldo real:** el usuario escribe cuánto dice su app de Nu, GBM, etc. La diferencia se registra como **rendimiento** (o pérdida) y el estimado vuelve a partir de ese saldo.
-- [ ] Mostrar siempre "**estimado**" junto al saldo calculado, y el rendimiento acumulado por lugar y en total (ahorro vs. inversión).
+- [x] **Actualizar saldo real:** el usuario escribe cuánto dice su app de Nu, GBM, etc. La diferencia se registra como **rendimiento** (o pérdida) y el estimado vuelve a partir de ese saldo.
+- [x] Mostrar siempre "**estimado**" junto al saldo calculado, y el rendimiento acumulado por lugar y en total (ahorro vs. inversión).
 - Pendiente de decidir: ¿descontar el ISR retenido sobre intereses o mostrar rendimiento bruto?
 
 ### K. Quitar la pestaña Fijos (aprobado por el usuario)
 Objetivo: no ver lo mismo en varios lados ni tener botones de más.
-- [ ] **Quitar la pestaña Fijos** de la barra inferior.
-- [ ] En **Resumen**, una sola tarjeta **"Fijos del mes"** que junta lo que hoy está repetido (Gastos fijos, Fijos vs. variables, Próximos pagos y la pestaña Fijos): pagado, por pagar y proyectado, y los próximos pagos con "Marcar pagado".
-- [ ] Al tocar esa tarjeta se abre el **detalle de fijos**: la lista completa agrupada por frecuencia, donde se edita, pausa o elimina cada fijo.
-- [ ] La barra inferior queda: **Resumen · Movimientos · Apartados · Ajustes**. Apartados ocupa el lugar de Fijos porque es información distinta (ahorro e inversión) que hoy está escondida al fondo del Resumen.
-- [ ] En Movimientos, filtro rápido "Solo fijos" para ver los pagos de fijos registrados.
+- [x] **Quitar la pestaña Fijos** de la barra inferior.
+- [x] En **Resumen**, una sola tarjeta **"Fijos del mes"** que junta lo que hoy está repetido (Gastos fijos, Fijos vs. variables, Próximos pagos y la pestaña Fijos): pagado, por pagar y proyectado, y los próximos pagos con "Marcar pagado".
+- [x] Al tocar esa tarjeta se abre el **detalle de fijos**: la lista completa agrupada por frecuencia, donde se edita, pausa o elimina cada fijo.
+- [x] La barra inferior queda: **Resumen · Movimientos · Apartados · Ajustes**. Apartados ocupa el lugar de Fijos porque es información distinta (ahorro e inversión) que hoy está escondida al fondo del Resumen.
+- [x] En Movimientos, filtro rápido "Solo fijos" para ver los pagos de fijos registrados.
 
 ### M. Inversiones ligadas a un instrumento (por ejemplo VOO, S&P 500, en GBM)
-- [ ] Al apartar dinero en un lugar de tipo Inversión, opción **"¿En qué instrumento?"** con un **buscador** por nombre o clave de pizarra (por ejemplo `VOO`, `IVVPESO`, `NAFTRAC`, una acción como `AAPL`).
-- [ ] En cada compra se registra el **número de títulos** (como lo muestra GBM). Si el usuario solo sabe el monto, la app calcula los títulos aproximados con el precio de ese día.
-- [ ] **Valor actual = títulos × precio más reciente**, en pesos. Si el instrumento cotiza en dólares (como VOO), se convierte con el **tipo de cambio FIX de Banxico** del día. Mostrar "estimado" y la fecha y hora del precio.
-- [ ] Precios actualizados una vez al día (o al abrir Apartados) con una Edge Function y `pg_cron`; se guardan en la base para no consultar de más.
-- [ ] Por instrumento: lo invertido, el valor actual, la ganancia o pérdida en pesos y en %.
-- [ ] "Actualizar saldo real" sigue disponible para corregir con lo que diga GBM.
-- [ ] **Vender o sacar:** registrar títulos vendidos y monto recibido; calcula la ganancia realizada.
+- [x] Al apartar dinero en un lugar de tipo Inversión, opción **"¿En qué instrumento?"** con un **buscador** por nombre o clave de pizarra (por ejemplo `VOO`, `IVVPESO`, `NAFTRAC`, una acción como `AAPL`).
+- [x] En cada compra se registra el **número de títulos** (como lo muestra GBM). Si el usuario solo sabe el monto, la app calcula los títulos aproximados con el precio de ese día.
+- [x] **Valor actual = títulos × precio más reciente**, en pesos. Si el instrumento cotiza en dólares (como VOO), se convierte con el **tipo de cambio FIX de Banxico** del día. Mostrar "estimado" y la fecha y hora del precio.
+- [x] Precios actualizados una vez al día (o al abrir Apartados) con una Edge Function y `pg_cron`; se guardan en la base para no consultar de más.
+- [x] Por instrumento: lo invertido, el valor actual, la ganancia o pérdida en pesos y en %.
+- [x] "Actualizar saldo real" sigue disponible para corregir con lo que diga GBM.
+- [x] **Vender o sacar:** registrar títulos vendidos y monto recibido; calcula la ganancia realizada.
 - **Fuente de precios (preferencia del usuario: "lo que sale en Google", sin registrarse en nada):**
   1. **Recomendado:** los datos públicos de **Yahoo Finanzas** (los mismos precios que muestra Google). No requieren registro ni llave. No es un servicio oficial, así que podría dejar de funcionar algún día; en ese caso la app avisa y queda "Actualizar saldo real".
   2. **Alternativa "de Google":** la función `GOOGLEFINANCE` de Google Sheets, leída por el mismo programa de Google Apps Script que se instala para Gmail, que manda los precios a Supabase. Es exactamente el dato de Google, pero requiere una hoja de cálculo en la cuenta del usuario.
