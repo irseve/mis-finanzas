@@ -304,7 +304,19 @@ El usuario aparta dinero en distintos lugares (Nu, CETES, GBM, etc.) para no gas
   - Historial de aportaciones (fecha, monto, lugar, meta) al tocar un lugar o una meta.
 - [ ] La sugerencia mensual de cuánto apartar se mantiene; sigue sin decir **dónde** invertir.
 - Requiere migración nueva: tabla `savings_places` (nombre, tipo ahorro | inversion, color, activo) con RLS, `transactions.place_id`, y `goals` sigue para metas opcionales.
-- Por confirmar: ¿registrar cuando **sacas** dinero de un apartado (por ejemplo, retiras de Nu para un gasto)? ¿Y los **rendimientos** de las inversiones?
+- **Resuelto:** el nombre **Apartados** fue aprobado por el usuario.
+- [ ] **Sacar dinero de un apartado** (aprobado): movimiento "Sacar de apartado" con monto, lugar y meta opcional. Resta del total de ese lugar y de la meta. No cuenta como ingreso; si luego se gasta, ese gasto se registra aparte con su método.
+
+### L. Rendimientos estimados de los apartados
+Objetivo: que el saldo de cada lugar crezca solo con un **estimado** de sus rendimientos, sabiendo que no es exacto.
+- [ ] Cada lugar tiene un **rendimiento anual estimado (%)**. La app calcula el saldo estimado con interés compuesto diario sobre cada aportación desde su fecha (restando lo que se sacó).
+- [ ] **Origen de la tasa**, según el lugar:
+  - **CETES:** automático con la tasa oficial publicada por **Banxico** (API SIE, gratuita; requiere registrar un token de consulta y guardarlo como secreto en Supabase). Se actualiza sola una vez al día con `pg_cron`. Plazos: 28, 91, 182 y 364 días.
+  - **Nu, cuentas de ahorro y otras cajitas:** la tasa es pública, pero no hay un servicio oficial para consultarla. El usuario la escribe (por ejemplo 9% anual) y la cambia cuando el banco la cambie. Mostrar la fecha de la última actualización.
+  - **GBM, acciones y fondos:** el rendimiento depende de lo que se compre y cambia todos los días. No se estima automáticamente; el usuario usa "Actualizar saldo real" (abajo). Opcional a futuro: precios de fondos o ETF si se encuentra una fuente gratuita y confiable.
+- [ ] **Actualizar saldo real:** el usuario escribe cuánto dice su app de Nu, GBM, etc. La diferencia se registra como **rendimiento** (o pérdida) y el estimado vuelve a partir de ese saldo.
+- [ ] Mostrar siempre "**estimado**" junto al saldo calculado, y el rendimiento acumulado por lugar y en total (ahorro vs. inversión).
+- Pendiente de decidir: ¿descontar el ISR retenido sobre intereses o mostrar rendimiento bruto?
 
 ### K. Quitar la pestaña Fijos (aprobado por el usuario)
 Objetivo: no ver lo mismo en varios lados ni tener botones de más.
