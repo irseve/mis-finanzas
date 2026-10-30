@@ -213,7 +213,7 @@ Dictados por el usuario el 2026-10-30. Solo anotados; **no ejecutar** hasta que 
 ### Decisiones confirmadas por el usuario
 - **Frecuencias, contadas desde la fecha del registro:**
   - Quincenal: cada 15 días desde la fecha del registro, **excepto el salario** (ver abajo).
-  - **Quincena de salario (estilo México):** los pagos de salario son **el día 15 y el último día de cada mes** (28, 29, 30 o 31, según el mes). **No** sumar 15 días, para que no se desfase en meses de 31 días ni en febrero. Usar esta regla de forma predeterminada en la categoría Salario.
+  - **Quincena de salario (estilo México):** los pagos de salario son **el día 15 y el último día de cada mes** (28, 29, 30 o 31, según el mes). **No** sumar 15 días, para que no se desfase en meses de 31 días ni en febrero. Esta regla aplica **solo al salario**; los demás fijos quincenales van cada 15 días desde la fecha del registro. Si el 15 o el último día cae en fin de semana o día festivo, el aviso llega **ese mismo día** (no se adelanta).
   - Mensual: el mismo día de cada mes. Por ejemplo, un cobro registrado el día 13 se repite el 13 de cada mes.
   - Semanal y diario: igual, a partir de la fecha del registro.
 - **Total del mes en Fijos:** solo **suma lo ya registrado** en el mes, sin promedios ni equivalentes. Lo **proyectado** según los fijos configurados se muestra aparte (Fase 3, "esperado del mes").
