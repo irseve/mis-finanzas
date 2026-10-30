@@ -9,8 +9,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Finanzas">
 <link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png?v=1.7.0">
+<link rel="icon" href="icon-192.png?v=1.7.0">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -179,6 +179,8 @@ label.f input,label.f select{background:var(--surface-2);border:1px solid var(--
 .login .card{width:min(380px,100%);display:grid;gap:12px}
 .login h1{margin:0 0 4px;font-size:1.6rem;letter-spacing:-.02em}
 .login .err{color:var(--warn);font-size:.9rem;min-height:1.2em}
+.login .err.ok{color:var(--income)}
+.linkbtn{border:0;background:transparent;color:var(--brand);font-weight:600;cursor:pointer;min-height:44px;text-decoration:underline;text-underline-offset:3px}
 .update-bar{position:fixed;left:12px;right:12px;top:calc(10px + env(safe-area-inset-top,0px));z-index:60;max-width:460px;margin:0 auto;display:flex;align-items:center;gap:10px;background:var(--ink);color:var(--bg);border-radius:14px;padding:8px 8px 8px 16px;box-shadow:0 6px 18px rgba(0,0,0,.2);font-size:.92rem;font-weight:600}
 .update-bar span{flex:1}
 .update-bar button{border:0;border-radius:10px;min-height:44px;cursor:pointer;font-weight:700}
@@ -232,6 +234,7 @@ label.f input,label.f select{background:var(--surface-2);border:1px solid var(--
     <div class="err" id="loginErr" role="alert"></div>
     <button class="btn" id="signin">Iniciar sesión</button>
     <button class="btn ghost" id="signup">Crear cuenta</button>
+    <button class="linkbtn" id="forgot">¿Olvidaste tu contraseña?</button>
   </div>
 </div>
 <div id="app" hidden>
@@ -263,14 +266,14 @@ label.f input,label.f select{background:var(--surface-2);border:1px solid var(--
 <div class="update-bar" id="updateBar" role="status" hidden><span>Hay una nueva versión</span><button class="go" id="updateGo">Actualizar</button><button class="x" id="updateX" aria-label="Cerrar aviso">×</button></div>
 <dialog id="dlg"><form method="dialog" id="dlgForm" onsubmit="return false"></form></dialog>
 
-<script src="config.js?v=1.6.0"></script>
+<script src="config.js?v=1.7.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
 <script>
 (() => {
 "use strict";
 // ---------- versión ----------
 // Al subir cambios: actualiza APP_VERSION, APP_DATE, version.json y el ?v= de config.js.
-const APP_VERSION = "1.6.0";
+const APP_VERSION = "1.7.0";
 const APP_DATE = "2026-10-30";
 
 // ---------- utilities ----------
@@ -490,6 +493,47 @@ async function doAuth(signup) {
     return;
   }
   if (signup && !data.session) $("#loginErr").textContent = "Cuenta creada. Revisa tu correo para confirmarla y luego inicia sesión.";
+}
+
+// ---------- contraseña ----------
+// Envía el correo de recuperación. El enlace regresa a esta misma página (debe estar en Supabase → Authentication → URL Configuration).
+async function forgotPassword() {
+  const email = $("#email").value.trim(), err = $("#loginErr");
+  err.classList.remove("ok");
+  if (!email) { err.textContent = "Escribe tu correo arriba y vuelve a tocar \"¿Olvidaste tu contraseña?\"."; $("#email").focus(); return; }
+  $("#forgot").disabled = true;
+  const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: location.origin + location.pathname });
+  $("#forgot").disabled = false;
+  if (error) { err.textContent = /rate|seconds|too many/i.test(error.message) ? "Ya enviamos un correo hace poco. Espera un momento antes de pedir otro." : "No se pudo enviar el correo: " + error.message; return; }
+  err.classList.add("ok");
+  err.textContent = "Listo. Si ese correo tiene cuenta, te llegará un enlace para crear una contraseña nueva. Revisa también tu carpeta de spam.";
+}
+// Pide la contraseña nueva (después de abrir el enlace del correo, o desde Ajustes → Cuenta).
+function openNewPassword(fromEmail) {
+  openDialog(`
+    <div class="mhead">${fromEmail ? "Crea tu nueva contraseña" : "Cambiar contraseña"}</div>
+    <div class="mbody">
+      ${fromEmail ? `<div class="sub">Abriste el enlace de recuperación. Escribe tu contraseña nueva.</div>` : ""}
+      <label class="f">Contraseña nueva<input name="p1" type="password" autocomplete="new-password" minlength="6"></label>
+      <label class="f">Repítela<input name="p2" type="password" autocomplete="new-password" minlength="6"></label>
+      <div class="sub" data-err style="color:var(--warn)"></div>
+    </div>
+    <div class="mfoot"><span class="spacer"></span><button type="button" class="btn ghost" data-close>Cancelar</button><button type="button" class="btn" data-save>Guardar contraseña</button></div>`,
+  f => {
+    const e = f.querySelector("[data-err]");
+    f.querySelector("[data-close]").onclick = close;
+    f.querySelector("[data-save]").onclick = async () => {
+      if (f.p1.value.length < 6) { e.textContent = "Usa al menos 6 caracteres."; f.p1.focus(); return; }
+      if (f.p1.value !== f.p2.value) { e.textContent = "Las dos contraseñas no coinciden."; f.p2.focus(); return; }
+      const b = f.querySelector("[data-save]"); b.disabled = true;
+      const { error } = await sb.auth.updateUser({ password: f.p1.value });
+      b.disabled = false;
+      if (error) { e.textContent = /different|same/i.test(error.message) ? "La contraseña nueva debe ser distinta a la anterior." : "No se pudo guardar: " + error.message; return; }
+      close(); toast("Contraseña actualizada");
+      if (fromEmail) history.replaceState(null, "", location.pathname);
+    };
+    setTimeout(() => f.p1.focus(), 50);
+  });
 }
 
 // ---------- derived data ----------
@@ -858,7 +902,7 @@ function viewCats(v) {
       <h2>Moneda</h2>
       <select id="cur" class="num" style="background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:10px 12px">${CURRENCIES.map(c => `<option ${c === S.currency ? "selected" : ""}>${c}</option>`).join("")}</select>
       <h2 style="margin-top:24px">Cuenta</h2>
-      <button class="btn ghost sm" id="logout">Cerrar sesión</button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost sm" id="chpass">Cambiar contraseña</button><button class="btn ghost sm" id="logout">Cerrar sesión</button></div>
       <h2 style="margin-top:24px">Opciones avanzadas</h2>
       <div class="sub num" style="margin-bottom:10px">Versión instalada: ${APP_VERSION} · ${APP_DATE}</div>
       <button class="btn ghost" id="checkUpd" style="min-height:44px">Buscar actualizaciones</button>
@@ -876,6 +920,7 @@ function viewCats(v) {
   v.querySelectorAll("[data-palette]").forEach(b => b.onclick = () => { applyTheme(b.dataset.palette, mode); render(); });
   v.querySelectorAll("[data-mode]").forEach(b => b.onclick = () => { applyTheme(pal, b.dataset.mode); render(); });
   $("#cur").onchange = e => Store.saveCurrency(e.target.value);
+  $("#chpass").onclick = () => openNewPassword(false);
   $("#logout").onclick = async () => { if (confirm("¿Cerrar sesión en este dispositivo?")) { if (channel) sb.removeChannel(channel); await sb.auth.signOut(); S.ready = false; } };
 }
 
@@ -1220,6 +1265,7 @@ dlg.addEventListener("click", e => { if (e.target === dlg) close(); });
 $("#signin").onclick = () => doAuth(false);
 $("#signup").onclick = () => doAuth(true);
 $("#password").addEventListener("keydown", e => { if (e.key === "Enter") doAuth(false); });
+$("#forgot").onclick = forgotPassword;
 document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && userId) refresh(true); });
 window.addEventListener("online", () => userId && refresh(true));
 window.addEventListener("offline", () => setSync("off", "Sin conexión"));
@@ -1246,7 +1292,11 @@ document.addEventListener("visibilitychange", () => { if (document.visibilitySta
 checkForUpdate();
 
 sb.auth.getSession().then(({ data }) => onSession(data.session));
-sb.auth.onAuthStateChange((_e, session) => { setTimeout(() => { if (!session) { userId = null; showLogin(); } else onSession(session); }, 0); });
+sb.auth.onAuthStateChange((event, session) => { setTimeout(() => {
+  if (!session) { userId = null; showLogin(); return; }
+  onSession(session);
+  if (event === "PASSWORD_RECOVERY") openNewPassword(true);
+}, 0); });
 })();
 
 </script>
