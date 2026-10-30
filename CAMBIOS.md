@@ -301,7 +301,7 @@ Hoy Ajustes muestra todas las secciones abiertas una tras otra (categorías, mé
 - [ ] La sugerencia de cuánto apartar al mes se mantiene; sigue sin decir **dónde** invertir.
 - Requiere migración nueva: columnas `goals.kind` (ahorro | inversion) y `goals.place_id`, y tabla de lugares (`savings_places`) con RLS; opcional `transactions.place_id` para la excepción por aportación.
 
-### K. Propuesta de Claude: quitar la pestaña Fijos (pendiente de que el usuario confirme)
+### K. Quitar la pestaña Fijos (aprobado por el usuario)
 Objetivo: no ver lo mismo en varios lados ni tener botones de más.
 - [ ] **Quitar la pestaña Fijos** de la barra inferior.
 - [ ] En **Resumen**, una sola tarjeta **"Fijos del mes"** que junta lo que hoy está repetido (Gastos fijos, Fijos vs. variables, Próximos pagos y la pestaña Fijos): pagado, por pagar y proyectado, y los próximos pagos con "Marcar pagado".
