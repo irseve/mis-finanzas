@@ -334,5 +334,9 @@ Objetivo: no ver lo mismo en varios lados ni tener botones de más.
 - [ ] Por instrumento: lo invertido, el valor actual, la ganancia o pérdida en pesos y en %.
 - [ ] "Actualizar saldo real" sigue disponible para corregir con lo que diga GBM.
 - [ ] **Vender o sacar:** registrar títulos vendidos y monto recibido; calcula la ganancia realizada.
-- Fuente de precios por decidir: servicio gratuito con llave propia (por ejemplo Twelve Data, Finnhub o Alpha Vantage, con límites diarios) guardada como secreto en Supabase. Validar que tenga los instrumentos que usa el usuario (ETF de EUA vía SIC y emisoras de la BMV) antes de elegir. Ninguno es oficial de GBM; los valores son aproximados.
+- **Fuente de precios (preferencia del usuario: "lo que sale en Google", sin registrarse en nada):**
+  1. **Recomendado:** los datos públicos de **Yahoo Finanzas** (los mismos precios que muestra Google). No requieren registro ni llave. No es un servicio oficial, así que podría dejar de funcionar algún día; en ese caso la app avisa y queda "Actualizar saldo real".
+  2. **Alternativa "de Google":** la función `GOOGLEFINANCE` de Google Sheets, leída por el mismo programa de Google Apps Script que se instala para Gmail, que manda los precios a Supabase. Es exactamente el dato de Google, pero requiere una hoja de cálculo en la cuenta del usuario.
+  3. Servicios con llave gratuita (Twelve Data, Finnhub, Alpha Vantage) solo si las dos anteriores fallan.
+  - Validar antes de construir que VOO (y lo que use el usuario) se obtenga bien. Ninguna fuente es de GBM; los valores son aproximados.
 - La app muestra valores; **no recomienda** en qué invertir.
