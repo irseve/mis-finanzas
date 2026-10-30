@@ -5,7 +5,16 @@
 // Autorización: "Authorization: Bearer <token personal>" generado en Ajustes → Siri y correo.
 import { createClient } from "npm:@supabase/supabase-js@2.117.3";
 
-const db = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, { auth: { persistSession: false } });
+// Llave de servicio: formato nuevo (sb_secret_…) si existe; si no, la clásica service_role.
+function serviceKey(): string {
+  try {
+    const keys = JSON.parse(Deno.env.get("SUPABASE_SECRET_KEYS") ?? "{}");
+    const k = keys.default ?? Object.values(keys)[0];
+    if (typeof k === "string" && k) return k;
+  } catch { /* sin llaves nuevas */ }
+  return Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+}
+const db = createClient(Deno.env.get("SUPABASE_URL")!, serviceKey(), { auth: { persistSession: false } });
 const CORS = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
