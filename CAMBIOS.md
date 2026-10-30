@@ -146,11 +146,11 @@ Problema: la app instalada en la pantalla de inicio del iPhone conserva la versi
 - [ ] Guía paso a paso en `docs/gmail.md` para instalar el script.
 
 ### Fase 9 · Rediseño visual (puntos 16 y 12)
-- [ ] **Antes de aplicar nada**, presentar 3–4 propuestas, cada una con icono, paleta en modo claro y paleta en modo oscuro, colores más llamativos que los actuales, vistas lado a lado como se verían en un iPhone. Esperar la elección del usuario.
-- [ ] Aplicar la paleta elegida con variables CSS en `:root` y `@media (prefers-color-scheme: dark)`.
-- [x] Punto 12 (parcial, v1.5.0: `theme-color` claro/oscuro ya aplicado; falta ajustarlo a la paleta nueva): que la barra de estado del iPhone combine con el tema (`theme-color` con `media` para claro y oscuro; revisar `apple-mobile-web-app-status-bar-style`).
-- [ ] Regenerar `apple-touch-icon.png`, `icon-192.png` e `icon-512.png` con el icono elegido y actualizar `manifest.json`.
-- [ ] Ajustar los iconos de la barra inferior a la nueva paleta.
+- [x] **Antes de aplicar nada**, presentar 3–4 propuestas, cada una con icono, paleta en modo claro y paleta en modo oscuro, colores más llamativos que los actuales, vistas lado a lado como se verían en un iPhone. Esperar la elección del usuario.
+- [x] *(Decisión del usuario: incluir todas como temas a elegir en Ajustes → Tema: Bosque, Esmeralda, Océano, Mandarina y Ciruela, cada uno claro/oscuro, más Apariencia automática/clara/oscura. **Regla: en todos los temas el gasto es rojo y el ingreso verde.** Hecho en v1.6.0.)* Aplicar la paleta elegida con variables CSS en `:root` y `@media (prefers-color-scheme: dark)`.
+- [x] Punto 12 (v1.6.0: `theme-color` sigue al tema y a la apariencia elegidos): que la barra de estado del iPhone combine con el tema (`theme-color` con `media` para claro y oscuro; revisar `apple-mobile-web-app-status-bar-style`).
+- [ ] *(Pendiente: el usuario aún elige el icono; debe llevar el signo de pesos $.)* Regenerar `apple-touch-icon.png`, `icon-192.png` e `icon-512.png` con el icono elegido y actualizar `manifest.json`.
+- [x] Ajustar los iconos de la barra inferior a la nueva paleta (usan el color del tema).
 
 ---
 
@@ -169,11 +169,11 @@ Problema: la app instalada en la pantalla de inicio del iPhone conserva la versi
 | 9 | Retiros de efectivo | 1 | Hecho (v1.5.0) |
 | 10 | Registro automático desde Gmail | 8 | Requiere decisión |
 | 11 | Bandeja de pendientes + notificación | 2 / 4 | Bandeja hecha (v1.5.0); falta notificación |
-| 12 | Tema claro/oscuro automático (barra de estado) | 9 | Parcial |
+| 12 | Tema claro/oscuro automático (barra de estado) | 9 | Hecho (v1.6.0) |
 | 13 | Recordatorios de pagos manuales | 1 / 4 | Pendiente |
 | 14 | Usuarios y administradores | 5 | Pendiente |
 | 15 | Botón "Probar notificación" (solo admins) | 5 | Pendiente |
-| 16 | Rediseño de icono y colores | 9 | Pendiente |
+| 16 | Rediseño de icono y colores | 9 | Temas hechos (v1.6.0); falta icono con $ |
 | 17 | Gastado vs. esperado del mes | 3 | Hecho (v1.5.0) |
 | 18 | Metas de ahorro e inversión con sugerencia | 7 | Hecho (v1.5.0); falta notificación |
 | 19 | Barra inferior más alta con iconos | — | Hecho |

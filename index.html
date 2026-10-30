@@ -4,8 +4,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Mis finanzas</title>
-<meta name="theme-color" media="(prefers-color-scheme: light)" content="#EDF2EF">
-<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#101815">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -16,27 +14,50 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script>
+// Temas: cada uno con versión clara y oscura. Regla fija en todos: gastos en rojo (--spend) e ingresos en verde (--income).
+window.THEMES = {
+  clasico:  { name:"Bosque", L:{bg:"#EDF2EF",surface:"#FFFFFF",surface2:"#F5F8F6",ink:"#17251F",muted:"#5E6E67",line:"#D5DFDA",brand:"#1F6F5C",brandInk:"#FFFFFF",spend:"#C93636",onSpend:"#FFFFFF",income:"#1E7A3C",onIncome:"#FFFFFF",warn:"#B4541A",track:"#E1E9E5"},
+                                D:{bg:"#101815",surface:"#18231F",surface2:"#1E2B26",ink:"#E6EEEA",muted:"#98A8A1",line:"#2B3A34",brand:"#4FB597",brandInk:"#0D1714",spend:"#F07575",onSpend:"#1A0B0B",income:"#5CC77E",onIncome:"#0B1A10",warn:"#E59A62",track:"#26342E"} },
+  esmeralda:{ name:"Esmeralda", L:{bg:"#EEF6F2",surface:"#FFFFFF",surface2:"#F4FAF7",ink:"#10231B",muted:"#58706A",line:"#D3E4DC",brand:"#0E9F6E",brandInk:"#FFFFFF",spend:"#DC2F3C",onSpend:"#FFFFFF",income:"#15803D",onIncome:"#FFFFFF",warn:"#E07A1F",track:"#DCEBE4"},
+                                D:{bg:"#0B1612",surface:"#13221C",surface2:"#1A2B24",ink:"#E4F1EB",muted:"#93ACA3",line:"#22362E",brand:"#34D399",brandInk:"#06140F",spend:"#F87171",onSpend:"#1A0808",income:"#4ADE80",onIncome:"#06140B",warn:"#F59E4B",track:"#1D2F28"} },
+  oceano:   { name:"Océano", L:{bg:"#EEF3FB",surface:"#FFFFFF",surface2:"#F5F8FD",ink:"#0F1B2E",muted:"#5A6880",line:"#D4DEEE",brand:"#1769F0",brandInk:"#FFFFFF",spend:"#DC2F3C",onSpend:"#FFFFFF",income:"#0F7F4D",onIncome:"#FFFFFF",warn:"#C2850A",track:"#DCE5F4"},
+                                D:{bg:"#0A111D",surface:"#121C2C",surface2:"#18243A",ink:"#E3ECFA",muted:"#93A3BD",line:"#22314A",brand:"#5B9BFF",brandInk:"#07101F",spend:"#F87171",onSpend:"#1A0808",income:"#3DD39A",onIncome:"#04150D",warn:"#FBBF24",track:"#1B2840"} },
+  mandarina:{ name:"Mandarina", L:{bg:"#FBF3EE",surface:"#FFFFFF",surface2:"#FDF8F5",ink:"#2A1810",muted:"#7A6257",line:"#EEDDD3",brand:"#E2531A",brandInk:"#FFFFFF",spend:"#C8102E",onSpend:"#FFFFFF",income:"#13784F",onIncome:"#FFFFFF",warn:"#B45309",track:"#F3E4DA"},
+                                D:{bg:"#170F0B",surface:"#231711",surface2:"#2C1E17",ink:"#F8E9E1",muted:"#B79C8F",line:"#3A2A21",brand:"#FF8A4C",brandInk:"#1C0E07",spend:"#FF6B6B",onSpend:"#1C0707",income:"#34D399",onIncome:"#04150D",warn:"#FBBF24",track:"#33231B"} },
+  ciruela:  { name:"Ciruela", L:{bg:"#F4F1FA",surface:"#FFFFFF",surface2:"#F8F6FC",ink:"#1C1530",muted:"#675F80",line:"#E0D9EE",brand:"#6D28D9",brandInk:"#FFFFFF",spend:"#D92D3A",onSpend:"#FFFFFF",income:"#15803D",onIncome:"#FFFFFF",warn:"#B45309",track:"#E8E2F4"},
+                                D:{bg:"#110D1B",surface:"#1B1529",surface2:"#221B33",ink:"#EEE8FA",muted:"#A69CC0",line:"#2E2545",brand:"#A78BFA",brandInk:"#120B22",spend:"#F87171",onSpend:"#1A0808",income:"#4ADE80",onIncome:"#06140B",warn:"#FBBF24",track:"#272038"} },
+};
+(() => {
+  const vars = (t, dark) => `--bg:${t.bg};--surface:${t.surface};--surface-2:${t.surface2};--ink:${t.ink};--muted:${t.muted};--line:${t.line};--brand:${t.brand};--brand-ink:${t.brandInk};--spend:${t.spend};--on-spend:${t.onSpend};--income:${t.income};--on-income:${t.onIncome};--warn:${t.warn};--track:${t.track};--shadow:${dark ? "none" : "0 1px 0 rgba(0,0,0,.06)"};color-scheme:${dark ? "dark" : "light"};`;
+  let css = "";
+  for (const [k, t] of Object.entries(THEMES)) {
+    const sel = k === "clasico" ? ":root" : `:root[data-palette="${k}"]`;
+    css += `${sel}{${vars(t.L)}}@media (prefers-color-scheme:dark){${sel}:not([data-theme="light"]){${vars(t.D, true)}}}${sel}[data-theme="dark"]{${vars(t.D, true)}}`;
+  }
+  const st = document.createElement("style"); st.id = "themeCss"; st.textContent = css; document.head.appendChild(st);
+  const get = k => { try { return localStorage.getItem(k) || ""; } catch { return ""; } };
+  window.applyTheme = (palette, mode) => {
+    palette = THEMES[palette] ? palette : "clasico"; mode = mode === "light" || mode === "dark" ? mode : "auto";
+    const r = document.documentElement;
+    if (palette === "clasico") r.removeAttribute("data-palette"); else r.setAttribute("data-palette", palette);
+    if (mode === "auto") r.removeAttribute("data-theme"); else r.setAttribute("data-theme", mode);
+    // Color de la barra de estado del iPhone según el tema
+    document.querySelectorAll('meta[name="theme-color"]').forEach(m => m.remove());
+    const add = (c, media) => { const m = document.createElement("meta"); m.name = "theme-color"; m.content = c; if (media) m.media = media; document.head.appendChild(m); };
+    const t = THEMES[palette];
+    if (mode === "auto") { add(t.L.bg, "(prefers-color-scheme: light)"); add(t.D.bg, "(prefers-color-scheme: dark)"); } else add(mode === "dark" ? t.D.bg : t.L.bg);
+    try { localStorage.setItem("finanzas.palette", palette); localStorage.setItem("finanzas.mode", mode); } catch {}
+  };
+  applyTheme(get("finanzas.palette"), get("finanzas.mode"));
+})();
+</script>
 <style>
 :root{
-  --bg:#EDF2EF; --surface:#FFFFFF; --surface-2:#F5F8F6; --ink:#17251F; --muted:#5E6E67; --line:#D5DFDA;
-  --brand:#1F6F5C; --brand-ink:#FFFFFF; --spend:#8A3B6E; --income:#2A7A3F; --warn:#B4541A; --track:#E1E9E5;
-  --shadow:0 1px 0 rgba(23,37,31,.06);
   color-scheme:light;
   box-sizing:border-box;
   padding-top:env(safe-area-inset-top,0px);
   padding-bottom:env(safe-area-inset-bottom,0px);
-}
-@media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"]){
-    --bg:#101815; --surface:#18231F; --surface-2:#1E2B26; --ink:#E6EEEA; --muted:#98A8A1; --line:#2B3A34;
-    --brand:#4FB597; --brand-ink:#0D1714; --spend:#D57FB4; --income:#6CC484; --warn:#E59A62; --track:#26342E;
-    --shadow:none; color-scheme:dark;
-  }
-}
-:root[data-theme="dark"]{
-  --bg:#101815; --surface:#18231F; --surface-2:#1E2B26; --ink:#E6EEEA; --muted:#98A8A1; --line:#2B3A34;
-  --brand:#4FB597; --brand-ink:#0D1714; --spend:#D57FB4; --income:#6CC484; --warn:#E59A62; --track:#26342E;
-  --shadow:none; color-scheme:dark;
 }
 *,*::before,*::after{box-sizing:inherit}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
@@ -121,7 +142,7 @@ svg text{fill:var(--muted);font-size:11px;font-family:inherit}
 .btn:disabled{opacity:.5;cursor:default}
 :focus-visible{outline:2px solid var(--brand);outline-offset:2px}
 
-.fab{position:fixed;right:20px;bottom:calc(24px + env(safe-area-inset-bottom,0px));z-index:21;width:58px;height:58px;border-radius:18px;border:0;background:var(--brand);color:var(--brand-ink);font-size:2rem;line-height:1;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.18)}
+.fab{position:fixed;right:20px;bottom:calc(24px + env(safe-area-inset-bottom,0px));z-index:21;width:58px;height:58px;border-radius:18px;border:0;background:var(--spend);color:var(--on-spend);font-size:2rem;line-height:1;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.18)}
 @media (max-width:720px){.fab{bottom:calc(102px + env(safe-area-inset-bottom,0px))}}
 
 .fixed-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--line);flex-wrap:wrap}
@@ -169,7 +190,16 @@ label.f input,label.f select{background:var(--surface-2);border:1px solid var(--
 .pendbtn b{display:inline-block;min-width:20px;margin-left:4px;background:rgba(255,255,255,.25);border-radius:999px;padding:1px 6px}
 .pendcard{display:grid;gap:4px;text-align:left;width:100%;cursor:pointer;border-color:var(--warn);color:var(--ink);font:inherit}
 .quick{display:flex;gap:8px}
-.btn.inc{background:var(--income);color:#fff}
+.btn.inc{background:var(--income);color:var(--on-income)}
+.btn.spend{background:var(--spend);color:var(--on-spend)}
+.seg button[data-type="gasto"][aria-pressed="true"]{background:var(--spend);color:var(--on-spend)}
+.seg button[data-type="ingreso"][aria-pressed="true"]{background:var(--income);color:var(--on-income)}
+.themes{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.themes button{display:grid;gap:8px;text-align:left;border:2px solid var(--line);border-radius:14px;padding:10px;cursor:pointer;min-height:44px}
+.themes button[aria-pressed="true"]{border-color:var(--ink)}
+.themes .chips{display:flex;gap:4px}
+.themes .chips i{width:22px;height:22px;border-radius:7px;display:block}
+.themes b{font-size:.92rem}
 .expect{margin-top:16px}
 .strip.two{margin:0 0 10px;height:22px}
 .strip i.todo,.sw.todo{background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--spend) 45%,transparent) 0 5px,color-mix(in srgb,var(--spend) 18%,transparent) 5px 10px)}
@@ -233,14 +263,14 @@ label.f input,label.f select{background:var(--surface-2);border:1px solid var(--
 <div class="update-bar" id="updateBar" role="status" hidden><span>Hay una nueva versión</span><button class="go" id="updateGo">Actualizar</button><button class="x" id="updateX" aria-label="Cerrar aviso">×</button></div>
 <dialog id="dlg"><form method="dialog" id="dlgForm" onsubmit="return false"></form></dialog>
 
-<script src="config.js?v=1.5.0"></script>
+<script src="config.js?v=1.6.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
 <script>
 (() => {
 "use strict";
 // ---------- versión ----------
 // Al subir cambios: actualiza APP_VERSION, APP_DATE, version.json y el ?v= de config.js.
-const APP_VERSION = "1.5.0";
+const APP_VERSION = "1.6.0";
 const APP_DATE = "2026-10-30";
 
 // ---------- utilities ----------
@@ -606,7 +636,7 @@ function viewResumen(v) {
           <div class="spent num">${fmt(s.gasto)}</div>
           ${budgetTotal ? `<div class="sub num" style="margin-top:6px">${Math.round(s.gasto/budgetTotal*100)}% de tu presupuesto de ${fmt(budgetTotal)}</div>` : ""}
         </div>
-        <div class="quick"><button class="btn sm" data-act="add-gasto">+ Gasto</button><button class="btn sm inc" data-act="add-ingreso">+ Ingreso</button></div>
+        <div class="quick"><button class="btn sm spend" data-act="add-gasto">+ Gasto</button><button class="btn sm inc" data-act="add-ingreso">+ Ingreso</button></div>
       </div>
       <div class="expect" aria-label="Gastado contra esperado del mes">
         <div class="strip two"><i style="flex-grow:${s.gasto};background:var(--spend)"></i><i class="todo" style="flex-grow:${o.porPagar}"></i></div>
@@ -640,7 +670,7 @@ function viewResumen(v) {
 function planRow(it) {
   const c = cat(it.r ? it.r.categoryId : it.pe?.categoryId), inc = it.type === "ingreso";
   const btn = it.status === "confirmar" ? `<button class="btn sm" data-openpend="${esc(it.pe.id)}">Confirmar</button>`
-    : it.status === "porpagar" ? `<button class="btn sm ${inc ? "inc" : ""}" data-payocc="${esc(it.r.id)}|${it.date}">${inc ? "Marcar recibido" : "Marcar pagado"}</button>`
+    : it.status === "porpagar" ? `<button class="btn sm ${inc ? "inc" : "spend"}" data-payocc="${esc(it.r.id)}|${it.date}">${inc ? "Marcar recibido" : "Marcar pagado"}</button>`
     : it.status === "pagado" ? `<span class="pill ok">${inc ? "Recibido" : "Pagado"}</span>` : `<span class="pill">Omitido</span>`;
   return `<div class="fixed-row">
     <span class="sw" style="background:${c.color};width:12px;height:12px"></span>
@@ -734,7 +764,7 @@ function viewFijos(v) {
     const its = plan.filter(it => it.r === r), done = its.filter(it => it.status === "pagado").length, next = its.find(isOpen), c = cat(r.categoryId), inc = r.type === "ingreso";
     const state = !r.active ? `<span class="pill">Pausado</span>` : !its.length ? `<span class="sub">Sin fechas este mes</span>`
       : next ? (next.status === "confirmar" ? `<button class="btn sm" data-openpend="${esc(next.pe.id)}">Confirmar · ${dShort(next.date)}</button>`
-        : `<button class="btn sm ${inc ? "inc" : ""}" data-payocc="${esc(r.id)}|${next.date}">${inc ? "Marcar recibido" : "Marcar pagado"} · ${dShort(next.date)}</button>`)
+        : `<button class="btn sm ${inc ? "inc" : "spend"}" data-payocc="${esc(r.id)}|${next.date}">${inc ? "Marcar recibido" : "Marcar pagado"} · ${dShort(next.date)}</button>`)
       : `<span class="pill ok">${inc ? "Recibido" : "Pagado"}</span>`;
     return `<div class="fixed-row">
       <span class="sw" style="background:${c.color};width:12px;height:12px"></span>
@@ -798,6 +828,8 @@ function viewPend(v) {
 }
 
 function viewCats(v) {
+  const pal = document.documentElement.dataset.palette || "clasico", mode = document.documentElement.dataset.theme || "auto";
+  const dark = mode === "dark" || (mode === "auto" && matchMedia("(prefers-color-scheme: dark)").matches);
   const sec = kind => catsOf(kind).map(c => `<div class="fixed-row">
       <span class="sw" style="background:${c.color};width:14px;height:14px"></span>
       <div class="mid"><b>${esc(c.name)}</b>${kind === "gasto" ? `<div class="sub num">${c.budget ? "Presupuesto " + fmt(c.budget) + " al mes" : "Sin presupuesto"}</div>` : ""}</div>
@@ -814,6 +846,14 @@ function viewCats(v) {
     <section class="card">${head("Categorías de gasto", `<button class="btn sm" data-newcat="gasto">Nueva</button>`)}${sec("gasto")}</section>
     <section class="card">${head("Categorías de ingreso", `<button class="btn sm" data-newcat="ingreso">Nueva</button>`)}${sec("ingreso")}</section>
     <section class="card">${head("Métodos de pago", `<button class="btn sm" data-act="newmethod">Nuevo</button>`)}${meth || `<div class="sub">Sin métodos de pago.</div>`}</section>
+    <section class="card">
+      <h2>Tema</h2>
+      <div class="themes" role="group" aria-label="Tema de colores">${Object.entries(THEMES).map(([k, t]) => { const c = dark ? t.D : t.L;
+        return `<button type="button" data-palette="${k}" aria-pressed="${k === pal}" style="background:${c.bg};color:${c.ink}"><b>${esc(t.name)}</b><span class="chips"><i style="background:${c.brand}"></i><i style="background:${c.spend}"></i><i style="background:${c.income}"></i></span></button>`; }).join("")}</div>
+      <h2 style="margin-top:20px">Apariencia</h2>
+      <div class="seg" role="group" aria-label="Apariencia">${[["auto","Automática"],["light","Clara"],["dark","Oscura"]].map(([k, l]) => `<button type="button" data-mode="${k}" aria-pressed="${k === mode}">${l}</button>`).join("")}</div>
+      <div class="sub" style="margin-top:6px">Automática sigue el modo claro u oscuro de tu iPhone. En todos los temas los gastos van en rojo y los ingresos en verde.</div>
+    </section>
     <section class="card">
       <h2>Moneda</h2>
       <select id="cur" class="num" style="background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:10px 12px">${CURRENCIES.map(c => `<option ${c === S.currency ? "selected" : ""}>${c}</option>`).join("")}</select>
@@ -833,6 +873,8 @@ function viewCats(v) {
     } catch (err) { toast("No se pudo revisar. Verifica tu conexión."); }
     b.disabled = false; b.textContent = "Buscar actualizaciones";
   };
+  v.querySelectorAll("[data-palette]").forEach(b => b.onclick = () => { applyTheme(b.dataset.palette, mode); render(); });
+  v.querySelectorAll("[data-mode]").forEach(b => b.onclick = () => { applyTheme(pal, b.dataset.mode); render(); });
   $("#cur").onchange = e => Store.saveCurrency(e.target.value);
   $("#logout").onclick = async () => { if (confirm("¿Cerrar sesión en este dispositivo?")) { if (channel) sb.removeChannel(channel); await sb.auth.signOut(); S.ready = false; } };
 }
@@ -918,6 +960,7 @@ function openTx(t, preset = {}) {
       show("retiro", type === "retiro"); show("fijo", cats);
       if (cats) { const keep = catsOf(type).some(c => c.id === f.categoryId.value) ? f.categoryId.value : t.type === type ? t.categoryId : catsOf(type)[0]?.id; f.categoryId.innerHTML = catOptions(type, keep); }
       setMethods(); setFreq();
+      const sv = f.querySelector("[data-save]"); sv.classList.toggle("spend", type === "gasto"); sv.classList.toggle("inc", type === "ingreso");
       const fl = f.querySelector("[data-fijolabel]"); if (fl) fl.textContent = type === "ingreso" ? "Es un ingreso fijo (se repite)" : "Es un gasto fijo (se repite)";
     };
     apply();
@@ -969,7 +1012,7 @@ function openPending(p) {
       <label class="f">Fecha<input name="date" type="date" value="${esc(p.date)}"></label>
       <label class="f">Nota<input name="note" type="text" maxlength="120" value="${esc(p.note)}"></label>
     </div>
-    <div class="mfoot"><button type="button" class="btn danger" data-discard>Descartar</button><span class="spacer"></span><button type="button" class="btn ghost" data-close>Después</button><button type="button" class="btn" data-save>Aceptar</button></div>`,
+    <div class="mfoot"><button type="button" class="btn danger" data-discard>Descartar</button><span class="spacer"></span><button type="button" class="btn ghost" data-close>Después</button><button type="button" class="btn ${type === "gasto" ? "spend" : type === "ingreso" ? "inc" : ""}" data-save>Aceptar</button></div>`,
   f => {
     if (f.categoryId) inlineNew(f, f.categoryId, () => type);
     inlineNew(f, f.methodId, "method");
