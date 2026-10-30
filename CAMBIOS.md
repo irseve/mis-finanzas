@@ -313,7 +313,7 @@ Objetivo: que el saldo de cada lugar crezca solo con un **estimado** de sus rend
 - [ ] **Origen de la tasa**, según el lugar:
   - **CETES:** automático con la tasa oficial publicada por **Banxico** (API SIE, gratuita; requiere registrar un token de consulta y guardarlo como secreto en Supabase). Se actualiza sola una vez al día con `pg_cron`. Plazos: 28, 91, 182 y 364 días.
   - **Nu, cuentas de ahorro y otras cajitas:** la tasa es pública, pero no hay un servicio oficial para consultarla. El usuario la escribe (por ejemplo 9% anual) y la cambia cuando el banco la cambie. Mostrar la fecha de la última actualización.
-  - **GBM, acciones y fondos:** el rendimiento depende de lo que se compre y cambia todos los días. No se estima automáticamente; el usuario usa "Actualizar saldo real" (abajo). Opcional a futuro: precios de fondos o ETF si se encuentra una fuente gratuita y confiable.
+  - **GBM, acciones, ETF y fondos:** se ligan al **instrumento** (ver punto M) para calcular el valor con precios de mercado.
 - [ ] **Actualizar saldo real:** el usuario escribe cuánto dice su app de Nu, GBM, etc. La diferencia se registra como **rendimiento** (o pérdida) y el estimado vuelve a partir de ese saldo.
 - [ ] Mostrar siempre "**estimado**" junto al saldo calculado, y el rendimiento acumulado por lugar y en total (ahorro vs. inversión).
 - Pendiente de decidir: ¿descontar el ISR retenido sobre intereses o mostrar rendimiento bruto?
@@ -325,3 +325,14 @@ Objetivo: no ver lo mismo en varios lados ni tener botones de más.
 - [ ] Al tocar esa tarjeta se abre el **detalle de fijos**: la lista completa agrupada por frecuencia, donde se edita, pausa o elimina cada fijo.
 - [ ] La barra inferior queda: **Resumen · Movimientos · Apartados · Ajustes**. Apartados ocupa el lugar de Fijos porque es información distinta (ahorro e inversión) que hoy está escondida al fondo del Resumen.
 - [ ] En Movimientos, filtro rápido "Solo fijos" para ver los pagos de fijos registrados.
+
+### M. Inversiones ligadas a un instrumento (por ejemplo VOO, S&P 500, en GBM)
+- [ ] Al apartar dinero en un lugar de tipo Inversión, opción **"¿En qué instrumento?"** con un **buscador** por nombre o clave de pizarra (por ejemplo `VOO`, `IVVPESO`, `NAFTRAC`, una acción como `AAPL`).
+- [ ] En cada compra se registra el **número de títulos** (como lo muestra GBM). Si el usuario solo sabe el monto, la app calcula los títulos aproximados con el precio de ese día.
+- [ ] **Valor actual = títulos × precio más reciente**, en pesos. Si el instrumento cotiza en dólares (como VOO), se convierte con el **tipo de cambio FIX de Banxico** del día. Mostrar "estimado" y la fecha y hora del precio.
+- [ ] Precios actualizados una vez al día (o al abrir Apartados) con una Edge Function y `pg_cron`; se guardan en la base para no consultar de más.
+- [ ] Por instrumento: lo invertido, el valor actual, la ganancia o pérdida en pesos y en %.
+- [ ] "Actualizar saldo real" sigue disponible para corregir con lo que diga GBM.
+- [ ] **Vender o sacar:** registrar títulos vendidos y monto recibido; calcula la ganancia realizada.
+- Fuente de precios por decidir: servicio gratuito con llave propia (por ejemplo Twelve Data, Finnhub o Alpha Vantage, con límites diarios) guardada como secreto en Supabase. Validar que tenga los instrumentos que usa el usuario (ETF de EUA vía SIC y emisoras de la BMV) antes de elegir. Ninguno es oficial de GBM; los valores son aproximados.
+- La app muestra valores; **no recomienda** en qué invertir.
