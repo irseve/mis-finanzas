@@ -270,7 +270,7 @@ Hoy hay muchos lugares para agregar: el botón flotante **+**, "+ Gasto" y "+ In
 - [ ] Botones que **no** son para agregar movimientos se quedan: "Marcar pagado", "Confirmar", "Editar", y en Ajustes "Nueva categoría", "Nuevo método", etc.
 - Por confirmar con el usuario:
   - ~~En Fijos, ¿quitar también "Nuevo fijo"?~~ **Resuelto:** sí. Todo se agrega con el +, que permite marcar "Es fijo" y elegir la categoría.
-  - En Metas, ¿quitar "Aportar"? (Se aportaría con + → Ahorro.)
+  - ~~En Metas, ¿quitar "Aportar"?~~ **Resuelto:** sí. Cada aportación se hace con **+ → Ahorro**; la sección de metas se queda para consultar.
   - ~~Color del +~~ **Resuelto:** el + usa el **color principal del tema** (ya no rojo). Dentro del formulario, Gasto sigue en rojo e Ingreso en verde.
 - [ ] **Pestaña Fijos solo informativa:** sin botón "Nuevo fijo" ni "Registrar los pendientes del mes". Muestra el resumen (pagado, proyectado, por frecuencia) y la lista de fijos. Se conserva tocar un fijo para **editarlo, pausarlo o eliminarlo**, porque es el único lugar donde se administran.
 - Por confirmar: el usuario comentó que "en la pantalla principal también pone gastos" (frase incompleta). Posible duplicado entre Resumen (Próximos pagos, Gastos fijos, Fijos vs. variables) y la pestaña Fijos. Preguntar qué quiere quitar o juntar.
@@ -290,3 +290,21 @@ Hoy Ajustes muestra todas las secciones abiertas una tras otra (categorías, mé
   8. **Acerca de:** versión instalada y "Buscar actualizaciones".
 - [ ] La app recuerda en qué grupo estabas si cambias de pestaña y regresas.
 - **Resuelto:** pantallas separadas, con esos grupos y ese orden (aprobado por el usuario).
+
+### J. Metas: ahorro e inversión, y dónde está el dinero
+- [ ] Se conserva la sección de **Metas** para consultar; sin botón "Aportar" (todo con **+ → Ahorro**).
+- [ ] Cada meta muestra el **historial de sus aportaciones** (fecha, monto, nota) y el total acumulado contra el objetivo.
+- [ ] Cada meta tiene un **tipo: Ahorro o Inversión**.
+- [ ] Cada meta indica **dónde** está el dinero (por ejemplo: cuenta de ahorro, Nu, CETES, GBM, fondo, efectivo). Lista editable, como los métodos de pago, con "+ Agregar nuevo" ahí mismo.
+- [ ] En el formulario de + → Ahorro: elegir la meta; el tipo y el lugar se toman de la meta. Propuesta: permitir cambiar el lugar en una aportación concreta si ese dinero fue a otro lado.
+- [ ] Resumen de metas: total en **ahorro** y total en **inversión**, y desglose por lugar.
+- [ ] La sugerencia de cuánto apartar al mes se mantiene; sigue sin decir **dónde** invertir.
+- Requiere migración nueva: columnas `goals.kind` (ahorro | inversion) y `goals.place_id`, y tabla de lugares (`savings_places`) con RLS; opcional `transactions.place_id` para la excepción por aportación.
+
+### K. Propuesta de Claude: quitar la pestaña Fijos (pendiente de que el usuario confirme)
+Objetivo: no ver lo mismo en varios lados ni tener botones de más.
+- [ ] **Quitar la pestaña Fijos** de la barra inferior.
+- [ ] En **Resumen**, una sola tarjeta **"Fijos del mes"** que junta lo que hoy está repetido (Gastos fijos, Fijos vs. variables, Próximos pagos y la pestaña Fijos): pagado, por pagar y proyectado, y los próximos pagos con "Marcar pagado".
+- [ ] Al tocar esa tarjeta se abre el **detalle de fijos**: la lista completa agrupada por frecuencia, donde se edita, pausa o elimina cada fijo.
+- [ ] La barra inferior queda: **Resumen · Movimientos · Metas · Ajustes**. Metas ocupa el lugar de Fijos porque es información distinta (ahorro e inversión) que hoy está escondida al fondo del Resumen.
+- [ ] En Movimientos, filtro rápido "Solo fijos" para ver los pagos de fijos registrados.
