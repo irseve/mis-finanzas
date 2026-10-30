@@ -205,7 +205,15 @@ Dictados por el usuario el 2026-10-30. Solo anotados; **no ejecutar** hasta que 
 - [ ] Preguntar **a qué categoría moverlos**: elegir una existente (por ejemplo "Otros") o **crear una categoría nueva** en ese momento.
 - [ ] Solo después de reasignar se elimina la categoría. Nunca se borran movimientos.
 
-### Dudas por confirmar
-- "Quincenal": ¿cada 15 días desde la fecha del registro, o los días 15 y último de cada mes?
-- Total al mes de fijos no mensuales: ¿calcular un equivalente mensual (por ejemplo semanal × 4.33, diario × días del mes) o contar los cobros reales del mes en curso?
-- ¿Los ingresos también pueden ser fijos (por ejemplo el salario), o solo los gastos?
+### E. Ingresos fijos (por ejemplo, el salario)
+- [ ] Los **ingresos también pueden ser fijos**, con las mismas frecuencias que los gastos.
+- [ ] El monto puede cambiar en cada pago (por ejemplo, por horas extra). Por eso, **cada vez que toca un ingreso fijo llega una notificación** para que el usuario indique la cantidad real recibida.
+- [ ] Al registrarlo se puede escribir el monto del momento. Sugerir el último monto, siempre editable.
+
+### Decisiones confirmadas por el usuario
+- **Frecuencias, contadas desde la fecha del registro:**
+  - Quincenal: cada 15 días desde la fecha del registro.
+  - Mensual: el mismo día de cada mes. Por ejemplo, un cobro registrado el día 13 se repite el 13 de cada mes.
+  - Semanal y diario: igual, a partir de la fecha del registro.
+- **Total del mes en Fijos:** solo **suma lo ya registrado** en el mes, sin promedios ni equivalentes. Lo **proyectado** según los fijos configurados se muestra aparte (Fase 3, "esperado del mes").
+- **Ingresos fijos:** sí existen (ver punto E).
