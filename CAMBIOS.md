@@ -261,3 +261,14 @@ El usuario propone unificarlas en una sola.
 - [ ] El usuario **elige el periodo de tiempo** que abarca la gráfica (desde – hasta). Sugerencia: atajos rápidos (este mes, últimos 3, 6 o 12 meses, este año, todo) y la opción de elegir fechas, usando el mismo selector de mes en cuadrícula del punto F. Con esto se resuelve cuántos meses mostrar.
 - [ ] Recordar en el dispositivo la última combinación elegida (agrupación, qué mostrar y periodo).
 - Nota técnica: hoy la app carga 6 meses de movimientos; para periodos más largos hay que cargar el rango elegido o pedir totales agrupados al servidor.
+
+### H. Un solo botón para agregar
+Hoy hay muchos lugares para agregar: el botón flotante **+**, "+ Gasto" y "+ Ingreso" en Resumen, "Agregar el primero" o "Agregar movimiento" cuando no hay datos, "Nuevo fijo" en Fijos, "Aportar" en Metas, etc. El usuario quiere simplificar.
+- [ ] El **botón flotante +** es la única forma de agregar movimientos. Visible en todas las pestañas, en la misma posición.
+- [ ] Quitar "+ Gasto" y "+ Ingreso" del Resumen y los botones de agregar de los mensajes vacíos (dejar solo un texto como "Toca + para agregar tu primer movimiento").
+- [ ] El formulario del + ya permite elegir Gasto, Ingreso, Retiro o Ahorro y marcar "Es fijo", así que cubre todos los casos, incluidos los fijos.
+- [ ] Botones que **no** son para agregar movimientos se quedan: "Marcar pagado", "Confirmar", "Editar", y en Ajustes "Nueva categoría", "Nuevo método", etc.
+- Por confirmar con el usuario:
+  - En Fijos, ¿quitar también "Nuevo fijo"? (Antes pidió poder agregar fijos desde esa pestaña; se podría dejar solo el + con "Es fijo" ya marcado al abrirlo desde Fijos.)
+  - En Metas, ¿quitar "Aportar"? (Se aportaría con + → Ahorro.)
+  - Color del +: hoy es rojo (abre un gasto). Si es el único botón para todo, ¿se queda rojo o usa el color del tema?
