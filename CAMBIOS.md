@@ -229,3 +229,18 @@ Dictados por el usuario el 2026-10-30. Solo anotados; **no ejecutar** hasta que 
 ## 7. Pendientes para después (al final, cuando todo lo demás esté pulido)
 
 - [ ] **Asistente de voz dentro de la app.** Un botón de micrófono para dar órdenes habladas: "agrega un gasto de 250 de gasolina con BBVA", "borra el gasto de ayer del Oxxo", "cambia la colegiatura a 2,100". La voz se convierte en texto y una IA interpreta la orden en una Edge Function, con la llave guardada como secreto en Supabase. La app **siempre muestra lo que entendió y pide confirmar** antes de guardar, borrar o modificar. Costo aproximado: centavos por orden.
+
+---
+
+## 8. Cambios anotados el 2026-10-30 (sin implementar todavía)
+
+Solo anotados; **no ejecutar** hasta que el usuario lo indique.
+
+### F. Selector de mes en cuadrícula
+Hoy el encabezado muestra el mes actual ("Octubre de 2026") con flechas ‹ › a los lados para ir mes por mes.
+- [ ] Las flechas ‹ › se quedan como están.
+- [ ] Al **tocar el nombre del mes** (la parte de en medio) se despliega hacia abajo una ventana pequeña.
+- [ ] Arriba de esa ventana va el **año** (por defecto el año en curso, por ejemplo 2026) con flechas para ir al **año anterior y al siguiente**.
+- [ ] Debajo, los **12 meses en cuadrícula** (por ejemplo 3 columnas × 4 filas o 4 × 3), no en lista, para saltar fácil de un mes a otro (de octubre a enero, por ejemplo).
+- [ ] Al tocar un mes se cierra la ventana y la app muestra ese mes. Resaltar el mes seleccionado y marcar de forma distinta el mes actual.
+- [ ] Se cierra también al tocar fuera de la ventana. Zonas de toque de al menos 44 px; debe verse bien en los 5 temas, claro y oscuro.
