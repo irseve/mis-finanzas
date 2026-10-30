@@ -244,3 +244,18 @@ Hoy el encabezado muestra el mes actual ("Octubre de 2026") con flechas ‹ › 
 - [ ] Debajo, los **12 meses en cuadrícula** (por ejemplo 3 columnas × 4 filas o 4 × 3), no en lista, para saltar fácil de un mes a otro (de octubre a enero, por ejemplo).
 - [ ] Al tocar un mes se cierra la ventana y la app muestra ese mes. Resaltar el mes seleccionado y marcar de forma distinta el mes actual.
 - [ ] Se cierra también al tocar fuera de la ventana. Zonas de toque de al menos 44 px; debe verse bien en los 5 temas, claro y oscuro.
+
+### G. Una sola gráfica de gastos con periodo a elegir
+Hoy hay dos gráficas en Resumen:
+- **Gastos por semana:** solo gastos, semana por semana del mes que estás viendo.
+- **Últimos 6 meses:** ingresos contra gastos, mes por mes.
+
+El usuario propone unificarlas en una sola.
+- [ ] Una sola tarjeta de gráfica en Resumen, con un selector arriba: **Semana · Mes · Año**.
+  - **Semana:** las semanas del mes seleccionado (como la gráfica actual).
+  - **Mes:** los últimos 6 o 12 meses (por definir), uno por barra.
+  - **Año:** un año por barra, con los años que tengan registros.
+- [ ] Mantener la comparación **ingresos (verde) contra gastos (rojo)** en Mes y Año, que hoy solo está en la de 6 meses. En Semana, opcional.
+- [ ] Recordar en el dispositivo el último periodo elegido.
+- [ ] Al quitar la gráfica de 6 meses, la de categorías y "Fijos vs. variables" se acomodan para no dejar huecos.
+- Por confirmar: en la vista Mes, ¿6 o 12 meses? ¿En Semana también se muestran los ingresos?
