@@ -258,6 +258,12 @@ a{color:var(--brand)}
 .iresults{display:grid;gap:6px}
 .ires{text-align:left;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);border-radius:10px;padding:10px 12px;cursor:pointer;font:inherit}
 .amt.sacar{color:var(--income)} .amt.rendimiento{color:var(--brand)}
+#view.nav-fwd{animation:navFwd .28s cubic-bezier(.2,.8,.2,1)}
+#view.nav-back{animation:navBack .28s cubic-bezier(.2,.8,.2,1)}
+@keyframes navFwd{from{transform:translateX(40%);opacity:0}to{transform:none;opacity:1}}
+@keyframes navBack{from{transform:translateX(-40%);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){#view.nav-fwd,#view.nav-back{animation:none}}
+.wrap{overflow-x:clip}
 [hidden]{display:none!important}
 </style>
 </head>
@@ -302,14 +308,14 @@ a{color:var(--brand)}
 <div class="update-bar" id="updateBar" role="status" hidden><span>Hay una nueva versión</span><button class="go" id="updateGo">Actualizar</button><button class="x" id="updateX" aria-label="Cerrar aviso">×</button></div>
 <dialog id="dlg"><form method="dialog" id="dlgForm" onsubmit="return false"></form></dialog>
 
-<script src="config.js?v=1.9.0"></script>
+<script src="config.js?v=1.9.1"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
 <script>
 (() => {
 "use strict";
 // ---------- versión ----------
 // Al subir cambios: actualiza APP_VERSION, APP_DATE, version.json y el ?v= de config.js.
-const APP_VERSION = "1.9.0";
+const APP_VERSION = "1.9.1";
 const APP_DATE = "2026-10-30";
 
 // ---------- utilities ----------
@@ -947,12 +953,14 @@ function render() {
   const v = $("#view");
   if (!S.ready) { v.innerHTML = `<div class="empty">Cargando tus datos…</div>`; return; }
   ({ resumen: viewResumen, movs: viewMovs, fijos: viewFijos, apartados: viewApartados, cats: viewCats, pend: viewPend })[S.tab](v);
+  if (S.navDir) { v.classList.remove("nav-fwd", "nav-back"); void v.offsetWidth; v.classList.add("nav-" + S.navDir); S.navDir = ""; }
 }
 const head = (title, btn) => `<div class="shead"><h2 style="margin:0">${title}</h2>${btn || ""}</div>`;
 const back = (to, label) => `<button type="button" class="backbtn" data-back="${to}">‹ ${label}</button>`;
 const SOURCE = { recurrente:"Fijo", siri:"Siri", gmail:"Correo" };
 const dShort = iso => `${+iso.slice(8)}/${iso.slice(5,7)}`;
-const go = (tab, extra = {}) => { Object.assign(S, extra); S.tab = tab; closeMonthPicker(); render(); window.scrollTo(0, 0); };
+// dir: "fwd" entra a un detalle (desliza desde la derecha) · "back" regresa (desliza desde la izquierda)
+const go = (tab, extra = {}, dir = "") => { Object.assign(S, extra); S.tab = tab; S.navDir = dir; closeMonthPicker(); render(); window.scrollTo(0, 0); };
 
 function viewResumen(v) {
   const o = monthOutlook(), s = o.s, list = monthTx(), cats = byCategory(list);
@@ -1792,14 +1800,14 @@ $("#view").addEventListener("click", e => {
   else if (d.newcat) openCat(null, d.newcat);
   else if (d.editmethod) openMethod(S.methods.find(x => x.id === d.editmethod));
   else if (d.editgoal) openGoal(S.goals.find(x => x.id === d.editgoal));
-  else if (d.place) go("apartados", { apPlace: d.place });
+  else if (d.place) go("apartados", { apPlace: d.place }, "fwd");
   else if (d.editplace) openPlace(place(d.editplace));
   else if (d.realbal) openRealBalance(place(d.realbal));
-  else if (d.setpage) go("cats", { setPage: d.setpage });
-  else if (d.back === "ajustes") go("cats", { setPage: null });
-  else if (d.back === "apartados") go("apartados", { apPlace: null });
-  else if (d.back) go(d.back);
-  else if (d.act === "fijos") go("fijos");
+  else if (d.setpage) go("cats", { setPage: d.setpage }, "fwd");
+  else if (d.back === "ajustes") go("cats", { setPage: null }, "back");
+  else if (d.back === "apartados") go("apartados", { apPlace: null }, "back");
+  else if (d.back) go(d.back, {}, "back");
+  else if (d.act === "fijos") go("fijos", {}, "fwd");
   else if (d.act === "pend") go("pend");
   else if (d.act === "newmethod") openMethod();
   else if (d.act === "newgoal") openGoal();
