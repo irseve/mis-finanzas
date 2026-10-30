@@ -178,3 +178,34 @@ Problema: la app instalada en la pantalla de inicio del iPhone conserva la versi
 | 18 | Metas de ahorro e inversión con sugerencia | 7 | Pendiente |
 | 19 | Barra inferior más alta con iconos | — | Hecho |
 | 20 | Actualizaciones de la app (botón y aviso) | 0 | Hecho (v1.4.0) |
+
+---
+
+## 6. Nuevos cambios anotados (sin implementar todavía)
+
+Dictados por el usuario el 2026-10-30. Solo anotados; **no ejecutar** hasta que el usuario lo indique.
+
+### A. Pestaña "Fijos" (se conserva el nombre)
+- [ ] Mantener la pestaña **Fijos** (sustituye el cambio de nombre a "Recurrentes" de la Fase 1).
+- [ ] Mostrar un **resumen de gastos fijos**: "Estos son tus gastos fijos" y el **total al mes**.
+- [ ] Agrupar por frecuencia: diario, semanal, quincenal, mensual. **Solo mostrar los grupos que tengan gastos** (si no hay semanales, no aparece el grupo semanal).
+- [ ] Se puede seguir agregando gastos fijos desde esta pestaña.
+
+### B. Gastos fijos desde "Agregar movimiento"
+- [ ] Al agregar un movimiento de tipo **gasto**, opción **"Es fijo"**.
+- [ ] Si es fijo, elegir la frecuencia: **diario, semanal, quincenal o mensual**.
+- [ ] Ese gasto aparece en la pestaña Fijos. Es decir, los gastos fijos se configuran tanto desde Fijos como desde Movimientos.
+
+### C. Agregar categoría desde el formulario
+- [ ] En la lista de categorías del formulario de movimiento, agregar al final una opción **"+ Agregar categoría nueva"** que permita crearla ahí mismo y quede seleccionada.
+
+### D. Eliminar categorías en Ajustes, con reasignación
+- [ ] En Ajustes se listan todas las categorías guardadas y se puede **eliminar** cualquiera.
+- [ ] Si la categoría tiene movimientos o gastos fijos registrados, mostrar una advertencia: "Hay movimientos registrados en esta categoría", con la **lista de esos movimientos** (por ejemplo: "Tienes un gasto fijo de Colegiatura de $2,000").
+- [ ] Preguntar **a qué categoría moverlos**: elegir una existente (por ejemplo "Otros") o **crear una categoría nueva** en ese momento.
+- [ ] Solo después de reasignar se elimina la categoría. Nunca se borran movimientos.
+
+### Dudas por confirmar
+- "Quincenal": ¿cada 15 días desde la fecha del registro, o los días 15 y último de cada mes?
+- Total al mes de fijos no mensuales: ¿calcular un equivalente mensual (por ejemplo semanal × 4.33, diario × días del mes) o contar los cobros reales del mes en curso?
+- ¿Los ingresos también pueden ser fijos (por ejemplo el salario), o solo los gastos?
