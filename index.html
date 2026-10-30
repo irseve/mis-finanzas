@@ -270,14 +270,14 @@ a{color:var(--brand)}
 <div class="update-bar" id="updateBar" role="status" hidden><span>Hay una nueva versión</span><button class="go" id="updateGo">Actualizar</button><button class="x" id="updateX" aria-label="Cerrar aviso">×</button></div>
 <dialog id="dlg"><form method="dialog" id="dlgForm" onsubmit="return false"></form></dialog>
 
-<script src="config.js?v=1.8.0"></script>
+<script src="config.js?v=1.8.1"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
 <script>
 (() => {
 "use strict";
 // ---------- versión ----------
 // Al subir cambios: actualiza APP_VERSION, APP_DATE, version.json y el ?v= de config.js.
-const APP_VERSION = "1.8.0";
+const APP_VERSION = "1.8.1";
 const APP_DATE = "2026-10-30";
 
 // ---------- utilities ----------
@@ -539,7 +539,9 @@ function openNewPassword(fromEmail) {
       const b = f.querySelector("[data-save]"); b.disabled = true;
       const { error } = await sb.auth.updateUser({ password: f.p1.value });
       b.disabled = false;
-      if (error) { e.textContent = /different|same/i.test(error.message) ? "La contraseña nueva debe ser distinta a la anterior." : "No se pudo guardar: " + error.message; return; }
+      // Supabase rechaza repetir la contraseña actual; para el usuario eso no es un error: ya es su contraseña.
+      const same = error && (error.code === "same_password" || /different|same/i.test(error.message));
+      if (error && !same) { e.textContent = "No se pudo guardar: " + error.message; return; }
       close(); toast("Contraseña actualizada");
       if (fromEmail) history.replaceState(null, "", location.pathname);
     };
