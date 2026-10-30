@@ -274,3 +274,19 @@ Hoy hay muchos lugares para agregar: el botón flotante **+**, "+ Gasto" y "+ In
   - ~~Color del +~~ **Resuelto:** el + usa el **color principal del tema** (ya no rojo). Dentro del formulario, Gasto sigue en rojo e Ingreso en verde.
 - [ ] **Pestaña Fijos solo informativa:** sin botón "Nuevo fijo" ni "Registrar los pendientes del mes". Muestra el resumen (pagado, proyectado, por frecuencia) y la lista de fijos. Se conserva tocar un fijo para **editarlo, pausarlo o eliminarlo**, porque es el único lugar donde se administran.
 - Por confirmar: el usuario comentó que "en la pantalla principal también pone gastos" (frase incompleta). Posible duplicado entre Resumen (Próximos pagos, Gastos fijos, Fijos vs. variables) y la pestaña Fijos. Preguntar qué quiere quitar o juntar.
+
+### I. Ajustes agrupados, sin mostrar todo de golpe
+Hoy Ajustes muestra todas las secciones abiertas una tras otra (categorías, métodos, notificaciones, Siri, administración, tema, moneda, cuenta, versión) y se ve muy cargado.
+- [ ] Al entrar a Ajustes se ve solo una **lista corta de grupos**, estilo Ajustes del iPhone: icono, nombre, un resumen pequeño (por ejemplo "11 categorías", "Activadas", "Bosque · Automática") y una flecha ›.
+- [ ] Al tocar un grupo se abre su pantalla con el botón **‹ Ajustes** para regresar. Recomendado sobre un acordeón (que se despliega en la misma lista) porque es lo que el usuario ya conoce del iPhone y no alarga la página.
+- [ ] Grupos propuestos:
+  1. **Categorías:** de gasto y de ingreso (crear, editar, eliminar con reasignación).
+  2. **Métodos de pago.**
+  3. **Notificaciones:** activar en este dispositivo y qué avisos recibir.
+  4. **Siri y correo:** tokens y guías.
+  5. **Apariencia:** tema y modo claro/oscuro.
+  6. **Cuenta:** correo con el que entras, moneda, cambiar contraseña, cerrar sesión.
+  7. **Administración** (solo administradores): usuarios y probar notificación.
+  8. **Acerca de:** versión instalada y "Buscar actualizaciones".
+- [ ] La app recuerda en qué grupo estabas si cambias de pestaña y regresas.
+- Por confirmar: ¿pantallas separadas (recomendado) o secciones que se despliegan en la misma lista? ¿Está bien ese orden y esos grupos?
