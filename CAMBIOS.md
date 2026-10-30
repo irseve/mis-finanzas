@@ -289,4 +289,4 @@ Hoy Ajustes muestra todas las secciones abiertas una tras otra (categorías, mé
   7. **Administración** (solo administradores): usuarios y probar notificación.
   8. **Acerca de:** versión instalada y "Buscar actualizaciones".
 - [ ] La app recuerda en qué grupo estabas si cambias de pestaña y regresas.
-- Por confirmar: ¿pantallas separadas (recomendado) o secciones que se despliegan en la misma lista? ¿Está bien ese orden y esos grupos?
+- **Resuelto:** pantallas separadas, con esos grupos y ese orden (aprobado por el usuario).
