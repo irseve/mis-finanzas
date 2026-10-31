@@ -374,3 +374,20 @@ Aplica a todos los campos de monto (gasto, ingreso, retiro, apartados, confirmar
 - [ ] Solo se aceptan números y un punto decimal; la coma la pone la app (si el teclado escribe coma como decimal, se convierte en punto).
 - [ ] Teclado numérico con punto decimal en el iPhone.
 - [ ] Al guardar se usa el valor numérico (por ejemplo `1000.1` → 1000.10).
+
+### Q. Registrar un pago que corresponde a un fijo existente (pago atrasado o adelantado)
+Caso: no se confirmó a tiempo un fijo (o se pagó antes o después de su fecha) y el usuario lo registra con el **+**.
+- [ ] En el formulario del **+**, al marcar "Es fijo", primero preguntar: **"¿Es de un fijo que ya tienes?"** con la lista de fijos del mismo tipo (gasto o ingreso) y la opción "No, es un fijo nuevo" (el comportamiento actual).
+- [ ] Al elegir un fijo existente:
+  - Se llenan solos la categoría, el método y el monto sugerido (editable).
+  - Elegir **a qué fecha programada corresponde** el pago: la app propone la fecha pendiente (sin pagar) más cercana a la fecha escrita y deja elegir otra de la lista (fechas vencidas sin pagar, la actual y la siguiente).
+  - La fecha del movimiento es la que escribió el usuario (cuando realmente pagó).
+- [ ] Si la fecha real es distinta a la programada, preguntar: **"Pagaste el 13/10 y estaba programado el 15/10. ¿Cambiar las próximas fechas?"**
+  - **No, solo esta vez** (recomendado): el calendario del fijo no cambia; esa fecha programada queda como pagada.
+  - **Sí, a partir de ahora:** el calendario se recorre según la frecuencia:
+    - **Mensual:** las próximas fechas pasan al nuevo día del mes (por ejemplo, del 15 al 13).
+    - **Semanal, quincenal (cada 15 días) y diario:** el ciclo vuelve a contar desde la nueva fecha.
+    - **Quincena de salario (15 y último día del mes):** **no se puede cambiar**; siempre "solo esta vez". Solo se pregunta a qué quincena corresponde (la del 15 o la de fin de mes).
+- [ ] Si esa fecha programada ya tenía un **pendiente por confirmar**, se marca como aceptado (no se duplica) y el monto queda como sugerencia para la próxima vez, igual que al confirmar desde Pendientes.
+- [ ] Cuidar que no se registre dos veces la misma fecha programada: si ya está pagada, avisar y no permitir elegirla.
+- Por confirmar: si un solo pago cubre **dos fechas atrasadas** (por ejemplo, dos quincenas), ¿registrarlo como dos movimientos o uno solo?
