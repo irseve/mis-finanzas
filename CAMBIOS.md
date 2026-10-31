@@ -356,7 +356,7 @@ Problema: al abrir la app con mala conexión se veía sin nada, sin explicar qu�
 - [x] **Mostrar lo último que se cargó:** guardar en el dispositivo la última información descargada y mostrarla sin conexión, con un aviso arriba como "Sin conexión · mostrando datos del 31/10 a las 10:15". En ese modo, avisar que los cambios no se pueden guardar hasta tener conexión.
 - [x] **Que la app abra aunque no haya internet:** hoy el service worker no guarda nada en caché, así que sin red el iPhone no puede ni cargar la página. Guardar la app (HTML, config.js y la librería de Supabase) para abrirla sin conexión: siempre se intenta primero la versión de internet (para no perder actualizaciones) y, si falla, se usa la guardada.
 - [x] Que ningún error de conexión deje botones sin responder o pantallas a medias: todo error muestra un mensaje claro y permite reintentar.
-- Pendiente (opcional, por confirmar con el usuario): permitir **registrar movimientos sin conexión** y subirlos solos cuando regrese la señal.
+- **Decisión del usuario:** **no** se permite registrar nada sin conexión (no se guardan movimientos para subirlos después). Ver punto U.
 
 ### O. Aviso de nueva versión abajo
 - [x] El aviso "Hay una nueva versión · Actualizar" aparece **abajo** en lugar de arriba: justo encima de la barra de pestañas (sin tapar la barra ni el botón +), respetando el área segura del iPhone. En computadora, abajo al centro.
@@ -420,3 +420,16 @@ Hoy los pendientes se ven en el botón naranja del encabezado y en "Fijos del me
   - Si es un fijo: los **últimos pagos** de ese fijo (fechas y montos) para comparar.
   - Acciones: **Confirmar** (permite editar antes los datos), **Descartar**, y "Ver o editar el fijo" si aplica.
 - [x] Opción "Confirmar todos" para los que no necesitan cambios, con confirmación previa.
+
+---
+
+## 10. Cambios anotados el 2026-10-31 (segunda tanda, sin implementar todavía)
+
+Solo anotados; **no ejecutar** hasta que el usuario lo indique.
+
+### U. Bloquear registros sin conexión
+Hoy, sin internet, el **+** abre el formulario y solo al tocar "Agregar" sale el error "Sin conexión".
+- [ ] Sin conexión, el botón **+** se ve desactivado (gris) y al tocarlo dice: "Sin conexión: no puedes registrar movimientos hasta que vuelva el internet".
+- [ ] Lo mismo para todo lo que guarda o borra datos: editar o eliminar movimientos, confirmar o descartar pendientes, "Marcar pagado", fijos, categorías, métodos, lugares, metas, saldo real, tema de notificaciones, tokens, etc. Se pueden **ver** los datos guardados, pero no cambiarlos.
+- [ ] Si se pierde la conexión con un formulario abierto, al tocar "Agregar" o "Guardar" se avisa y **no se cierra** el formulario (para no perder lo escrito); al volver la señal se puede guardar.
+- [ ] Al volver la conexión, todo se reactiva solo.
