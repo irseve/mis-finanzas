@@ -391,3 +391,21 @@ Caso: no se confirmó a tiempo un fijo (o se pagó antes o después de su fecha)
 - [ ] Si esa fecha programada ya tenía un **pendiente por confirmar**, se marca como aceptado (no se duplica) y el monto queda como sugerencia para la próxima vez, igual que al confirmar desde Pendientes.
 - [ ] Cuidar que no se registre dos veces la misma fecha programada: si ya está pagada, avisar y no permitir elegirla.
 - Por confirmar: si un solo pago cubre **dos fechas atrasadas** (por ejemplo, dos quincenas), ¿registrarlo como dos movimientos o uno solo?
+
+### R. Frecuencia bimestral
+- [ ] Nueva frecuencia **Bimestral (cada 2 meses)** para fijos, junto a diario, semanal, quincenal y mensual. Se repite el mismo día cada dos meses desde la primera fecha (por ejemplo 10/ene, 10/mar, 10/may…). Si el día no existe en ese mes (31 en abril), se usa el último día del mes, igual que en mensual.
+- [ ] Incluirla en el cálculo de próximos pagos, proyectado del mes, pendientes automáticos (servidor) y en el punto Q (recorrer el calendario).
+- Requiere migración: agregar `bimestral` a la lista de frecuencias de `recurrences` y a `recurrence_on_or_after`.
+
+### S. Subcategorías (opcionales)
+Recomendación de Claude: **sí vale la pena**, con **un solo nivel** (categoría → subcategoría), para agrupar sin complicar el registro.
+- [ ] Una categoría puede tener subcategorías. Ejemplos: **Casa** → Teléfono, Internet, Agua, Luz; **Escuela de mi hijo** → Colegiatura, Uniformes, Útiles, Transporte.
+- [ ] Al registrar un gasto o ingreso: se elige la categoría y, **si tiene subcategorías**, aparece una segunda opción con sus subcategorías y **"Sin subcategoría"** (preseleccionada). Las categorías sin subcategorías funcionan como hoy.
+- [ ] "+ Agregar subcategoría nueva" ahí mismo, igual que con las categorías.
+- [ ] **Resumen → Por categoría:** se muestra el total de cada categoría (suma de sus subcategorías y de lo registrado sin subcategoría); al tocarla se despliega el desglose por subcategoría.
+- [ ] Presupuesto por categoría (como hoy) y, opcional, por subcategoría.
+- [ ] Filtros de Movimientos: por categoría (incluye sus subcategorías) o por una subcategoría concreta. El CSV incluye columna Subcategoría.
+- [ ] **Ajustes → Categorías:** cada categoría muestra sus subcategorías; se pueden crear, editar, eliminar y **mover una categoría existente dentro de otra** (por ejemplo, convertir "Luz" en subcategoría de "Casa") sin perder sus movimientos.
+- [ ] Al eliminar una categoría con subcategorías o movimientos: misma reasignación que hoy (elegir a dónde moverlos; nunca se borran).
+- [ ] Fijos, pendientes de Siri/Gmail y la adivinanza de categoría también pueden usar subcategoría.
+- Requiere migración: columna `categories.parent_id` (un solo nivel) y ajustes en la reasignación al eliminar.
