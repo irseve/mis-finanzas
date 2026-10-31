@@ -190,8 +190,8 @@ label.f input,label.f select{background:var(--surface-2);border:1px solid var(--
 .login .err{color:var(--warn);font-size:.9rem;min-height:1.2em}
 .login .err.ok{color:var(--income)}
 .linkbtn{border:0;background:transparent;color:var(--brand);font-weight:600;cursor:pointer;min-height:44px;text-decoration:underline;text-underline-offset:3px}
-.update-bar{position:fixed;left:12px;right:12px;top:calc(10px + env(safe-area-inset-top,0px));z-index:60;max-width:460px;margin:0 auto;display:flex;align-items:center;gap:10px;background:var(--ink);color:var(--bg);border-radius:14px;padding:8px 8px 8px 16px;box-shadow:0 6px 18px rgba(0,0,0,.2);font-size:.92rem;font-weight:600}
-.update-bar span{flex:1}
+.update-bar{position:fixed;left:12px;right:12px;bottom:calc(20px + env(safe-area-inset-bottom,0px));z-index:60;max-width:460px;margin:0 auto;display:flex;align-items:center;gap:10px;background:var(--ink);color:var(--bg);border-radius:14px;padding:8px 8px 8px 16px;box-shadow:0 6px 18px rgba(0,0,0,.2);font-size:.92rem;font-weight:600}
+.update-bar span{flex:1;white-space:nowrap}
 .update-bar button{border:0;border-radius:10px;min-height:44px;cursor:pointer;font-weight:700}
 .update-bar .go{background:var(--brand);color:var(--brand-ink);padding:0 16px}
 .update-bar .x{background:transparent;color:inherit;min-width:44px;font-size:1.2rem;opacity:.7}
@@ -205,7 +205,6 @@ a{color:var(--brand)}
 .shead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
 .pendbtn{margin-left:auto;border:0;border-radius:999px;background:var(--warn);color:#fff;font-weight:700;min-height:40px;padding:0 14px;cursor:pointer}
 .pendbtn b{display:inline-block;min-width:20px;margin-left:4px;background:rgba(255,255,255,.25);border-radius:999px;padding:1px 6px}
-.pendcard{display:grid;gap:4px;text-align:left;width:100%;cursor:pointer;border-color:var(--warn);color:var(--ink);font:inherit}
 .quick{display:flex;gap:8px}
 .btn.inc{background:var(--income);color:var(--on-income)}
 .btn.spend{background:var(--spend);color:var(--on-spend)}
@@ -272,6 +271,41 @@ a{color:var(--brand)}
 .wrap{overflow-x:clip;position:relative}
 #view{background:var(--bg)}
 .navghost{position:fixed;pointer-events:none;background:var(--bg);will-change:transform}
+@media (max-width:720px){.update-bar{bottom:calc(76px + env(safe-area-inset-bottom,0px));right:88px}}
+.loading{display:grid;justify-items:center;gap:12px;text-align:center;padding:48px 16px;color:var(--muted)}
+.loading.card{margin-top:12px;color:var(--ink)}
+.spinner{width:28px;height:28px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--brand);animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.offbanner{display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-color:var(--muted)}
+.offbanner span{flex:1 1 200px}
+details.catx{display:block;padding:0;border-top:1px solid var(--line)}
+details.catx:first-of-type{border-top:0}
+details.catx summary{list-style:none;display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:10px 0;cursor:pointer}
+details.catx summary::-webkit-details-marker{display:none}
+details.catx .chev.sm{font-size:1rem;margin-left:6px;display:inline-block;transition:transform .2s}
+details.catx[open] .chev.sm{transform:rotate(90deg)}
+.subrows{display:grid;gap:6px;padding:0 0 10px 18px}
+.subrow{display:flex;justify-content:space-between;font-size:.9rem}
+.subrow span{display:inline-flex;align-items:center;gap:8px}
+.catgroup{border-top:1px solid var(--line);padding-bottom:6px}
+.catgroup:first-of-type{border-top:0}
+.catgroup .fixed-row{border-top:0}
+.fixed-row.subcat{padding-left:22px;padding-top:4px;padding-bottom:4px}
+.addsub{border:0;background:transparent;color:var(--brand);font-weight:600;padding:6px 0 4px 22px;min-height:36px;cursor:pointer;font-size:.9rem}
+.shiftbox{display:grid;gap:8px;padding:10px 12px;border-radius:10px;background:var(--surface-2)}
+.money{display:flex;align-items:center;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:0 12px}
+.money:focus-within{outline:2px solid var(--brand);outline-offset:1px}
+.money .cur{font-size:1.6rem;font-weight:800;color:var(--ink);margin-right:4px}
+.mwrap{position:relative;flex:1;min-width:0;display:flex}
+label.f .mwrap input{background:transparent;border:0;padding:10px 0;color:transparent;caret-color:var(--ink);position:relative;z-index:1;outline:none;border-radius:0}
+.mirror{position:absolute;inset:0;display:flex;align-items:center;white-space:pre;pointer-events:none;font-size:1.6rem;font-weight:800;color:var(--ink);overflow:hidden;font-variant-numeric:tabular-nums}
+.mwrap input{font-variant-numeric:tabular-nums}
+.mirror .hint{opacity:.32}
+.pendcard{border-color:var(--warn)}
+.kvs{display:grid;gap:8px;margin-top:12px}
+.kv{display:flex;justify-content:space-between;gap:12px;align-items:baseline;border-top:1px solid var(--line);padding-top:8px}
+.kv:first-child{border-top:0;padding-top:0}
+.kv>span:last-child{text-align:right;min-width:0;overflow-wrap:anywhere}
 [hidden]{display:none!important}
 </style>
 </head>
@@ -307,23 +341,24 @@ a{color:var(--brand)}
     <button data-tab="apartados"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"/></svg>Apartados</button>
     <button data-tab="cats"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>Ajustes</button>
   </nav>
+  <div class="banner offbanner" id="offBanner" hidden><span id="offText"></span> <button class="btn ghost sm" data-act="retry">Reintentar</button></div>
   <div class="banner" id="migBanner" hidden><b>Falta actualizar la base de datos.</b> En Supabase → SQL Editor, corre el archivo <code id="migFile"></code> de la carpeta <code>migrations</code> del repositorio y vuelve a abrir la app.</div>
   <main id="view"></main>
 </div>
 </div>
 <button class="fab" id="fab" aria-label="Agregar movimiento" hidden>+</button>
 <div class="toast" id="toast" role="status"></div>
-<div class="update-bar" id="updateBar" role="status" hidden><span>Hay una nueva versión</span><button class="go" id="updateGo">Actualizar</button><button class="x" id="updateX" aria-label="Cerrar aviso">×</button></div>
+<div class="update-bar" id="updateBar" role="status" hidden><span>Nueva versión</span><button class="go" id="updateGo">Actualizar</button><button class="x" id="updateX" aria-label="Cerrar aviso">×</button></div>
 <dialog id="dlg"><form method="dialog" id="dlgForm" onsubmit="return false"></form></dialog>
 
-<script src="config.js?v=1.9.7"></script>
+<script src="config.js?v=2.0.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
 <script>
 (() => {
 "use strict";
 // ---------- versión ----------
 // Al subir cambios: actualiza APP_VERSION, APP_DATE, version.json y el ?v= de config.js.
-const APP_VERSION = "1.9.7";
+const APP_VERSION = "2.0.0";
 const APP_DATE = "2026-10-30";
 
 // ---------- utilities ----------
@@ -366,6 +401,11 @@ const fmt = (n, compact) => {
 { const t = new URLSearchParams(location.search).get("tab"); if (["resumen","movs","fijos","apartados","cats","pend"].includes(t)) S.tab = t; }
 const cat = id => S.categories.find(c => c.id === id) || {id, name:"Sin categoría", color:"#8C9A94", kind:"gasto", budget:0};
 const catsOf = kind => S.categories.filter(c => c.kind === kind);
+// Subcategorías (un solo nivel): una categoría con parentId es subcategoría de otra.
+const topCats = kind => S.categories.filter(c => c.kind === kind && !c.parentId);
+const subsOf = id => id ? S.categories.filter(c => c.parentId === id) : [];
+const rootOf = id => { const c = cat(id); return c.parentId ? cat(c.parentId) : c; };
+const catLabel = id => { const c = cat(id); return c.parentId ? `${cat(c.parentId).name} · ${c.name}` : c.name; };
 const method = id => S.methods.find(m => m.id === id);
 const goal = id => S.goals.find(g => g.id === id);
 const isSalaryCat = id => /salario|sueldo|n[oó]mina/i.test(cat(id).name);
@@ -377,15 +417,18 @@ const rememberMethod = id => { try { if (id) localStorage.setItem(lastMethodKey,
 // Mismo cálculo que public.recurrence_on_or_after en la base de datos.
 const isoAdd = (iso, n) => { const [y, m, d] = iso.split("-").map(Number); return new Date(Date.UTC(y, m-1, d+n)).toISOString().slice(0, 10); };
 const isoDiff = (a, b) => { const p = s => s.split("-").map(Number), [y1,m1,d1] = p(a), [y2,m2,d2] = p(b); return Math.round((Date.UTC(y1,m1-1,d1) - Date.UTC(y2,m2-1,d2)) / 864e5); };
-const FREQS = { diario:"Diario", semanal:"Semanal", quincenal:"Quincenal", mensual:"Mensual", salario:"Quincena de salario" };
+const FREQS = { diario:"Diario", semanal:"Semanal", quincenal:"Quincenal", mensual:"Mensual", bimestral:"Bimestral", salario:"Quincena de salario" };
 function occOnOrAfter(r, from) {
   const d = from > r.start ? from : r.start;
   if (r.freq === "diario") return d;
   if (r.freq === "semanal" || r.freq === "quincenal") { const st = r.freq === "semanal" ? 7 : 15; return isoAdd(r.start, st * Math.ceil(isoDiff(d, r.start) / st)); }
   const ym = ymOf(d), last = `${ym}-${pad(daysIn(ym))}`;
   if (r.freq === "salario") return d <= `${ym}-15` ? `${ym}-15` : d <= last ? last : `${ymAdd(ym, 1)}-15`;
-  let c;
-  for (let i = 0, m = ym; i < 2; i++, m = ymAdd(m, 1)) { c = `${m}-${pad(Math.min(r.day || +r.start.slice(8), daysIn(m)))}`; if (c >= d) return c; }
+  // mensual: cada mes · bimestral: cada 2 meses contando desde el mes de la primera fecha
+  const step = r.freq === "bimestral" ? 2 : 1;
+  let c, m = ym;
+  if (step === 2) { const [y1, m1] = ym.split("-").map(Number), [y0, m0] = r.start.split("-").map(Number); if (((y1 - y0) * 12 + m1 - m0) % 2) m = ymAdd(m, 1); }
+  for (let i = 0; i < 2; i++, m = ymAdd(m, step)) { c = `${m}-${pad(Math.min(r.day || +r.start.slice(8), daysIn(m)))}`; if (c >= d) return c; }
   return c;
 }
 function occInMonth(r, ym) {
@@ -396,12 +439,12 @@ function occInMonth(r, ym) {
 const freqText = r => {
   const dm = s => `${+s.slice(8)}/${s.slice(5,7)}`;
   return { diario:"Todos los días", semanal:`Cada semana desde ${dm(r.start)}`, quincenal:`Cada 15 días desde ${dm(r.start)}`,
-    mensual:`El día ${r.day || +r.start.slice(8)} de cada mes`, salario:"Día 15 y último día de cada mes" }[r.freq];
+    mensual:`El día ${r.day || +r.start.slice(8)} de cada mes`, bimestral:`El día ${r.day || +r.start.slice(8)}, cada 2 meses`, salario:"Día 15 y último día de cada mes" }[r.freq];
 };
 
 // ---------- Supabase ----------
 const configured = window.SUPABASE_URL && !/PEGA_AQUI/.test(window.SUPABASE_URL) && window.SUPABASE_KEY && !/PEGA_AQUI/.test(window.SUPABASE_KEY);
-const sb = configured ? supabase.createClient(window.SUPABASE_URL, window.SUPABASE_KEY, { auth: { persistSession: true, autoRefreshToken: true } }) : null;
+const sb = configured && typeof supabase !== "undefined" ? supabase.createClient(window.SUPABASE_URL, window.SUPABASE_KEY, { auth: { persistSession: true, autoRefreshToken: true } }) : null;
 let userId = null, channel = null;
 
 const toTx = r => ({ id:r.id, type:r.type, amount:+r.amount, categoryId:r.category_id, date:r.date, note:r.note || "", fixedId:r.fixed_id, methodId:r.payment_method_id, recurrenceId:r.recurrence_id, dueDate:r.due_date, goalId:r.goal_id, placeId:r.place_id, instrument:r.instrument, units:r.units == null ? r.units : +r.units, created:r.created_at });
@@ -416,9 +459,9 @@ const txDb = t => {
 const toPlace = r => ({ id:r.id, name:r.name, kind:r.kind, color:r.color, rate:+r.rate, rateUpdated:r.rate_updated_at, active:r.active });
 const toInstrument = r => ({ symbol:r.symbol, name:r.name, currency:r.currency, price:r.price == null ? null : +r.price, price_at:r.price_at });
 const toRec = r => ({ id:r.id, name:r.name, type:r.type, amount:+r.amount, original:+r.original_amount, categoryId:r.category_id, methodId:r.payment_method_id, freq:r.freq, start:r.start_date, day:r.day, mode:r.mode, next:r.next_date, active:r.active });
-const recDb = r => ({ id:r.id, name:r.name, type:r.type, amount:r.amount, original_amount:r.original ?? r.amount, category_id:r.categoryId || null, payment_method_id:r.methodId || null, freq:r.freq, start_date:r.start, day:r.freq === "mensual" ? (r.day || +r.start.slice(8)) : null, mode:r.mode, next_date:r.next || null, active:r.active });
-const toPend = r => ({ id:r.id, source:r.source, type:r.type, amount:+r.amount, categoryId:r.category_id, methodId:r.payment_method_id, date:r.date, note:r.note || "", recurrenceId:r.recurrence_id, status:r.status });
-const toCat = r => ({ id:r.id, name:r.name, kind:r.kind, color:r.color, budget:+r.budget });
+const recDb = r => ({ id:r.id, name:r.name, type:r.type, amount:r.amount, original_amount:r.original ?? r.amount, category_id:r.categoryId || null, payment_method_id:r.methodId || null, freq:r.freq, start_date:r.start, day:r.freq === "mensual" || r.freq === "bimestral" ? (r.day || +r.start.slice(8)) : null, mode:r.mode, next_date:r.next || null, active:r.active });
+const toPend = r => ({ id:r.id, source:r.source, type:r.type, amount:+r.amount, categoryId:r.category_id, methodId:r.payment_method_id, date:r.date, note:r.note || "", recurrenceId:r.recurrence_id, status:r.status, raw:r.raw || {}, created:r.created_at });
+const toCat = r => ({ id:r.id, name:r.name, kind:r.kind, color:r.color, budget:+r.budget, parentId:r.parent_id });
 const toMethod = r => ({ id:r.id, name:r.name, kind:r.kind, color:r.color, active:r.active });
 const toGoal = r => ({ id:r.id, name:r.name, target:+r.target_amount, targetDate:r.target_date, color:r.color, active:r.active });
 
@@ -453,7 +496,9 @@ async function loadBase() {
   if (cs.error) throw cs.error;
   S.needsMigration = [pm, rc, pe, gl, sv].some(r => missingTable(r.error)) ? "001_metodos_fijos_pendientes_metas.sql"
     : [pf, tk].some(r => missingTable(r.error)) ? "002_notificaciones_usuarios_siri_gmail.sql"
-    : [sp, ins].some(r => missingTable(r.error)) ? "003_apartados_inversiones.sql" : "";
+    : [sp, ins].some(r => missingTable(r.error)) ? "003_apartados_inversiones.sql"
+    : (cs.data || []).length && !("parent_id" in cs.data[0]) ? "004_bimestral_subcategorias.sql" : "";
+  S.hasSubcats = !(cs.data || []).length || "parent_id" in cs.data[0];
   const err = [pm, rc, pe, gl, sv, pf, tk, sp, ins].find(r => r.error && !missingTable(r.error));
   if (err) throw err.error;
   S.currency = st.data?.currency || "MXN";
@@ -487,15 +532,30 @@ async function loadTx() {
   if (want !== S.ym) return; // month changed meanwhile
   S.tx = data.map(toTx);
 }
+// Lo último que se descargó se guarda en el teléfono para mostrarlo si no hay conexión.
+const CACHE_KEYS = ["currency","notify","profile","tokens","categories","methods","recs","pending","goals","aptx","places","instruments","firstYm","tx","ym","hasSubcats","needsMigration"];
+const cacheKey = () => "finanzas.cache." + userId;
+function saveCache() { try { const o = { at: Date.now() }; for (const k of CACHE_KEYS) o[k] = S[k]; localStorage.setItem(cacheKey(), JSON.stringify(o)); } catch {} }
+function loadCache() {
+  try { const o = JSON.parse(localStorage.getItem(cacheKey()) || "null"); if (!o) return false; for (const k of CACHE_KEYS) if (k in o) S[k] = o[k]; S.cacheAt = o.at; return true; } catch { return false; }
+}
+const withTimeout = (p, ms) => Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error("timeout")), ms))]);
+let retryT;
 async function refresh(all = true) {
+  if (!S.ready && !S.offline) { S.loadError = ""; render(); }
   try {
-    if (all) await loadBase();
-    await loadTx();
-    S.ready = true;
+    await withTimeout((async () => { if (all) await loadBase(); await loadTx(); })(), 15000);
+    S.ready = true; S.offline = false; S.loadError = "";
+    clearInterval(retryT); retryT = null;
     setSync("on", "Sincronizado");
+    if (all) saveCache();
   } catch (e) {
     console.error(e);
-    setSync("off", navigator.onLine ? "Error al cargar" : "Sin conexión");
+    const net = !navigator.onLine || e.message === "timeout" || /fetch|network|load failed/i.test(e.message || "");
+    setSync("off", net ? "Sin conexión" : "Error al cargar");
+    if (S.ready || loadCache()) { S.ready = true; S.offline = true; }
+    else S.loadError = net ? "No hay conexión a internet o la señal es muy débil." : "No se pudo conectar con tus datos. " + (e.message || "");
+    if (!retryT) retryT = setInterval(() => navigator.onLine && refresh(true), 20000); // reintenta solo cada 20 s
   }
   render();
 }
@@ -520,7 +580,7 @@ const Store = {
     await sb.from("pending_entries").delete().eq("recurrence_id", id).eq("status", "pendiente");
     return check(sb.from("recurrences").delete().eq("id", id), msg).then(ok => (ok && refresh(), ok));
   },
-  saveCat: (c, msg) => check(sb.from("categories").upsert({ id:c.id, name:c.name, kind:c.kind, color:c.color, budget:c.budget || 0 }), msg).then(ok => (ok && refresh(), ok)),
+  saveCat: (c, msg) => check(sb.from("categories").upsert({ id:c.id, name:c.name, kind:c.kind, color:c.color, budget:c.budget || 0, ...(S.hasSubcats ? { parent_id:c.parentId || null } : {}) }), msg).then(ok => (ok && refresh(), ok)),
   delCat: (id, msg) => check(sb.from("categories").delete().eq("id", id), msg).then(ok => (ok && refresh(), ok)),
   delMethod: (id, msg) => check(sb.from("payment_methods").delete().eq("id", id), msg).then(ok => (ok && refresh(), ok)),
   saveMethod: (m, msg) => check(sb.from("payment_methods").upsert({ id:m.id, name:m.name, kind:m.kind, color:m.color, active:m.active }), msg).then(ok => (ok && refresh(), ok)),
@@ -535,7 +595,13 @@ const Store = {
     const r = S.recs.find(x => x.id === p.recurrenceId);
     if (r && r.amount !== t.amount) await check(sb.from("recurrences").update({ amount: t.amount }).eq("id", r.id));
     rememberMethod(t.methodId);
-    toast(msg); refresh(); return true;
+    toast(msg); refresh(); if (S.tab === "pdetail") navBack(); return true;
+  },
+  acceptMany: async list => {
+    const rows = list.map(p => txDb({ id: uid(), type: p.type, amount: p.amount, categoryId: p.categoryId, methodId: p.methodId, date: p.date, note: p.note, recurrenceId: p.recurrenceId, dueDate: p.recurrenceId ? p.date : null }));
+    if (!await check(sb.from("transactions").insert(rows))) return;
+    await check(sb.from("pending_entries").update({ status: "aceptado" }).in("id", list.map(p => p.id)));
+    toast(`${rows.length} movimientos confirmados`); go("resumen", {}, "back");
   },
   discardPending: p => check(sb.from("pending_entries").update({ status: "descartado" }).eq("id", p.id), "Pendiente descartado").then(ok => (ok && refresh(), ok)),
   // Registra el pago de una fecha programada de un fijo (sin pendiente).
@@ -557,6 +623,7 @@ async function onSession(session) {
   if (!session) { userId = null; return showLogin(); }
   if (userId === session.user.id) return;
   userId = session.user.id; S.email = session.user.email || "";
+  if (!S.ready && loadCache()) S.ready = true; // muestra lo último guardado mientras llega lo nuevo
   $("#login").hidden = true; $("#app").hidden = false; $("#fab").hidden = false;
   render();
   await refresh(true);
@@ -742,8 +809,14 @@ function sums(list) {
 }
 function byCategory(list) {
   const m = new Map();
-  for (const t of list) if (t.type === "gasto") m.set(t.categoryId, (m.get(t.categoryId) || 0) + t.amount);
-  return [...m.entries()].map(([id, v]) => ({ c: cat(id), v })).sort((a, b) => b.v - a.v);
+  for (const t of list) if (t.type === "gasto") {
+    const root = rootOf(t.categoryId), e = m.get(root.id) || { c: root, v: 0, subs: new Map() };
+    e.v += t.amount;
+    const sk = root.id === t.categoryId || !t.categoryId ? "" : t.categoryId;
+    e.subs.set(sk, (e.subs.get(sk) || 0) + t.amount);
+    m.set(root.id, e);
+  }
+  return [...m.values()].map(e => ({ ...e, subs: [...e.subs.entries()].map(([id, v]) => ({ c: id ? cat(id) : { name: "Sin subcategoría", color: "var(--muted)" }, v })).sort((a, b) => b.v - a.v) })).sort((a, b) => b.v - a.v);
 }
 // Fechas programadas de los fijos en el mes, con su estado, más los pendientes sueltos (Siri, correo).
 // status: pagado | confirmar (hay pendiente) | porpagar | omitido (pendiente descartado)
@@ -961,19 +1034,26 @@ function closeMonthPicker() { $("#mpick")?.remove(); document.removeEventListene
 const pendingOpen = () => S.pending.filter(p => p.status === "pendiente");
 function render() {
   $("#monthLabel").textContent = monthName(S.ym);
-  const tabOf = { fijos: "resumen", pend: "", apartados: "apartados" };
+  const tabOf = { fijos: "resumen", pend: "", pdetail: "", apartados: "apartados" };
   document.querySelectorAll("#tabs button").forEach(b => b.setAttribute("aria-current", b.dataset.tab === (S.tab in tabOf ? tabOf[S.tab] : S.tab)));
   const n = pendingOpen().length, pb = $("#pendBtn");
-  pb.hidden = !n; pb.querySelector("b").textContent = n; pb.setAttribute("aria-current", S.tab === "pend");
+  pb.hidden = !n; pb.querySelector("b").textContent = n; pb.setAttribute("aria-current", S.tab === "pend" || S.tab === "pdetail");
   $("#migBanner").hidden = !S.needsMigration; $("#migFile").textContent = S.needsMigration;
   const v = $("#view");
-  if (!S.ready) { v.innerHTML = `<div class="empty">Cargando tus datos…</div>`; return; }
+  $("#offBanner").hidden = !S.offline;
+  if (S.offline) $("#offText").textContent = `Sin conexión · mostrando tus datos del ${new Date(S.cacheAt || Date.now()).toLocaleString("es-MX", { day:"numeric", month:"short", hour:"2-digit", minute:"2-digit" })} · Los cambios no se pueden guardar hasta que vuelva la conexión.`;
+  if (!S.ready) {
+    v.innerHTML = S.loadError
+      ? `<div class="loading card"><b>No se pudo cargar</b><div class="sub">${esc(S.loadError)}</div><button class="btn" data-act="retry" style="min-height:44px">Reintentar</button><div class="sub">Se vuelve a intentar solo cuando regrese la conexión.</div></div>`
+      : `<div class="loading"><span class="spinner" aria-hidden="true"></span><div>Conectando con tus datos…</div></div>`;
+    return;
+  }
   const dir = S.navDir, from = S.navFrom || 0; S.navDir = ""; S.navFrom = 0;
   const ghost = dir && !matchMedia("(prefers-reduced-motion: reduce)").matches ? makeGhost(v, from) : null;
   VIEWS[S.tab](v);
   if (ghost) slide(v, ghost, dir, from);
 }
-const VIEWS = { resumen: (v) => viewResumen(v), movs: (v) => viewMovs(v), fijos: (v) => viewFijos(v), apartados: (v) => viewApartados(v), cats: (v) => viewCats(v), pend: (v) => viewPend(v) };
+const VIEWS = { pdetail: (v) => viewPendDetail(v), resumen: (v) => viewResumen(v), movs: (v) => viewMovs(v), fijos: (v) => viewFijos(v), apartados: (v) => viewApartados(v), cats: (v) => viewCats(v), pend: (v) => viewPend(v) };
 // Pinta la pantalla anterior detrás de la actual (para el gesto de regresar), sin cambiar de pantalla.
 function peekParent(v) {
   const t = backTarget(); if (!t) return null;
@@ -1023,7 +1103,7 @@ const go = (tab, extra = {}, dir = "") => {
   if (dir === "fwd") history.pushState({ nav: 1 }, ""); // así el "atrás" del sistema también regresa
 };
 // A dónde regresa la pantalla actual (null si ya está en el inicio de su pestaña).
-const backTarget = () => S.tab === "fijos" || S.tab === "pend" ? ["resumen", {}] : S.tab === "apartados" && S.apPlace ? ["apartados", { apPlace: null }] : S.tab === "cats" && S.setPage ? ["cats", { setPage: null }] : null;
+const backTarget = () => S.tab === "pdetail" ? ["pend", {}] : S.tab === "fijos" || S.tab === "pend" ? ["resumen", {}] : S.tab === "apartados" && S.apPlace ? ["apartados", { apPlace: null }] : S.tab === "cats" && S.setPage ? ["cats", { setPage: null }] : null;
 function goBack(dir = "back") { const t = backTarget(); if (t) go(t[0], t[1], dir); }
 const navBack = () => { if (history.state?.nav) history.back(); else goBack(); };
 window.addEventListener("popstate", () => { if (S.skipPop) { S.skipPop = false; return; } goBack(); });
@@ -1034,22 +1114,24 @@ function viewResumen(v) {
   const strip = cats.map(({c, v}) => `<i style="flex-grow:${v};background:${c.color}" title="${esc(c.name)} ${fmt(v)}"></i>`).join("");
   const legend = cats.slice(0, 8).map(({c, v}) => `<span><i class="sw" style="background:${c.color}"></i>${esc(c.name)} <b class="num">${Math.round(v/s.gasto*100)}%</b></span>`).join("");
   const budgetTotal = catsOf("gasto").reduce((a, c) => a + (c.budget || 0), 0);
-  const rows = catsOf("gasto").map(c => ({c, v: cats.find(x => x.c.id === c.id)?.v || 0}))
+  const rows = topCats("gasto").map(c => cats.find(x => x.c.id === c.id) || { c, v: 0, subs: [] })
     .concat(cats.filter(x => !S.categories.some(c => c.id === x.c.id)))
     .filter(r => r.v || r.c.budget).sort((a, b) => b.v - a.v)
-    .map(({c, v}) => {
+    .map(({c, v, subs}) => {
       const pct = s.gasto ? (v / s.gasto * 100) : 0, b = c.budget || 0, used = b ? v / b * 100 : pct;
-      return `<div class="crow">
-        <div class="nm"><i class="sw" style="background:${c.color}"></i>${esc(c.name)}</div>
+      const body = `<div class="nm"><i class="sw" style="background:${c.color}"></i>${esc(c.name)}${subs.length > 1 || subs[0]?.c.id ? `<span class="chev sm" aria-hidden="true">›</span>` : ""}</div>
         <div class="vals num"><b>${fmt(v)}</b> <span class="sub">${pct.toFixed(1)}%</span></div>
         ${b ? `<div class="sub num" style="grid-column:1/-1">${v > b ? `<span class="over">Excedido por ${fmt(v-b)}</span>` : `Quedan ${fmt(b-v)} de ${fmt(b)}`}</div>` : ""}
-        <div class="bar"><i style="width:${Math.min(100, used)}%;background:${b && v > b ? "var(--warn)" : c.color}"></i></div>
-      </div>`;
+        <div class="bar"><i style="width:${Math.min(100, used)}%;background:${b && v > b ? "var(--warn)" : c.color}"></i></div>`;
+      // Con subcategorías: al tocar se despliega el desglose
+      return subs.length > 1 || subs[0]?.c.id
+        ? `<details class="crow catx"><summary>${body}</summary><div class="subrows">${subs.map(x => `<div class="subrow num"><span><i class="sw" style="background:${x.c.color}"></i>${esc(x.c.name)}</span><b>${fmt(x.v)}</b></div>`).join("")}</div></details>`
+        : `<div class="crow">${body}</div>`;
     }).join("");
   const np = pendingOpen().length;
   v.innerHTML = `
   <div class="grid">
-    ${np ? `<button class="card pendcard" data-act="pend"><b>Tienes ${np} pendiente${np > 1 ? "s" : ""} por confirmar</b><span class="sub">Revísalos y acepta o descarta cada uno ›</span></button>` : ""}
+    ${np ? `<section class="card pendcard">${head(`Por confirmar <span class="pill pend">${np}</span>`, `<button class="btn ghost sm" data-act="pend">Ver todos ›</button>`)}${pendingOpen().slice(0, 3).map(pendRow).join("")}</section>` : ""}
     <section class="card hero">
       <div class="sub">Gastado en ${esc(monthName(S.ym, {month:"long"}))}</div>
       <div class="spent num">${fmt(s.gasto)}</div>
@@ -1097,7 +1179,7 @@ function planRow(it) {
     : it.status === "pagado" ? `<span class="pill ok">${inc ? "Recibido" : "Pagado"}</span>` : `<span class="pill">Omitido</span>`;
   return `<div class="fixed-row">
     <span class="sw" style="background:${c.color};width:12px;height:12px"></span>
-    <div class="mid"><b>${esc(it.name)}</b><div class="sub">${dShort(it.date)}${it.date < todayISO() && isOpen(it) ? ` · <span class="over">vencido</span>` : ""}${it.pe && it.status === "confirmar" ? ` · por confirmar (${SOURCE[it.pe.source] || ""})` : ""}</div></div>
+    <div class="mid" ${it.pe && it.status === "confirmar" ? `data-pdetail="${esc(it.pe.id)}" role="button" style="cursor:pointer"` : ""}><b>${esc(it.name)}</b><div class="sub">${dShort(it.date)}${it.date < todayISO() && isOpen(it) ? ` · <span class="over">vencido</span>` : ""}${it.pe && it.status === "confirmar" ? ` · por confirmar (${SOURCE[it.pe.source] || ""}) ›` : ""}</div></div>
     <b class="num amt ${it.type}">${inc ? "+" : ""}${fmt(it.amount)}</b>${btn}
   </div>`;
 }
@@ -1116,7 +1198,7 @@ const place = id => S.places.find(p => p.id === id);
 function txRow(t) {
   const c = cat(t.categoryId), m = method(t.methodId), g = goal(t.goalId), pl = place(t.placeId);
   const where = [pl?.name, t.instrument, g?.name].filter(Boolean).join(" · ");
-  const name = t.type === "retiro" ? "Retiro de efectivo" : t.type === "ahorro" ? `Apartado${where ? " · " + where : ""}` : t.type === "sacar" ? `Sacado${where ? " · " + where : ""}` : t.type === "rendimiento" ? `Rendimiento${pl ? " · " + pl.name : ""}` : c.name;
+  const name = t.type === "retiro" ? "Retiro de efectivo" : t.type === "ahorro" ? `Apartado${where ? " · " + where : ""}` : t.type === "sacar" ? `Sacado${where ? " · " + where : ""}` : t.type === "rendimiento" ? `Rendimiento${pl ? " · " + pl.name : ""}` : catLabel(t.categoryId);
   const color = t.type === "retiro" ? "var(--muted)" : isApartado(t) ? (pl?.color || g?.color || "var(--brand)") : c.color;
   const sign = t.type === "ingreso" || t.type === "sacar" ? "+" : t.type === "retiro" || t.type === "rendimiento" ? (t.amount < 0 ? "−" : "↗ ") : "−";
   return `<button class="tx" data-edit="${esc(t.id)}">
@@ -1129,13 +1211,13 @@ function txRow(t) {
 function viewMovs(v) {
   let list = monthTx();
   if (S.onlyFixed) list = list.filter(isFixedTx);
-  if (S.filterCat) list = list.filter(t => t.categoryId === S.filterCat);
+  if (S.filterCat) list = list.filter(t => t.categoryId === S.filterCat || cat(t.categoryId).parentId === S.filterCat);
   if (S.filterMethod) list = list.filter(t => (t.methodId || "-") === S.filterMethod);
   if (S.search) { const q = S.search.toLowerCase(); list = list.filter(t => t.note.toLowerCase().includes(q) || cat(t.categoryId).name.toLowerCase().includes(q)); }
   list.sort((a, b) => b.date.localeCompare(a.date) || String(b.created).localeCompare(String(a.created)));
   const s = sums(list), groups = {};
   list.forEach(t => (groups[t.date] = groups[t.date] || []).push(t));
-  const opts = `<option value="">Todas las categorías</option>` + S.categories.map(c => `<option value="${esc(c.id)}" ${S.filterCat === c.id ? "selected" : ""}>${esc(c.name)}</option>`).join("");
+  const opts = `<option value="">Todas las categorías</option>` + allCatOptions("gasto", S.filterCat) + allCatOptions("ingreso", S.filterCat);
   const mopts = `<option value="">Todos los métodos</option>` + S.methods.map(m => `<option value="${esc(m.id)}" ${S.filterMethod === m.id ? "selected" : ""}>${esc(m.name)}</option>`).join("") + `<option value="-" ${S.filterMethod === "-" ? "selected" : ""}>Sin método</option>`;
   v.innerHTML = `
     <div class="toolbar">
@@ -1153,7 +1235,7 @@ function viewMovs(v) {
   $("#fm").addEventListener("change", e => { S.filterMethod = e.target.value; render(); });
   $("#onlyFixed").onclick = () => { S.onlyFixed = !S.onlyFixed; render(); };
   $("#csv").addEventListener("click", () => {
-    const rows = [["Fecha","Tipo","Categoría","Método","Lugar","Instrumento","Nota","Monto","Fijo"]].concat(list.map(t => [t.date, t.type, t.type === "gasto" || t.type === "ingreso" ? cat(t.categoryId).name : "", method(t.methodId)?.name || "", place(t.placeId)?.name || "", t.instrument || "", t.note, t.amount, isFixedTx(t) ? "sí" : "no"]));
+    const rows = [["Fecha","Tipo","Categoría","Subcategoría","Método","Lugar","Instrumento","Nota","Monto","Fijo"]].concat(list.map(t => [t.date, t.type, t.type === "gasto" || t.type === "ingreso" ? rootOf(t.categoryId).name : "", t.type === "gasto" || t.type === "ingreso" ? (cat(t.categoryId).parentId ? cat(t.categoryId).name : "") : "", method(t.methodId)?.name || "", place(t.placeId)?.name || "", t.instrument || "", t.note, t.amount, isFixedTx(t) ? "sí" : "no"]));
     const csv = "﻿" + rows.map(r => r.map(x => `"${String(x).replace(/"/g, '""')}"`).join(",")).join("\n");
     const a = document.createElement("a");
     a.href = URL.createObjectURL(new Blob([csv], {type:"text/csv"})); a.download = `finanzas-${S.ym}.csv`; a.click();
@@ -1201,18 +1283,48 @@ function viewFijos(v) {
   </div>`;
 }
 
+// Renglón de un movimiento por confirmar: al tocarlo se abre su detalle.
+function pendRow(p) {
+  const c = cat(p.categoryId), inc = p.type === "ingreso";
+  return `<button class="fixed-row rowbtn" data-pdetail="${esc(p.id)}">
+    <span class="sw" style="background:${p.type === "retiro" ? "var(--muted)" : c.color};width:12px;height:12px"></span>
+    <div class="mid"><b>${esc(p.note || c.name)}</b><div class="sub">${SOURCE[p.source]} · ${p.type === "retiro" ? "Retiro" : esc(catLabel(p.categoryId))} · ${dShort(p.date)}</div></div>
+    <b class="num amt ${p.type}">${inc ? "+" : ""}${fmt(p.amount)}</b><span class="chev" aria-hidden="true">›</span>
+  </button>`;
+}
+function viewPendDetail(v) {
+  const p = S.pending.find(x => x.id === S.pendId && x.status === "pendiente");
+  if (!p) { v.innerHTML = `<div class="grid">${back("pend", "Por confirmar")}<div class="empty">Este movimiento ya se confirmó o se descartó.</div></div>`; return; }
+  const r = S.recs.find(x => x.id === p.recurrenceId), m = method(p.methodId), raw = p.raw || {}, inc = p.type === "ingreso";
+  const kv = (k, val) => val ? `<div class="kv"><span class="sub">${k}</span><span>${val}</span></div>` : "";
+  const past = r ? S.tx.filter(t => t.recurrenceId === r.id).sort((a, b) => b.date.localeCompare(a.date)).slice(0, 6) : [];
+  const origin = p.source === "recurrente" && r ? `${kv("Fijo", `<b>${esc(r.name)}</b>`)}${kv("Se repite", esc(freqText(r)))}${kv("Programado para", dayName(p.date))}${kv("Monto sugerido", `<span class="num">${fmt(r.amount)}</span>`)}`
+    : p.source === "siri" ? `${kv("Lo que dijiste", esc([raw.monto, raw.concepto].filter(Boolean).join(" · ")))}${kv("Método que mencionaste", esc(raw.metodo || ""))}${kv("Recibido", p.created ? new Date(p.created).toLocaleString("es-MX", { dateStyle:"medium", timeStyle:"short" }) : "")}`
+    : p.source === "gmail" ? `${kv("Correo", esc(raw.subject || ""))}${kv("Cuenta", raw.account ? "**" + esc(raw.account) : "")}${kv("Hora", esc(raw.time || ""))}${kv("Folio", esc(raw.folio || ""))}${kv("Remitente", esc(raw.from || ""))}` : "";
+  v.innerHTML = `
+  <div class="grid">
+    ${back("pend", "Por confirmar")}
+    <section class="card hero">
+      <div class="sub"><span class="pill">${SOURCE[p.source]}</span> ${p.type === "retiro" ? "Retiro" : inc ? "Ingreso" : "Gasto"} por confirmar</div>
+      <div class="spent num" style="color:${inc ? "var(--income)" : p.type === "retiro" ? "var(--ink)" : "var(--spend)"}">${inc ? "+" : ""}${fmt(p.amount)}</div>
+      <div style="font-weight:700;margin-top:4px">${esc(p.note || cat(p.categoryId).name)}</div>
+      <div class="kvs">${kv("Fecha", dayName(p.date))}${p.type !== "retiro" ? kv("Categoría", esc(catLabel(p.categoryId))) : ""}${kv("Método de pago", esc(m?.name || "Sin método"))}</div>
+      <div class="rowbtns" style="margin-top:16px;flex-wrap:wrap">
+        <button class="btn ${inc ? "inc" : p.type === "gasto" ? "spend" : ""}" data-openpend="${esc(p.id)}" style="min-height:44px">Confirmar…</button>
+        <button class="btn danger" data-discard="${esc(p.id)}" style="min-height:44px">Descartar</button>
+        ${r ? `<button class="btn ghost" data-editrec="${esc(r.id)}" style="min-height:44px">Ver el fijo</button>` : ""}
+      </div>
+    </section>
+    ${origin ? `<section class="card"><h2>De dónde viene</h2><div class="kvs">${origin}</div></section>` : ""}
+    ${r ? `<section class="card"><h2>Últimos pagos de ${esc(r.name)}</h2>${past.length ? past.map(t => `<div class="subrow num" style="padding:6px 0"><span>${dayName(t.date)}</span><b>${fmt(t.amount)}</b></div>`).join("") : `<div class="sub">Aún no hay pagos registrados de este fijo en los últimos meses.</div>`}</section>` : ""}
+  </div>`;
+}
 function viewPend(v) {
   const list = pendingOpen();
-  v.innerHTML = `<section class="card">${head("Pendientes por confirmar")}
-    <div class="sub" style="margin-bottom:8px">Revisa cada uno: puedes cambiar el monto, la categoría o la fecha antes de aceptarlo.</div>
-    ${list.length ? list.map(p => { const c = cat(p.categoryId), inc = p.type === "ingreso";
-      return `<div class="fixed-row">
-        <span class="sw" style="background:${p.type === "retiro" ? "var(--muted)" : c.color};width:12px;height:12px"></span>
-        <div class="mid"><b>${esc(p.note || c.name)}</b><div class="sub">${SOURCE[p.source]} · ${p.type === "retiro" ? "Retiro" : esc(c.name)} · ${dShort(p.date)}</div></div>
-        <b class="num amt ${p.type}">${inc ? "+" : ""}${fmt(p.amount)}</b>
-        <button class="btn sm" data-openpend="${esc(p.id)}">Revisar</button>
-      </div>`; }).join("") : `<div class="empty">No tienes pendientes. ¡Todo al día!</div>`}
-  </section>`;
+  v.innerHTML = `<div class="grid">${back("resumen", "Resumen")}<section class="card">${head("Por confirmar", list.length > 1 ? `<button class="btn ghost sm" data-act="confirm-all">Confirmar todos</button>` : "")}
+    <div class="sub" style="margin-bottom:8px">Toca uno para ver su detalle. Puedes cambiar el monto, la categoría o la fecha antes de confirmarlo.</div>
+    ${list.length ? list.map(pendRow).join("") : `<div class="empty">No tienes pendientes. ¡Todo al día!</div>`}
+  </section></div>`;
 }
 
 // ---------- Apartados ----------
@@ -1318,11 +1430,12 @@ function viewCats(v) {
   }
   const pal = document.documentElement.dataset.palette || "clasico", mode = document.documentElement.dataset.theme || "auto";
   const dark = mode === "dark" || (mode === "auto" && matchMedia("(prefers-color-scheme: dark)").matches);
-  const sec = kind => catsOf(kind).map(c => `<div class="fixed-row">
-      <span class="sw" style="background:${c.color};width:14px;height:14px"></span>
-      <div class="mid"><b>${esc(c.name)}</b>${kind === "gasto" ? `<div class="sub num">${c.budget ? "Presupuesto " + fmt(c.budget) + " al mes" : "Sin presupuesto"}</div>` : ""}</div>
+  const catRow = (c, kind) => `<div class="fixed-row compact${c.parentId ? " subcat" : ""}">
+      <span class="sw" style="background:${c.color};width:${c.parentId ? 10 : 14}px;height:${c.parentId ? 10 : 14}px"></span>
+      <div class="mid"><b>${esc(c.name)}</b>${kind === "gasto" && !c.parentId ? `<div class="sub num">${c.budget ? "Presupuesto " + fmt(c.budget) + " al mes" : "Sin presupuesto"}</div>` : ""}</div>
       <span class="rowbtns"><button class="btn ghost sm" data-editcat="${esc(c.id)}">Editar</button><button class="btn danger sm" data-delcat="${esc(c.id)}">Eliminar</button></span>
-    </div>`).join("");
+    </div>`;
+  const sec = kind => topCats(kind).map(c => `<div class="catgroup">${catRow(c, kind)}${subsOf(c.id).map(x => catRow(x, kind)).join("")}${S.hasSubcats ? `<button class="addsub" data-newsub="${esc(c.id)}">+ Subcategoría</button>` : ""}</div>`).join("");
   const pages = {
     cats: () => `<section class="card">${head("De gasto", `<button class="btn sm" data-newcat="gasto">Nueva</button>`)}${sec("gasto")}</section>
       <section class="card">${head("De ingreso", `<button class="btn sm" data-newcat="ingreso">Nueva</button>`)}${sec("ingreso")}</section>`,
@@ -1405,14 +1518,55 @@ function viewCats(v) {
 
 // ---------- dialogs ----------
 const dlg = $("#dlg"), form = $("#dlgForm");
-function openDialog(html, bind) { form.innerHTML = html; bind(form); if (!dlg.open) dlg.showModal(); }
+function openDialog(html, bind) { form.innerHTML = html; form.querySelectorAll(".money input").forEach(moneyInit); bind(form); if (!dlg.open) dlg.showModal(); }
 const close = () => dlg.close();
 const foot = (isNew, saveLabel) => `<div class="mfoot">${isNew ? "" : `<button type="button" class="btn danger" data-del>Eliminar</button>`}<span class="spacer"></span><button type="button" class="btn ghost" data-close>Cancelar</button><button type="button" class="btn" data-save>${saveLabel || (isNew ? "Agregar" : "Guardar cambios")}</button></div>`;
 const NEW = "__nuevo";
-const catOptions = (kind, sel) => catsOf(kind).map(c => `<option value="${esc(c.id)}" ${c.id === sel ? "selected" : ""}>${esc(c.name)}</option>`).join("") + `<option value="${NEW}">+ Agregar categoría nueva</option>`;
+const catOptions = (kind, sel) => { const top = sel && cat(sel).parentId ? cat(sel).parentId : sel;
+  return topCats(kind).map(c => `<option value="${esc(c.id)}" ${c.id === top ? "selected" : ""}>${esc(c.name)}</option>`).join("") + `<option value="${NEW}">+ Agregar categoría nueva</option>`; };
+// Todas las categorías con sus subcategorías debajo (para filtros y para mover al eliminar).
+const allCatOptions = (kind, sel, skip) => topCats(kind).flatMap(c => [c, ...subsOf(c.id)]).filter(c => c.id !== skip)
+  .map(c => `<option value="${esc(c.id)}" ${c.id === sel ? "selected" : ""}>${c.parentId ? "\u00a0\u00a0\u00a0↳ " : ""}${esc(c.name)}</option>`).join("");
+const subOptions = (parent, sel) => `<option value="">Sin subcategoría</option>` + subsOf(parent).map(c => `<option value="${esc(c.id)}" ${c.id === sel ? "selected" : ""}>${esc(c.name)}</option>`).join("") + `<option value="${NEW}">+ Agregar subcategoría nueva</option>`;
+const subField = `<label class="f" data-subbox hidden>Subcategoría<select name="subId"></select></label>`;
+// Muestra la subcategoría solo si la categoría elegida tiene subcategorías; el valor final es la sub o la categoría.
+function bindSub(f, initial) {
+  const sel = f.categoryId, sub = f.subId, box = f.querySelector("[data-subbox]");
+  const sync = keep => { const top = sel.value, has = top && top !== NEW && subsOf(top).length > 0; box.hidden = !has; sub.innerHTML = has ? subOptions(top, keep) : ""; };
+  sel.addEventListener("change", () => { if (sel.value !== NEW) sync(""); });
+  inlineNew(f, sub, () => ({ parent: sel.value }));
+  sync(initial && cat(initial).parentId ? initial : "");
+  return { sync, value: () => (!box.hidden && sub.value && sub.value !== NEW) ? sub.value : sel.value };
+}
 const methodOptions = (sel, filter = () => true) => `<option value="">Sin método</option>` + S.methods.filter(m => (m.active || m.id === sel) && filter(m)).map(m => `<option value="${esc(m.id)}" ${m.id === sel ? "selected" : ""}>${esc(m.name)}</option>`).join("") + `<option value="${NEW}">+ Agregar método nuevo</option>`;
-const amountField = (label, val) => `<label class="f big">${label}<input name="amount" type="text" inputmode="decimal" autocomplete="off" value="${esc(val)}" placeholder="0.00"></label>`;
-const freqField = (r, salary) => `<label class="f">Frecuencia<select name="freq">${Object.entries(FREQS).filter(([k]) => k !== "salario" || salary || r.freq === "salario").map(([k, l]) => `<option value="${k}" ${k === r.freq ? "selected" : ""}>${k === "quincenal" ? "Quincenal (cada 15 días)" : k === "salario" ? "Quincena de salario (día 15 y último día del mes)" : l}</option>`).join("")}</select></label>`;
+const amountField = (label, val) => `<label class="f big">${label}<span class="money"><span class="cur">$</span><span class="mwrap"><span class="mirror" aria-hidden="true"></span><input name="amount" type="text" inputmode="decimal" autocomplete="off" value="${esc(val === "" || val == null ? "" : +val % 1 ? (+val).toFixed(2) : String(+val))}"></span></span></label>`;
+// Formato de dinero mientras se escribe: comas de miles, máximo 2 decimales y los centavos faltantes en gris.
+function moneyFormat(raw) {
+  const s = String(raw).replace(/[^\d.]/g, ""), i = s.indexOf(".");
+  let int = (i < 0 ? s : s.slice(0, i)).replace(/^0+(?=\d)/, "").slice(0, 10);
+  const dec = i < 0 ? null : s.slice(i + 1).replace(/\./g, "").slice(0, 2);
+  if (!int && dec !== null) int = "0";
+  const text = (int ? int.replace(/\B(?=(\d{3})+(?!\d))/g, ",") : "") + (dec === null ? "" : "." + dec);
+  const hint = !int ? "0.00" : dec === null ? ".00" : "0".repeat(2 - dec.length);
+  return { text, hint };
+}
+function moneyInit(input) {
+  const mirror = input.parentNode.querySelector(".mirror");
+  const paint = () => { const { text, hint } = moneyFormat(input.value); mirror.innerHTML = `<span>${esc(text)}</span><span class="hint">${hint}</span>`; };
+  const reformat = () => {
+    const pos = input.selectionStart ?? input.value.length, sig = input.value.slice(0, pos).replace(/[^\d.]/g, "").length;
+    const { text } = moneyFormat(input.value);
+    input.value = text;
+    let n = 0, c = 0; while (c < text.length && n < sig) { if (/[\d.]/.test(text[c])) n++; c++; }
+    try { input.setSelectionRange(c, c); } catch {}
+    paint();
+  };
+  // Si el teclado escribe coma como decimal, se toma como punto.
+  input.addEventListener("beforeinput", e => { if (e.data === ",") { e.preventDefault(); input.setRangeText(".", input.selectionStart, input.selectionEnd, "end"); reformat(); } });
+  input.addEventListener("input", reformat);
+  input.value = moneyFormat(input.value).text; paint();
+}
+const freqField = (r, salary) => `<label class="f">Frecuencia<select name="freq">${Object.entries(FREQS).filter(([k]) => (k !== "salario" || salary || r.freq === "salario") && (k !== "bimestral" || S.hasSubcats || r.freq === "bimestral")).map(([k, l]) => `<option value="${k}" ${k === r.freq ? "selected" : ""}>${k === "quincenal" ? "Quincenal (cada 15 días)" : k === "salario" ? "Quincena de salario (día 15 y último día del mes)" : k === "bimestral" ? "Bimestral (cada 2 meses)" : l}</option>`).join("")}</select></label>`;
 const modeField = r => `<label class="f">Cuando toque<select name="mode"><option value="confirmar" ${r.mode !== "recordatorio" ? "selected" : ""}>Avisarme para confirmar el monto</option><option value="recordatorio" ${r.mode === "recordatorio" ? "selected" : ""}>Solo recordarme (lo registro yo)</option></select></label>`;
 
 // "+ Agregar categoría/método nuevo" dentro de un select: muestra un campo para crearlo ahí mismo y lo deja seleccionado.
@@ -1422,7 +1576,7 @@ function inlineNew(f, sel, kind) {
     if (sel.value !== NEW) { prev = sel.value; return; }
     const box = document.createElement("div");
     box.className = "inline-new";
-    box.innerHTML = `<input type="text" maxlength="40" placeholder="${kind === "method" ? "Ej. BBVA Crédito" : kind === "place" ? "Ej. Nu, CETES, GBM" : "Ej. Colegiatura"}" aria-label="Nombre"><button type="button" class="btn sm">Crear</button><button type="button" class="btn ghost sm">Cancelar</button>`;
+    box.innerHTML = `<input type="text" maxlength="40" placeholder="${kind === "method" ? "Ej. BBVA Crédito" : kind === "place" ? "Ej. Nu, CETES, GBM" : sel.name === "subId" ? "Ej. Internet" : "Ej. Colegiatura"}" aria-label="Nombre"><button type="button" class="btn sm">Crear</button><button type="button" class="btn ghost sm">Cancelar</button>`;
     sel.closest("label").after(box);
     sel.disabled = true;
     const [inp, ok, no] = box.children;
@@ -1432,6 +1586,12 @@ function inlineNew(f, sel, kind) {
       const name = inp.value.trim(); if (!name) { inp.focus(); return; }
       ok.disabled = true;
       const id = uid(), k = typeof kind === "function" ? kind() : kind;
+      if (k && typeof k === "object") { // subcategoría nueva dentro de la categoría elegida
+        const parent = cat(k.parent), c = { id, name, kind: parent.kind, color: parent.color, budget: 0, parentId: parent.id };
+        if (!await Store.saveCat(c, "Subcategoría agregada")) { ok.disabled = false; return; }
+        if (!S.categories.some(x => x.id === id)) S.categories.push(c);
+        sel.innerHTML = subOptions(parent.id, id); sel.value = id; prev = id; done(); return;
+      }
       if (k === "place") {
         const p = { id, name, kind: guessPlaceKind(name), color: PALETTE[(S.places.length + 2) % PALETTE.length], rate: 0, active: true };
         if (!await Store.savePlace(p, `Lugar agregado (${KIND_AP[p.kind]})`)) { ok.disabled = false; return; }
@@ -1477,6 +1637,7 @@ function openTx(t, preset = {}) {
       <div class="seg sm" role="group" data-for="ap"><button type="button" data-ap="ahorro" aria-pressed="${apMode === "ahorro"}">Apartar</button><button type="button" data-ap="sacar" aria-pressed="${apMode === "sacar"}">Sacar</button></div>
       ${amountField("Monto", t.amount)}
       <label class="f" data-for="cat">Categoría<select name="categoryId"></select></label>
+      <div data-for="cat" style="display:contents">${subField}</div>
       <label class="f" data-for="ap"><span data-plabel>¿Dónde lo apartas?</span><select name="placeId">${placeOptions(t.placeId ?? lastPlace())}</select></label>
       <div data-for="inst" class="instbox">
         <label class="f">Instrumento (opcional)
@@ -1492,7 +1653,17 @@ function openTx(t, preset = {}) {
       <div class="sub" data-for="retiro">Un retiro pasa dinero de tu cuenta a efectivo. No cuenta como gasto; registra después lo que pagues en efectivo con el método Efectivo.</div>
       ${isNew ? `<div data-for="fijo" class="fijobox">
         <label class="check"><input type="checkbox" name="isFixed"> <span data-fijolabel>Es fijo (se repite)</span></label>
-        <div data-fijo hidden style="display:grid;gap:12px"><div data-freqbox></div>${modeField({})}</div>
+        <div data-fijo hidden style="display:grid;gap:12px">
+          <label class="f">¿Es de un fijo que ya tienes?<select name="existRec"></select></label>
+          <div data-newrec style="display:grid;gap:12px"><div data-freqbox></div>${modeField({})}</div>
+          <div data-oldrec hidden style="display:grid;gap:12px">
+            <label class="f">¿A qué fecha corresponde?<select name="occ"></select></label>
+            <div data-shiftbox hidden class="shiftbox"><div class="sub" data-shiftq></div>
+              <label class="check"><input type="radio" name="shift" value="no" checked> No, solo esta vez</label>
+              <label class="check"><input type="radio" name="shift" value="si"> Sí, a partir de ahora</label></div>
+            <div class="sub" data-salnote hidden>La quincena de salario siempre es el día 15 y el último día del mes; su calendario no cambia.</div>
+          </div>
+        </div>
       </div>` : linked ? `<div class="sub">Registrado desde el fijo ${esc(rec?.name || "")}${t.dueDate ? ` del ${dShort(t.dueDate)}` : ""}.</div>` : ""}
     </div>${foot(isNew)}`,
   f => {
@@ -1505,13 +1676,52 @@ function openTx(t, preset = {}) {
     const apply = () => {
       const cats = type === "gasto" || type === "ingreso";
       show("cat", cats); show("ap", tab() === "apartado"); show("retiro", type === "retiro"); show("fijo", cats);
-      if (cats) { const keep = catsOf(type).some(c => c.id === f.categoryId.value) ? f.categoryId.value : t.type === type ? t.categoryId : catsOf(type)[0]?.id; f.categoryId.innerHTML = catOptions(type, keep); }
+      if (cats) { const keep = catsOf(type).some(c => c.id === picker?.value()) ? picker.value() : t.type === type ? t.categoryId : topCats(type)[0]?.id; f.categoryId.innerHTML = catOptions(type, keep); picker?.sync(cat(keep).parentId ? keep : ""); fillRecs(); }
       f.querySelector("[data-plabel]").textContent = apMode === "sacar" ? "¿De dónde lo sacas?" : "¿Dónde lo apartas?";
       setMethods(); setFreq(); setInst();
       const sv = f.querySelector("[data-save]"); sv.classList.toggle("spend", type === "gasto"); sv.classList.toggle("inc", type === "ingreso");
       const fl = f.querySelector("[data-fijolabel]"); if (fl) fl.textContent = type === "ingreso" ? "Es un ingreso fijo (se repite)" : "Es un gasto fijo (se repite)";
     };
+    // Q. Pago de un fijo que ya existe: elegir el fijo, la fecha programada que cubre y si se recorre el calendario.
+    const recOf = () => S.recs.find(r => r.id === f.existRec?.value);
+    const fillRecs = () => { if (!f.existRec) return; const cur = f.existRec.value; f.existRec.innerHTML = `<option value="">No, es un fijo nuevo</option>` + S.recs.filter(r => r.type === type && r.active).map(r => `<option value="${esc(r.id)}" ${r.id === cur ? "selected" : ""}>${esc(r.name)} · ${esc(freqText(r))}</option>`).join(""); syncRec(); };
+    const openOccs = r => { // fechas programadas sin pagar: de 3 meses atrás a 2 meses adelante
+      const from = isoAdd(f.date.value || todayISO(), -92), to = isoAdd(f.date.value || todayISO(), 62), out = [];
+      for (let d = occOnOrAfter(r, from); d <= to && out.length < 60; d = occOnOrAfter(r, isoAdd(d, 1)))
+        if (!S.tx.some(x => x.recurrenceId === r.id && x.dueDate === d)) out.push(d);
+      return out;
+    };
+    const syncShift = () => {
+      const r = recOf(), occ = f.occ?.value, date = f.date.value;
+      const diff = r && occ && date && occ !== date;
+      f.querySelector("[data-salnote]").hidden = !(r && r.freq === "salario" && diff);
+      f.querySelector("[data-shiftbox]").hidden = !(diff && r.freq !== "salario");
+      if (diff) f.querySelector("[data-shiftq]").innerHTML = `Pagaste el <b>${dShort(date)}</b> y estaba programado el <b>${dShort(occ)}</b>. ¿Cambiar las próximas fechas?`;
+    };
+    const syncRec = () => {
+      const r = recOf(); if (!f.existRec) return;
+      f.querySelector("[data-newrec]").hidden = !!r; f.querySelector("[data-oldrec]").hidden = !r;
+      if (!r) return;
+      const occs = openOccs(r), date = f.date.value || todayISO();
+      const best = occs.slice().sort((a, b) => Math.abs(isoDiff(a, date)) - Math.abs(isoDiff(b, date)))[0];
+      f.occ.innerHTML = occs.map(d => `<option value="${d}" ${d === best ? "selected" : ""}>${dayName(d)}${d < todayISO() ? " (atrasado)" : ""}</option>`).join("") || `<option value="">No hay fechas pendientes</option>`;
+      syncShift();
+    };
+    f.existRec?.addEventListener("change", () => {
+      const r = recOf();
+      if (r) { // llena con los datos del fijo (el monto se puede cambiar)
+        f.categoryId.innerHTML = catOptions(type, r.categoryId); picker.sync(cat(r.categoryId).parentId ? r.categoryId : "");
+        if (r.methodId) f.methodId.value = r.methodId;
+        if (!parseAmount(f.amount.value)) { f.amount.value = String(r.amount); f.amount.dispatchEvent(new Event("input")); }
+        if (!f.note.value) f.note.value = r.name;
+      }
+      syncRec();
+    });
+    f.occ?.addEventListener("change", syncShift);
+    f.date.addEventListener("change", syncRec);
+    let picker = null;
     apply();
+    picker = bindSub(f, t.categoryId);
     inlineNew(f, f.categoryId, () => type);
     f.categoryId.addEventListener("change", () => { if (f.categoryId.value !== NEW) setFreq(); });
     inlineNew(f, f.methodId, "method");
@@ -1540,7 +1750,7 @@ function openTx(t, preset = {}) {
     f.instq.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); search(); } });
     f.instq.addEventListener("input", () => { sym = ""; });
     results.addEventListener("click", e => { const b = e.target.closest("[data-sym]"); if (!b) return; sym = b.dataset.sym; f.instq.value = sym; results.innerHTML = `<div class="sub">Elegiste <b>${esc(sym)}</b>.</div>`; });
-    f.isFixed?.addEventListener("change", () => { f.querySelector("[data-fijo]").hidden = !f.isFixed.checked; setFreq(); });
+    f.isFixed?.addEventListener("change", () => { f.querySelector("[data-fijo]").hidden = !f.isFixed.checked; setFreq(); fillRecs(); });
     f.querySelector("[data-close]").onclick = close;
     f.querySelector("[data-del]")?.addEventListener("click", () => { if (confirm("¿Eliminar este movimiento?")) { close(); Store.delTx(t.id, "Movimiento eliminado"); } });
     f.querySelector("[data-save]").onclick = async () => {
@@ -1548,9 +1758,10 @@ function openTx(t, preset = {}) {
       if (!(amount > 0)) { f.amount.focus(); toast("Escribe un monto mayor que cero"); return; }
       if (!f.date.value) { f.date.focus(); return; }
       if ((rt === "gasto" || rt === "ingreso") && (!f.categoryId.value || f.categoryId.value === NEW)) { toast("Elige una categoría"); return; }
+      if (f.subId?.value === NEW) { toast("Termina de crear la subcategoría o elige otra"); return; }
       if (ap && (!f.placeId.value || f.placeId.value === NEW) && (isNew || t.placeId)) { toast("Elige dónde está el dinero"); return; }
       const methodId = f.methodId.value === NEW ? "" : f.methodId.value;
-      const rec = { ...t, type: rt, amount: Math.round(amount*100)/100, categoryId: rt === "gasto" || rt === "ingreso" ? f.categoryId.value : null, goalId: ap ? f.goalId.value || null : null, methodId, date: f.date.value, note: f.note.value.trim() };
+      const rec = { ...t, type: rt, amount: Math.round(amount*100)/100, categoryId: rt === "gasto" || rt === "ingreso" ? picker.value() : null, goalId: ap ? f.goalId.value || null : null, methodId, date: f.date.value, note: f.note.value.trim() };
       if (ap || t.placeId !== undefined) rec.placeId = ap ? f.placeId.value || null : null;
       const inv = ap && place(rec.placeId)?.kind === "inversion" && (sym || f.instq.value.trim());
       if (ap || t.instrument !== undefined) { rec.instrument = null; rec.units = null; }
@@ -1567,7 +1778,22 @@ function openTx(t, preset = {}) {
         } else toast(`No encontré "${symbol}". Se guardó sin instrumento.`);
         sv.disabled = false;
       }
-      if (isNew && f.isFixed?.checked && (rt === "gasto" || rt === "ingreso")) {
+      const old = isNew && f.isFixed?.checked && (rt === "gasto" || rt === "ingreso") ? recOf() : null;
+      if (old) { // pago de un fijo existente
+        const occ = f.occ.value;
+        if (!occ) { toast("Ese fijo no tiene fechas pendientes; desmarca \"Es fijo\" o elige otro"); return; }
+        rec.recurrenceId = old.id; rec.dueDate = occ;
+        const pe = S.pending.find(p => p.recurrenceId === old.id && p.date === occ && p.status === "pendiente");
+        if (pe) await sb.from("pending_entries").update({ status: "aceptado" }).eq("id", pe.id);
+        const upd = {};
+        if (old.amount !== rec.amount) upd.amount = rec.amount; // sugerencia para la próxima vez
+        if (occ !== rec.date && old.freq !== "salario" && f.querySelector("[name=shift]:checked")?.value === "si") {
+          const nr = { ...old, start: rec.date, day: +rec.date.slice(8) };
+          Object.assign(upd, { start_date: nr.start, day: nr.freq === "mensual" || nr.freq === "bimestral" ? nr.day : null, next_date: occOnOrAfter(nr, isoAdd(rec.date, 1)) });
+        }
+        if (Object.keys(upd).length) await check(sb.from("recurrences").update(upd).eq("id", old.id));
+      }
+      if (isNew && f.isFixed?.checked && !old && (rt === "gasto" || rt === "ingreso")) {
         const r = { id: uid(), name: rec.note || cat(rec.categoryId).name, type: rt, amount: rec.amount, original: rec.amount, categoryId: rec.categoryId, methodId, freq: f.freq.value, start: rec.date, day: +rec.date.slice(8), mode: f.mode.value, active: true };
         r.next = occOnOrAfter(r, isoAdd(rec.date, 1));
         if (!await check(sb.from("recurrences").insert(recDb(r)))) return;
@@ -1578,7 +1804,7 @@ function openTx(t, preset = {}) {
       rememberMethod(methodId);
       if (ap && rec.placeId) { try { localStorage.setItem(lastPlaceKey, rec.placeId); } catch {} }
       if (isNew && ymOf(rec.date) !== S.ym) S.ym = ymOf(rec.date);
-      const msg = !isNew ? "Cambios guardados" : rt === "ahorro" ? "Dinero apartado" : rt === "sacar" ? "Registrado: dinero sacado" : rec.recurrenceId ? "Movimiento agregado y guardado como fijo" : "Movimiento agregado";
+      const msg = !isNew ? "Cambios guardados" : rt === "ahorro" ? "Dinero apartado" : rt === "sacar" ? "Registrado: dinero sacado" : old ? `Pago de ${old.name} registrado` : rec.recurrenceId ? "Movimiento agregado y guardado como fijo" : "Movimiento agregado";
       await Store.saveTx(rec, msg);
       if (rec.recurrenceId || ap) refresh();
     };
@@ -1607,13 +1833,14 @@ function openPending(p) {
     <div class="mbody">
       <div class="sub">${SOURCE[p.source]}${p.recurrenceId ? ` · programado para el ${dShort(p.date)}` : ""}. Revisa el monto antes de aceptar.</div>
       ${amountField("Monto", p.amount)}
-      ${type !== "retiro" ? `<label class="f">Categoría<select name="categoryId">${catOptions(type, p.categoryId)}</select></label>` : ""}
+      ${type !== "retiro" ? `<label class="f">Categoría<select name="categoryId">${catOptions(type, p.categoryId)}</select></label>${subField}` : ""}
       <label class="f">Método de pago<select name="methodId">${methodOptions(p.methodId)}</select></label>
       <label class="f">Fecha<input name="date" type="date" value="${esc(p.date)}"></label>
       <label class="f">Nota<input name="note" type="text" maxlength="120" value="${esc(p.note)}"></label>
     </div>
     <div class="mfoot"><button type="button" class="btn danger" data-discard>Descartar</button><span class="spacer"></span><button type="button" class="btn ghost" data-close>Después</button><button type="button" class="btn ${type === "gasto" ? "spend" : type === "ingreso" ? "inc" : ""}" data-save>Aceptar</button></div>`,
   f => {
+    const picker = f.categoryId ? bindSub(f, p.categoryId) : null;
     if (f.categoryId) inlineNew(f, f.categoryId, () => type);
     inlineNew(f, f.methodId, "method");
     f.querySelector("[data-close]").onclick = close;
@@ -1623,7 +1850,7 @@ function openPending(p) {
       if (!(amount > 0)) { f.amount.focus(); toast("Escribe un monto mayor que cero"); return; }
       if (f.categoryId && (!f.categoryId.value || f.categoryId.value === NEW)) { toast("Elige una categoría"); return; }
       close();
-      await Store.acceptPending(p, { type, amount: Math.round(amount*100)/100, categoryId: f.categoryId ? f.categoryId.value : null, methodId: f.methodId.value === NEW ? "" : f.methodId.value, date: f.date.value || p.date, note: f.note.value.trim() });
+      await Store.acceptPending(p, { type, amount: Math.round(amount*100)/100, categoryId: picker ? picker.value() : null, methodId: f.methodId.value === NEW ? "" : f.methodId.value, date: f.date.value || p.date, note: f.note.value.trim() });
     };
     setTimeout(() => f.amount.select(), 50);
   });
@@ -1640,6 +1867,7 @@ function openRec(r) {
       <label class="f">Nombre<input name="name" maxlength="60" value="${esc(r.name)}" placeholder="Ej. Renta"></label>
       ${amountField(isNew ? "Monto" : "Monto (se sugiere al confirmar)", r.amount)}
       <label class="f">Categoría<select name="categoryId">${catOptions(type, r.categoryId)}</select></label>
+      ${subField}
       <label class="f">Método de pago<select name="methodId">${methodOptions(r.methodId)}</select></label>
       <div data-freqbox>${freqField(r, isSalaryCat(r.categoryId))}</div>
       <label class="f"><span data-startlabel>${r.freq === "mensual" ? "Primera fecha (se repite ese día cada mes)" : "Primera fecha"}</span><input name="start" type="date" value="${esc(r.start)}"></label>
@@ -1650,13 +1878,14 @@ function openRec(r) {
     const label = () => f.querySelector("[data-startlabel]").textContent = f.freq.value === "mensual" ? "Primera fecha (se repite ese día cada mes)" : f.freq.value === "salario" ? "A partir de" : "Primera fecha";
     const setFreq = () => { const sal = isSalaryCat(f.categoryId.value), cur = f.freq.value; f.querySelector("[data-freqbox]").innerHTML = freqField({ freq: sal && cur === "mensual" ? "salario" : !sal && cur === "salario" ? "mensual" : cur }, sal); f.freq.onchange = label; label(); };
     f.freq.onchange = label;
+    const picker = bindSub(f, r.categoryId);
     inlineNew(f, f.categoryId, () => type);
     f.categoryId.addEventListener("change", () => { if (f.categoryId.value !== NEW) setFreq(); });
     inlineNew(f, f.methodId, "method");
     f.querySelectorAll("[data-type]").forEach(b => b.onclick = () => {
       type = b.dataset.type;
       f.querySelectorAll("[data-type]").forEach(x => x.setAttribute("aria-pressed", x === b));
-      f.categoryId.innerHTML = catOptions(type, catsOf(type)[0]?.id); setFreq();
+      f.categoryId.innerHTML = catOptions(type, topCats(type)[0]?.id); picker.sync(""); setFreq();
     });
     f.querySelector("[data-close]").onclick = close;
     f.querySelector("[data-del]")?.addEventListener("click", () => { if (confirm(`¿Eliminar el fijo "${r.name}"? Los movimientos ya registrados se conservan.`)) { close(); Store.delRec(r.id, "Fijo eliminado"); } });
@@ -1666,7 +1895,7 @@ function openRec(r) {
       if (!(amount > 0)) { f.amount.focus(); toast("Escribe un monto mayor que cero"); return; }
       if (!f.categoryId.value || f.categoryId.value === NEW) { toast("Elige una categoría"); return; }
       if (!f.start.value) { f.start.focus(); return; }
-      const nr = { ...r, name, type, amount: Math.round(amount*100)/100, categoryId: f.categoryId.value, methodId: f.methodId.value === NEW ? "" : f.methodId.value, freq: f.freq.value, start: f.start.value, day: +f.start.value.slice(8), mode: f.mode.value, active: f.active.checked };
+      const nr = { ...r, name, type, amount: Math.round(amount*100)/100, categoryId: picker.value(), methodId: f.methodId.value === NEW ? "" : f.methodId.value, freq: f.freq.value, start: f.start.value, day: +f.start.value.slice(8), mode: f.mode.value, active: f.active.checked };
       if (isNew) nr.original = nr.amount;
       // Los pendientes se generan desde el inicio de este mes (o desde la primera fecha si es posterior), sin acumular meses pasados.
       if (isNew || nr.freq !== r.freq || nr.start !== r.start) { const m0 = ymOf(todayISO()) + "-01"; nr.next = occOnOrAfter(nr, isNew ? m0 : todayISO()); }
@@ -1676,14 +1905,16 @@ function openRec(r) {
   });
 }
 
-function openCat(c, kind) {
+function openCat(c, kind, parentId) {
   const isNew = !c;
-  c = c || { id: uid(), name:"", kind, color: PALETTE[S.categories.length % PALETTE.length], budget:0 };
+  c = c || { id: uid(), name:"", kind, color: parentId ? cat(parentId).color : PALETTE[S.categories.length % PALETTE.length], budget:0, parentId: parentId || null };
+  const hasSubs = subsOf(c.id).length > 0;
   let color = c.color;
   openDialog(`
-    <div class="mhead">${isNew ? "Nueva categoría" : "Editar categoría"}</div>
+    <div class="mhead">${isNew ? (c.parentId ? "Nueva subcategoría" : "Nueva categoría") : c.parentId ? "Editar subcategoría" : "Editar categoría"}</div>
     <div class="mbody">
-      <label class="f">Nombre<input name="name" maxlength="40" value="${esc(c.name)}" placeholder="Ej. Mascotas"></label>
+      <label class="f">Nombre<input name="name" maxlength="40" value="${esc(c.name)}" placeholder="${c.parentId ? "Ej. Internet" : "Ej. Mascotas"}"></label>
+      ${S.hasSubcats ? `<label class="f">Pertenece a<select name="parent" ${hasSubs ? "disabled" : ""}><option value="">Ninguna (categoría principal)</option>${topCats(c.kind).filter(x => x.id !== c.id).map(x => `<option value="${esc(x.id)}" ${x.id === c.parentId ? "selected" : ""}>${esc(x.name)}</option>`).join("")}</select></label>${hasSubs ? `<div class="sub">Tiene subcategorías, por eso no puede estar dentro de otra.</div>` : ""}` : ""}
       ${c.kind === "gasto" ? `<label class="f">Presupuesto mensual (opcional)<input name="budget" type="text" inputmode="decimal" autocomplete="off" value="${c.budget || ""}" placeholder="0.00"></label>` : ""}
       <div style="display:grid;gap:6px;font-size:.85rem;font-weight:600;color:var(--muted)">Color<div class="colors">${PALETTE.map(p => `<button type="button" style="background:${p}" data-color="${p}" aria-pressed="${p === color}" aria-label="Color ${p}"></button>`).join("")}</div></div>
     </div>${foot(isNew)}`,
@@ -1695,7 +1926,7 @@ function openCat(c, kind) {
       const name = f.name.value.trim();
       if (!name) { f.name.focus(); toast("Escribe un nombre"); return; }
       close();
-      Store.saveCat({ ...c, name, color, budget: f.budget ? Math.max(0, parseAmount(f.budget.value) || 0) : 0 }, isNew ? "Categoría agregada" : "Cambios guardados");
+      Store.saveCat({ ...c, name, color, parentId: f.parent && !f.parent.disabled ? f.parent.value || null : c.parentId, budget: f.budget ? Math.max(0, parseAmount(f.budget.value) || 0) : 0 }, isNew ? (c.parentId ? "Subcategoría agregada" : "Categoría agregada") : "Cambios guardados");
     };
     setTimeout(() => f.name.focus(), 50);
   });
@@ -1703,24 +1934,26 @@ function openCat(c, kind) {
 
 // Eliminar categoría: si tiene movimientos o fijos, muestra cuáles y pide a qué categoría moverlos.
 async function deleteCat(c) {
-  if (catsOf(c.kind).length <= 1) { toast("Debe quedar al menos una categoría"); return; }
+  if (!c.parentId && topCats(c.kind).length <= 1) { toast("Debe quedar al menos una categoría"); return; }
+  const subs = subsOf(c.id);
   const { data, count, error } = await sb.from("transactions").select("id,type,amount,date,note", { count:"exact" }).eq("category_id", c.id).order("date", { ascending:false }).limit(8);
   if (error) { toast("No se pudo revisar la categoría: " + error.message); return; }
   const recs = S.recs.filter(r => r.categoryId === c.id), pends = pendingOpen().filter(p => p.categoryId === c.id);
-  if (!count && !recs.length && !pends.length) {
-    if (confirm(`¿Eliminar la categoría "${c.name}"? No tiene movimientos registrados.`)) { close(); Store.delCat(c.id, "Categoría eliminada"); }
+  if (!count && !recs.length && !pends.length && !subs.length) {
+    if (confirm(`¿Eliminar "${c.name}"? No tiene movimientos registrados.`)) { close(); Store.delCat(c.id, c.parentId ? "Subcategoría eliminada" : "Categoría eliminada"); }
     return;
   }
-  const others = catsOf(c.kind).filter(x => x.id !== c.id);
-  const fallback = others.find(x => /^otros/i.test(x.name)) || others[0];
+  const others = catsOf(c.kind).filter(x => x.id !== c.id && x.parentId !== c.id);
+  const fallback = (c.parentId && cat(c.parentId)) || others.find(x => /^otros/i.test(x.name)) || others[0];
   openDialog(`
     <div class="mhead">Eliminar "${esc(c.name)}"</div>
     <div class="mbody">
-      <div class="warnbox">Hay movimientos registrados en esta categoría. Elige a dónde moverlos antes de eliminarla; no se borrará ningún movimiento.</div>
+      <div class="warnbox">${count || recs.length || pends.length ? "Hay movimientos registrados en esta categoría. " : ""}Elige a dónde moverlos antes de eliminarla; no se borrará ningún movimiento.</div>
       ${recs.map(r => `<div class="sub">• Tienes un ${r.type === "ingreso" ? "ingreso" : "gasto"} fijo de <b>${esc(r.name)}</b> de <b class="num">${fmt(r.amount)}</b> (${esc(freqText(r).toLowerCase())}).</div>`).join("")}
       ${count ? `<div><div class="sub" style="font-weight:700;margin-bottom:4px">${count} movimiento${count > 1 ? "s" : ""}:</div>${data.map(t => `<div class="sub num">• ${dShort(t.date)}/${t.date.slice(0,4)} · ${esc(t.note || c.name)} · ${fmt(+t.amount)}</div>`).join("")}${count > data.length ? `<div class="sub">… y ${count - data.length} más.</div>` : ""}</div>` : ""}
       ${pends.length ? `<div class="sub">• ${pends.length} pendiente${pends.length > 1 ? "s" : ""} por confirmar.</div>` : ""}
-      <label class="f">¿A dónde los quieres mover?<select name="target">${catOptions(c.kind, fallback?.id).replace(`<option value="${esc(c.id)}"`, `<option hidden value="${esc(c.id)}"`)}</select></label>
+      ${subs.length ? `<div class="sub">• Subcategorías: <b>${subs.map(x => esc(x.name)).join(", ")}</b>. Pasan a la categoría que elijas (o quedan como categorías si eliges una subcategoría).</div>` : ""}
+      <label class="f">¿A dónde los quieres mover?<select name="target">${allCatOptions(c.kind, fallback?.id, c.id)}<option value="${NEW}">+ Agregar categoría nueva</option></select></label>
     </div>
     <div class="mfoot"><span class="spacer"></span><button type="button" class="btn ghost" data-close>Cancelar</button><button type="button" class="btn danger" data-save>Mover y eliminar</button></div>`,
   f => {
@@ -1875,23 +2108,26 @@ function openRealBalance(p) {
 
 // ---------- events ----------
 $("#tabs").addEventListener("click", e => { const b = e.target.closest("button[data-tab]"); if (!b) return; go(b.dataset.tab, b.dataset.tab === "apartados" ? { apPlace: null } : b.dataset.tab === "cats" && S.tab === "cats" ? { setPage: null } : {}); });
-$("#pendBtn").onclick = () => go("pend");
+$("#pendBtn").onclick = () => go("pend", {}, "fwd");
 const goMonth = n => { S.ym = ymAdd(S.ym, n); render(); refresh(false); };
 $("#prevM").onclick = () => goMonth(-1);
 $("#nextM").onclick = () => goMonth(1);
 $("#monthBtn").onclick = e => { e.stopPropagation(); if ($("#mpick")) { closeMonthPicker(); return; } openMonthPicker($("#monthBtn"), S.ym, ym => { S.ym = ym; render(); refresh(false); }); };
 $("#fab").onclick = () => openTx();
 $("#view").addEventListener("click", e => {
-  const t = e.target.closest("[data-edit],[data-payocc],[data-openpend],[data-editrec],[data-editcat],[data-delcat],[data-newcat],[data-editmethod],[data-delmethod],[data-editgoal],[data-place],[data-editplace],[data-realbal],[data-setpage],[data-back],[data-act]");
+  const t = e.target.closest("[data-pdetail],[data-discard],[data-edit],[data-payocc],[data-openpend],[data-editrec],[data-editcat],[data-delcat],[data-newcat],[data-newsub],[data-editmethod],[data-delmethod],[data-editgoal],[data-place],[data-editplace],[data-realbal],[data-setpage],[data-back],[data-act]");
   if (!t) return;
   const d = t.dataset;
-  if (d.edit) openTx(S.tx.find(x => x.id === d.edit) || S.aptx.find(x => x.id === d.edit));
+  if (d.pdetail) go("pdetail", { pendId: d.pdetail }, "fwd");
+  else if (d.discard) { const p = S.pending.find(x => x.id === d.discard); if (p && confirm("¿Descartar este movimiento? No se registrará nada.")) { Store.discardPending(p); navBack(); } }
+  else if (d.edit) openTx(S.tx.find(x => x.id === d.edit) || S.aptx.find(x => x.id === d.edit));
   else if (d.payocc) { const [id, due] = d.payocc.split("|"), r = S.recs.find(x => x.id === id); if (r) Store.payOccurrence(r, due); }
   else if (d.openpend) { const p = S.pending.find(x => x.id === d.openpend); if (p) openPending(p); }
   else if (d.editrec) openRec(S.recs.find(x => x.id === d.editrec));
   else if (d.editcat) openCat(S.categories.find(x => x.id === d.editcat));
   else if (d.delcat) deleteCat(S.categories.find(x => x.id === d.delcat));
   else if (d.newcat) openCat(null, d.newcat);
+  else if (d.newsub) openCat(null, cat(d.newsub).kind, d.newsub);
   else if (d.editmethod) openMethod(S.methods.find(x => x.id === d.editmethod));
   else if (d.delmethod) deleteMethod(S.methods.find(x => x.id === d.delmethod));
   else if (d.editgoal) openGoal(S.goals.find(x => x.id === d.editgoal));
@@ -1901,11 +2137,13 @@ $("#view").addEventListener("click", e => {
   else if (d.setpage) go("cats", { setPage: d.setpage }, "fwd");
   else if (d.back) navBack();
   else if (d.act === "fijos") go("fijos", {}, "fwd");
-  else if (d.act === "pend") go("pend");
+  else if (d.act === "pend") go("pend", {}, "fwd");
+  else if (d.act === "confirm-all") { const l = pendingOpen(); if (l.length && confirm(`¿Confirmar los ${l.length} movimientos con los datos que tienen?`)) Store.acceptMany(l); }
   else if (d.act === "newmethod") openMethod();
   else if (d.act === "newgoal") openGoal();
   else if (d.act === "newplace") openPlace();
   else if (d.act === "prices") refreshPrices(true);
+  else if (d.act === "retry") refresh(true);
 });
 dlg.addEventListener("click", e => { if (e.target === dlg) close(); });
 
@@ -1953,6 +2191,7 @@ dlg.addEventListener("click", e => { if (e.target === dlg) close(); });
   document.addEventListener("touchcancel", () => { if (sw) { sw = null; reset(); under?.remove(); under = null; } });
 }
 document.addEventListener("keydown", e => { if (e.key === "Escape") closeMonthPicker(); });
+$("#offBanner").addEventListener("click", e => { if (e.target.closest("[data-act=retry]")) { setSync("off", "Reintentando…"); refresh(true); } });
 $("#signin").onclick = () => doAuth(false);
 $("#signup").onclick = () => doAuth(true);
 $("#password").addEventListener("keydown", e => { if (e.key === "Enter") doAuth(false); });
@@ -1962,7 +2201,18 @@ window.addEventListener("online", () => userId && refresh(true));
 window.addEventListener("offline", () => setSync("off", "Sin conexión"));
 
 // ---------- start ----------
-if (!sb) { showLogin("Falta configurar config.js con los datos de tu proyecto de Supabase."); document.querySelectorAll("#login button").forEach(b => b.disabled = true); return; }
+if ("serviceWorker" in navigator) swReg().catch(() => {}); // guarda la app para abrirla sin conexión y recibe notificaciones
+if (!sb) {
+  // Sin la librería de Supabase (normalmente porque no hubo internet al abrir): avisar y dejar reintentar.
+  const offline = typeof supabase === "undefined";
+  $("#login").hidden = false;
+  $("#login .card").innerHTML = offline
+    ? `<h1>Mis finanzas</h1><div class="sub">No hay conexión a internet o la señal es muy débil. Revisa tu conexión e inténtalo de nuevo.</div><button class="btn" id="reloadApp" style="min-height:44px">Reintentar</button>`
+    : `<h1>Mis finanzas</h1><div class="err">Falta configurar config.js con los datos de tu proyecto de Supabase.</div>`;
+  $("#reloadApp")?.addEventListener("click", () => location.reload());
+  if (offline) window.addEventListener("online", () => location.reload());
+  return;
+}
 // ---------- actualizaciones ----------
 const fetchRemoteVersion = async () => {
   const r = await fetch("version.json?t=" + Date.now(), { cache: "no-store" });
@@ -1983,7 +2233,7 @@ document.addEventListener("visibilitychange", () => { if (document.visibilitySta
 checkForUpdate();
 
 if (pushSupported()) {
-  if (Notification.permission === "granted") swReg().then(() => refreshPushState()).then(render).catch(() => {});
+  if (Notification.permission === "granted") navigator.serviceWorker.ready.then(() => refreshPushState()).then(render).catch(() => {});
   navigator.serviceWorker.addEventListener("message", e => {
     if (e.data?.type !== "open") return;
     const t = new URL(e.data.url).searchParams.get("tab");

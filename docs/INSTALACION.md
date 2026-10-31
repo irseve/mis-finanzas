@@ -1,4 +1,4 @@
-# Dejar todo listo (versión 1.9.0)
+# Dejar todo listo (versión 2.0.0)
 
 Sigue los pasos en orden. Los pasos 1 a 4 se hacen una sola vez, desde una computadora, en <https://supabase.com/dashboard> → tu proyecto.
 
@@ -8,8 +8,9 @@ Sigue los pasos en orden. Los pasos 1 a 4 se hacen una sola vez, desde una compu
 2. **SQL Editor → New query**: pega todo [`migrations/001_metodos_fijos_pendientes_metas.sql`](../migrations/001_metodos_fijos_pendientes_metas.sql) → **Run**. Si ya la corriste antes, no pasa nada por correrla otra vez.
 3. **New query** otra vez: pega todo [`migrations/002_notificaciones_usuarios_siri_gmail.sql`](../migrations/002_notificaciones_usuarios_siri_gmail.sql) → **Run**.
 4. Y lo mismo con [`migrations/003_apartados_inversiones.sql`](../migrations/003_apartados_inversiones.sql) (Apartados e inversiones).
+5. Y [`migrations/004_bimestral_subcategorias.sql`](../migrations/004_bimestral_subcategorias.sql) (frecuencia bimestral y subcategorías).
 
-Atajo: [`migrations/instalar_todo.sql`](../migrations/instalar_todo.sql) trae los tres juntos; pégalo una sola vez.
+Atajo: [`migrations/instalar_todo.sql`](../migrations/instalar_todo.sql) trae todos juntos; pégalo una sola vez.
 
 Debe decir *Success*. Si aparece un aviso de que pg_cron o pg_net no están disponibles, actívalos (paso 1) y vuelve a correr la 002. Ninguna de las dos borra tus datos.
 

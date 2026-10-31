@@ -344,79 +344,79 @@ Objetivo: no ver lo mismo en varios lados ni tener botones de más.
 
 ---
 
-## 9. Cambios anotados el 2026-10-31 (sin implementar todavía)
+## 9. Cambios del 2026-10-31 — implementados en v2.0.0 (autorizados por el usuario)
 
-Solo anotados; **no ejecutar** hasta que el usuario lo indique.
+Requiere la migración `004_bimestral_subcategorias.sql`.
 
 ### N. Que la app no se vea vacía ni "se trabe" sin internet o con mala señal
 Problema: al abrir la app con mala conexión se veía sin nada, sin explicar qué pasaba.
-- [ ] **Mientras carga:** mensaje sencillo y visible, por ejemplo "Conectando con tus datos…" con un indicador de carga, en lugar de la pantalla vacía.
-- [ ] **Si tarda o falla** (por ejemplo, más de 10 segundos o un error de red): "No hay conexión a internet" o "No se pudo conectar con tus datos", con un botón **Reintentar**.
-- [ ] **Reintento automático** cuando el teléfono recupere la conexión, y cada cierto tiempo mientras siga sin conexión, sin que el usuario tenga que cerrar la app.
-- [ ] **Mostrar lo último que se cargó:** guardar en el dispositivo la última información descargada y mostrarla sin conexión, con un aviso arriba como "Sin conexión · mostrando datos del 31/10 a las 10:15". En ese modo, avisar que los cambios no se pueden guardar hasta tener conexión.
-- [ ] **Que la app abra aunque no haya internet:** hoy el service worker no guarda nada en caché, así que sin red el iPhone no puede ni cargar la página. Guardar la app (HTML, config.js y la librería de Supabase) para abrirla sin conexión: siempre se intenta primero la versión de internet (para no perder actualizaciones) y, si falla, se usa la guardada.
-- [ ] Que ningún error de conexión deje botones sin responder o pantallas a medias: todo error muestra un mensaje claro y permite reintentar.
-- Opcional, por confirmar: permitir **registrar movimientos sin conexión** y subirlos solos cuando regrese la señal.
+- [x] **Mientras carga:** mensaje sencillo y visible, por ejemplo "Conectando con tus datos…" con un indicador de carga, en lugar de la pantalla vacía.
+- [x] **Si tarda o falla** (por ejemplo, más de 10 segundos o un error de red): "No hay conexión a internet" o "No se pudo conectar con tus datos", con un botón **Reintentar**.
+- [x] **Reintento automático** cuando el teléfono recupere la conexión, y cada cierto tiempo mientras siga sin conexión, sin que el usuario tenga que cerrar la app.
+- [x] **Mostrar lo último que se cargó:** guardar en el dispositivo la última información descargada y mostrarla sin conexión, con un aviso arriba como "Sin conexión · mostrando datos del 31/10 a las 10:15". En ese modo, avisar que los cambios no se pueden guardar hasta tener conexión.
+- [x] **Que la app abra aunque no haya internet:** hoy el service worker no guarda nada en caché, así que sin red el iPhone no puede ni cargar la página. Guardar la app (HTML, config.js y la librería de Supabase) para abrirla sin conexión: siempre se intenta primero la versión de internet (para no perder actualizaciones) y, si falla, se usa la guardada.
+- [x] Que ningún error de conexión deje botones sin responder o pantallas a medias: todo error muestra un mensaje claro y permite reintentar.
+- Pendiente (opcional, por confirmar con el usuario): permitir **registrar movimientos sin conexión** y subirlos solos cuando regrese la señal.
 
 ### O. Aviso de nueva versión abajo
-- [ ] El aviso "Hay una nueva versión · Actualizar" aparece **abajo** en lugar de arriba: justo encima de la barra de pestañas (sin tapar la barra ni el botón +), respetando el área segura del iPhone. En computadora, abajo al centro.
+- [x] El aviso "Hay una nueva versión · Actualizar" aparece **abajo** en lugar de arriba: justo encima de la barra de pestañas (sin tapar la barra ni el botón +), respetando el área segura del iPhone. En computadora, abajo al centro.
 
 ### P. Campo de monto con formato de dinero mientras se escribe
 Aplica a todos los campos de monto (gasto, ingreso, retiro, apartados, confirmar pendientes, fijos, metas, saldo real).
-- [ ] Mostrar el **signo de pesos** fijo al inicio del campo (`$`), sin que el usuario tenga que escribirlo.
-- [ ] **Comas de miles automáticas** mientras se escribe: `1000` → `1,000`; `25000` → `25,000`; `1250000` → `1,250,000`. El cursor no debe brincar al reformatear.
-- [ ] **Centavos:**
+- [x] Mostrar el **signo de pesos** fijo al inicio del campo (`$`), sin que el usuario tenga que escribirlo.
+- [x] **Comas de miles automáticas** mientras se escribe: `1000` → `1,000`; `25000` → `25,000`; `1250000` → `1,250,000`. El cursor no debe brincar al reformatear.
+- [x] **Centavos:**
   - Si no se escriben, se ve `.00` en **tono claro** (como sugerencia) después del número: `$1,000` + `.00` gris.
   - Si se escribe el punto y nada más (`1000.`), se toma como `.00` (el `00` se sigue viendo claro).
   - Con un decimal (`1000.1`) se toma como `.10` (el `0` faltante en claro).
   - Con dos decimales (`1000.15`) se toma tal cual.
   - **Máximo dos decimales**: un tercer dígito después del punto no se acepta.
-- [ ] Solo se aceptan números y un punto decimal; la coma la pone la app (si el teclado escribe coma como decimal, se convierte en punto).
-- [ ] Teclado numérico con punto decimal en el iPhone.
-- [ ] Al guardar se usa el valor numérico (por ejemplo `1000.1` → 1000.10).
+- [x] Solo se aceptan números y un punto decimal; la coma la pone la app (si el teclado escribe coma como decimal, se convierte en punto).
+- [x] Teclado numérico con punto decimal en el iPhone.
+- [x] Al guardar se usa el valor numérico (por ejemplo `1000.1` → 1000.10).
 
 ### Q. Registrar un pago que corresponde a un fijo existente (pago atrasado o adelantado)
 Caso: no se confirmó a tiempo un fijo (o se pagó antes o después de su fecha) y el usuario lo registra con el **+**.
-- [ ] En el formulario del **+**, al marcar "Es fijo", primero preguntar: **"¿Es de un fijo que ya tienes?"** con la lista de fijos del mismo tipo (gasto o ingreso) y la opción "No, es un fijo nuevo" (el comportamiento actual).
-- [ ] Al elegir un fijo existente:
+- [x] En el formulario del **+**, al marcar "Es fijo", primero preguntar: **"¿Es de un fijo que ya tienes?"** con la lista de fijos del mismo tipo (gasto o ingreso) y la opción "No, es un fijo nuevo" (el comportamiento actual).
+- [x] Al elegir un fijo existente:
   - Se llenan solos la categoría, el método y el monto sugerido (editable).
   - Elegir **a qué fecha programada corresponde** el pago: la app propone la fecha pendiente (sin pagar) más cercana a la fecha escrita y deja elegir otra de la lista (fechas vencidas sin pagar, la actual y la siguiente).
   - La fecha del movimiento es la que escribió el usuario (cuando realmente pagó).
-- [ ] Si la fecha real es distinta a la programada, preguntar: **"Pagaste el 13/10 y estaba programado el 15/10. ¿Cambiar las próximas fechas?"**
+- [x] Si la fecha real es distinta a la programada, preguntar: **"Pagaste el 13/10 y estaba programado el 15/10. ¿Cambiar las próximas fechas?"**
   - **No, solo esta vez** (recomendado): el calendario del fijo no cambia; esa fecha programada queda como pagada.
   - **Sí, a partir de ahora:** el calendario se recorre según la frecuencia:
     - **Mensual:** las próximas fechas pasan al nuevo día del mes (por ejemplo, del 15 al 13).
     - **Semanal, quincenal (cada 15 días) y diario:** el ciclo vuelve a contar desde la nueva fecha.
     - **Quincena de salario (15 y último día del mes):** **no se puede cambiar**; siempre "solo esta vez". Solo se pregunta a qué quincena corresponde (la del 15 o la de fin de mes).
-- [ ] Si esa fecha programada ya tenía un **pendiente por confirmar**, se marca como aceptado (no se duplica) y el monto queda como sugerencia para la próxima vez, igual que al confirmar desde Pendientes.
-- [ ] Cuidar que no se registre dos veces la misma fecha programada: si ya está pagada, avisar y no permitir elegirla.
-- Por confirmar: si un solo pago cubre **dos fechas atrasadas** (por ejemplo, dos quincenas), ¿registrarlo como dos movimientos o uno solo?
+- [x] Si esa fecha programada ya tenía un **pendiente por confirmar**, se marca como aceptado (no se duplica) y el monto queda como sugerencia para la próxima vez, igual que al confirmar desde Pendientes.
+- [x] Cuidar que no se registre dos veces la misma fecha programada: si ya está pagada, avisar y no permitir elegirla.
+- Pendiente de respuesta del usuario: si un solo pago cubre **dos fechas atrasadas**, ¿dos movimientos o uno? Por ahora cada movimiento cubre una fecha programada (se registra una vez por cada fecha).
 
 ### R. Frecuencia bimestral
-- [ ] Nueva frecuencia **Bimestral (cada 2 meses)** para fijos, junto a diario, semanal, quincenal y mensual. Se repite el mismo día cada dos meses desde la primera fecha (por ejemplo 10/ene, 10/mar, 10/may…). Si el día no existe en ese mes (31 en abril), se usa el último día del mes, igual que en mensual.
-- [ ] Incluirla en el cálculo de próximos pagos, proyectado del mes, pendientes automáticos (servidor) y en el punto Q (recorrer el calendario).
+- [x] Nueva frecuencia **Bimestral (cada 2 meses)** para fijos, junto a diario, semanal, quincenal y mensual. Se repite el mismo día cada dos meses desde la primera fecha (por ejemplo 10/ene, 10/mar, 10/may…). Si el día no existe en ese mes (31 en abril), se usa el último día del mes, igual que en mensual.
+- [x] Incluirla en el cálculo de próximos pagos, proyectado del mes, pendientes automáticos (servidor) y en el punto Q (recorrer el calendario).
 - Requiere migración: agregar `bimestral` a la lista de frecuencias de `recurrences` y a `recurrence_on_or_after`.
 
 ### S. Subcategorías (opcionales)
 Recomendación de Claude: **sí vale la pena**, con **un solo nivel** (categoría → subcategoría), para agrupar sin complicar el registro.
-- [ ] Una categoría puede tener subcategorías. Ejemplos: **Casa** → Teléfono, Internet, Agua, Luz; **Escuela de mi hijo** → Colegiatura, Uniformes, Útiles, Transporte.
-- [ ] Al registrar un gasto o ingreso: se elige la categoría y, **si tiene subcategorías**, aparece una segunda opción con sus subcategorías y **"Sin subcategoría"** (preseleccionada). Las categorías sin subcategorías funcionan como hoy.
-- [ ] "+ Agregar subcategoría nueva" ahí mismo, igual que con las categorías.
-- [ ] **Resumen → Por categoría:** se muestra el total de cada categoría (suma de sus subcategorías y de lo registrado sin subcategoría); al tocarla se despliega el desglose por subcategoría.
-- [ ] Presupuesto por categoría (como hoy) y, opcional, por subcategoría.
-- [ ] Filtros de Movimientos: por categoría (incluye sus subcategorías) o por una subcategoría concreta. El CSV incluye columna Subcategoría.
-- [ ] **Ajustes → Categorías:** cada categoría muestra sus subcategorías; se pueden crear, editar, eliminar y **mover una categoría existente dentro de otra** (por ejemplo, convertir "Luz" en subcategoría de "Casa") sin perder sus movimientos.
-- [ ] Al eliminar una categoría con subcategorías o movimientos: misma reasignación que hoy (elegir a dónde moverlos; nunca se borran).
-- [ ] Fijos, pendientes de Siri/Gmail y la adivinanza de categoría también pueden usar subcategoría.
+- [x] Una categoría puede tener subcategorías. Ejemplos: **Casa** → Teléfono, Internet, Agua, Luz; **Escuela de mi hijo** → Colegiatura, Uniformes, Útiles, Transporte.
+- [x] Al registrar un gasto o ingreso: se elige la categoría y, **si tiene subcategorías**, aparece una segunda opción con sus subcategorías y **"Sin subcategoría"** (preseleccionada). Las categorías sin subcategorías funcionan como hoy.
+- [x] "+ Agregar subcategoría nueva" ahí mismo, igual que con las categorías.
+- [x] **Resumen → Por categoría:** se muestra el total de cada categoría (suma de sus subcategorías y de lo registrado sin subcategoría); al tocarla se despliega el desglose por subcategoría.
+- [x] Presupuesto por categoría (como hoy) y, opcional, por subcategoría.
+- [x] Filtros de Movimientos: por categoría (incluye sus subcategorías) o por una subcategoría concreta. El CSV incluye columna Subcategoría.
+- [x] **Ajustes → Categorías:** cada categoría muestra sus subcategorías; se pueden crear, editar, eliminar y **mover una categoría existente dentro de otra** (por ejemplo, convertir "Luz" en subcategoría de "Casa") sin perder sus movimientos.
+- [x] Al eliminar una categoría con subcategorías o movimientos: misma reasignación que hoy (elegir a dónde moverlos; nunca se borran).
+- [x] Fijos, pendientes de Siri/Gmail y la adivinanza de categoría también pueden usar subcategoría.
 - Requiere migración: columna `categories.parent_id` (un solo nivel) y ajustes en la reasignación al eliminar.
 
 ### T. Sección "Por confirmar" con detalle de cada movimiento
 Hoy los pendientes se ven en el botón naranja del encabezado y en "Fijos del mes" solo con un botón "Confirmar" que abre un formulario.
-- [ ] Sección clara **"Por confirmar"** (gastos e ingresos), visible en el Resumen (tarjeta arriba con los primeros y "Ver todos ›") y desde el botón naranja del encabezado.
-- [ ] Cada renglón se puede **tocar completo** para entrar a su **pantalla de detalle** (con la animación de deslizar y el gesto para regresar).
-- [ ] **Detalle** de un movimiento por confirmar:
+- [x] Sección clara **"Por confirmar"** (gastos e ingresos), visible en el Resumen (tarjeta arriba con los primeros y "Ver todos ›") y desde el botón naranja del encabezado.
+- [x] Cada renglón se puede **tocar completo** para entrar a su **pantalla de detalle** (con la animación de deslizar y el gesto para regresar).
+- [x] **Detalle** de un movimiento por confirmar:
   - Monto, fecha, categoría (y subcategoría), método de pago y nota.
   - **De dónde viene:** fijo (nombre, frecuencia, fecha programada), Siri (lo que se dijo) o correo del banco (asunto, cuenta **9607, hora, cajero o comercio, folio).
   - Si es un fijo: los **últimos pagos** de ese fijo (fechas y montos) para comparar.
   - Acciones: **Confirmar** (permite editar antes los datos), **Descartar**, y "Ver o editar el fijo" si aplica.
-- [ ] Opción "Confirmar todos" para los que no necesitan cambios, con confirmación previa.
+- [x] Opción "Confirmar todos" para los que no necesitan cambios, con confirmación previa.
