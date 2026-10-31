@@ -409,3 +409,14 @@ Recomendación de Claude: **sí vale la pena**, con **un solo nivel** (categorí
 - [ ] Al eliminar una categoría con subcategorías o movimientos: misma reasignación que hoy (elegir a dónde moverlos; nunca se borran).
 - [ ] Fijos, pendientes de Siri/Gmail y la adivinanza de categoría también pueden usar subcategoría.
 - Requiere migración: columna `categories.parent_id` (un solo nivel) y ajustes en la reasignación al eliminar.
+
+### T. Sección "Por confirmar" con detalle de cada movimiento
+Hoy los pendientes se ven en el botón naranja del encabezado y en "Fijos del mes" solo con un botón "Confirmar" que abre un formulario.
+- [ ] Sección clara **"Por confirmar"** (gastos e ingresos), visible en el Resumen (tarjeta arriba con los primeros y "Ver todos ›") y desde el botón naranja del encabezado.
+- [ ] Cada renglón se puede **tocar completo** para entrar a su **pantalla de detalle** (con la animación de deslizar y el gesto para regresar).
+- [ ] **Detalle** de un movimiento por confirmar:
+  - Monto, fecha, categoría (y subcategoría), método de pago y nota.
+  - **De dónde viene:** fijo (nombre, frecuencia, fecha programada), Siri (lo que se dijo) o correo del banco (asunto, cuenta **9607, hora, cajero o comercio, folio).
+  - Si es un fijo: los **últimos pagos** de ese fijo (fechas y montos) para comparar.
+  - Acciones: **Confirmar** (permite editar antes los datos), **Descartar**, y "Ver o editar el fijo" si aplica.
+- [ ] Opción "Confirmar todos" para los que no necesitan cambios, con confirmación previa.
