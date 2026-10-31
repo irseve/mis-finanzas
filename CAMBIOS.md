@@ -431,3 +431,21 @@ Hoy, sin internet, el **+** abre el formulario y solo al tocar "Agregar" sale el
 - [x] Lo mismo para todo lo que guarda o borra datos: editar o eliminar movimientos, confirmar o descartar pendientes, "Marcar pagado", fijos, categorías, métodos, lugares, metas, saldo real, tema de notificaciones, tokens, etc. Se pueden **ver** los datos guardados, pero no cambiarlos.
 - [x] Si se pierde la conexión con un formulario abierto, al tocar "Agregar" o "Guardar" se avisa y **no se cierra** el formulario (para no perder lo escrito); al volver la señal se puede guardar.
 - [x] Al volver la conexión, todo se reactiva solo.
+
+---
+
+## 11. Cambios anotados el 2026-10-31 (tercera tanda, sin implementar todavía)
+
+Solo anotados; **no ejecutar** hasta que el usuario lo indique.
+
+### V. Cantidad encima de cada barra de la gráfica
+Hoy el número solo sale en algunas barras (no en "Ambos" ni cuando hay más de 12 barras).
+- [ ] Mostrar siempre la cantidad encima de **cada** barra, en Semana, Mes y Año, y en Gastos, Ingresos y Ambos (en "Ambos", una cifra sobre la barra verde y otra sobre la roja, cada una de su color).
+- [ ] Formato corto para que quepa: `$950`, `$12,500`, y con muchas barras o cifras grandes, abreviado (`$12.5k`, `$1.2M`). Si no cabe horizontal, la cifra va vertical sobre la barra.
+- [ ] Las barras en cero no muestran cifra.
+
+### W. Confirmar con un solo toque
+Hoy "Confirmar" abre la ventana para revisar monto, categoría, etc.
+- [ ] El botón **Confirmar** registra el movimiento de inmediato con sus datos actuales, sin abrir ninguna ventana (en "Fijos del mes", en la lista "Por confirmar" y en el detalle).
+- [ ] Aviso breve "Confirmado: Colegiatura $2,000" con opción **Deshacer** por unos segundos, por si se tocó por error.
+- [ ] Si se quiere cambiar algo antes, se usa un botón aparte **Editar** (en el detalle del movimiento por confirmar), que abre la ventana actual.
