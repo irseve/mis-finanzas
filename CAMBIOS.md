@@ -340,3 +340,19 @@ Objetivo: no ver lo mismo en varios lados ni tener botones de más.
   3. Servicios con llave gratuita (Twelve Data, Finnhub, Alpha Vantage) solo si las dos anteriores fallan.
   - Validar antes de construir que VOO (y lo que use el usuario) se obtenga bien. Ninguna fuente es de GBM; los valores son aproximados.
 - La app muestra valores; **no recomienda** en qué invertir.
+
+---
+
+## 9. Cambios anotados el 2026-10-31 (sin implementar todavía)
+
+Solo anotados; **no ejecutar** hasta que el usuario lo indique.
+
+### N. Que la app no se vea vacía ni "se trabe" sin internet o con mala señal
+Problema: al abrir la app con mala conexión se veía sin nada, sin explicar qué pasaba.
+- [ ] **Mientras carga:** mensaje sencillo y visible, por ejemplo "Conectando con tus datos…" con un indicador de carga, en lugar de la pantalla vacía.
+- [ ] **Si tarda o falla** (por ejemplo, más de 10 segundos o un error de red): "No hay conexión a internet" o "No se pudo conectar con tus datos", con un botón **Reintentar**.
+- [ ] **Reintento automático** cuando el teléfono recupere la conexión, y cada cierto tiempo mientras siga sin conexión, sin que el usuario tenga que cerrar la app.
+- [ ] **Mostrar lo último que se cargó:** guardar en el dispositivo la última información descargada y mostrarla sin conexión, con un aviso arriba como "Sin conexión · mostrando datos del 31/10 a las 10:15". En ese modo, avisar que los cambios no se pueden guardar hasta tener conexión.
+- [ ] **Que la app abra aunque no haya internet:** hoy el service worker no guarda nada en caché, así que sin red el iPhone no puede ni cargar la página. Guardar la app (HTML, config.js y la librería de Supabase) para abrirla sin conexión: siempre se intenta primero la versión de internet (para no perder actualizaciones) y, si falla, se usa la guardada.
+- [ ] Que ningún error de conexión deje botones sin responder o pantallas a medias: todo error muestra un mensaje claro y permite reintentar.
+- Opcional, por confirmar: permitir **registrar movimientos sin conexión** y subirlos solos cuando regrese la señal.
