@@ -2,7 +2,7 @@
 <html lang="es-MX">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <title>Mis finanzas</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -64,6 +64,8 @@ html{scroll-padding-top:env(safe-area-inset-top,0px)}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:"Figtree",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:16px;line-height:1.45;-webkit-font-smoothing:antialiased}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
 button,input,select{font:inherit;color:inherit}
+input,select,textarea{font-size:max(16px,1em)}
+html{touch-action:manipulation;-webkit-text-size-adjust:100%}
 .num{font-variant-numeric:tabular-nums}
 .wrap{max-width:1080px;margin:0 auto;padding:16px 16px 110px}
 header.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 0 14px;flex-wrap:wrap}
@@ -159,7 +161,8 @@ svg text{fill:var(--muted);font-size:11px;font-family:inherit}
 .pill.pend{background:color-mix(in srgb,var(--warn) 16%,transparent);color:var(--warn)}
 
 /* modal */
-dialog{border:0;border-radius:18px;padding:0;width:min(460px,calc(100% - 24px));background:var(--surface);color:var(--ink);max-height:calc(100% - 40px)}
+dialog{border:0;border-radius:18px;padding:0;width:min(460px,calc(100% - 24px));background:var(--surface);color:var(--ink);max-height:calc(100dvh - 24px);overflow:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+dialog .mfoot{position:sticky;bottom:0;background:var(--surface);padding-top:12px;z-index:1}
 dialog::backdrop{background:rgba(10,20,16,.45)}
 .mhead{padding:18px 20px 0;font-weight:800;font-size:1.1rem}
 .mbody{padding:14px 20px;display:grid;gap:12px}
@@ -253,7 +256,7 @@ a{color:var(--brand)}
 .setrow:first-child{border-top:0}
 .setrow>span:first-child{display:grid;gap:2px}
 .chartctl{display:grid;gap:8px}
-.chartctl select{background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;color:var(--ink);font-size:.95rem}
+.chartctl select{background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;color:var(--ink);font-size:16px}
 .chartctl .custom{display:flex;gap:8px;flex-wrap:wrap}
 .seg.sm button{padding:7px 6px;font-size:.88rem}
 .chip{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:8px 14px;font-weight:600;cursor:pointer;min-height:40px}
@@ -311,14 +314,14 @@ a{color:var(--brand)}
 <div class="update-bar" id="updateBar" role="status" hidden><span>Hay una nueva versión</span><button class="go" id="updateGo">Actualizar</button><button class="x" id="updateX" aria-label="Cerrar aviso">×</button></div>
 <dialog id="dlg"><form method="dialog" id="dlgForm" onsubmit="return false"></form></dialog>
 
-<script src="config.js?v=1.9.5"></script>
+<script src="config.js?v=1.9.6"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
 <script>
 (() => {
 "use strict";
 // ---------- versión ----------
 // Al subir cambios: actualiza APP_VERSION, APP_DATE, version.json y el ?v= de config.js.
-const APP_VERSION = "1.9.5";
+const APP_VERSION = "1.9.6";
 const APP_DATE = "2026-10-30";
 
 // ---------- utilities ----------
@@ -333,7 +336,14 @@ const daysIn = ym => { const [y, m] = ym.split("-").map(Number); return new Date
 const monthName = (ym, opts = {month:"long", year:"numeric"}) => { const [y, m] = ym.split("-").map(Number); return new Date(y, m-1, 1).toLocaleDateString("es-MX", opts); };
 const dayName = iso => { const [y, m, d] = iso.split("-").map(Number); return new Date(y, m-1, d).toLocaleDateString("es-MX", {weekday:"long", day:"numeric", month:"long"}); };
 let toastT;
-const toast = msg => { const t = $("#toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("show"), 2600); };
+// Lee montos como "250", "250.50", "250,50", "$1,250.50" o "1.250,50".
+const parseAmount = v => {
+  let x = String(v ?? "").replace(/[^\d.,-]/g, "");
+  if (x.includes(",") && x.includes(".")) x = x.lastIndexOf(",") > x.lastIndexOf(".") ? x.replace(/\./g, "").replace(",", ".") : x.replace(/,/g, "");
+  else if (x.includes(",")) x = /,\d{1,2}$/.test(x) ? x.replace(",", ".") : x.replace(/,/g, "");
+  return parseFloat(x);
+};
+const toast = msg => { const t = $("#toast"), d = document.getElementById("dlg"); (d && d.open ? d : document.body).appendChild(t); t.textContent = msg; t.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("show"), 2600); };
 
 const PALETTE = ["#1F6F5C","#8A3B6E","#C2761B","#2F5D9E","#B23A48","#5B8C2A","#7A5BB0","#2B8A8A","#A0682F","#5E6E67","#D08C9E","#3E7CB1"];
 const DEFAULT_CATS = [
@@ -1399,7 +1409,7 @@ const foot = (isNew, saveLabel) => `<div class="mfoot">${isNew ? "" : `<button t
 const NEW = "__nuevo";
 const catOptions = (kind, sel) => catsOf(kind).map(c => `<option value="${esc(c.id)}" ${c.id === sel ? "selected" : ""}>${esc(c.name)}</option>`).join("") + `<option value="${NEW}">+ Agregar categoría nueva</option>`;
 const methodOptions = (sel, filter = () => true) => `<option value="">Sin método</option>` + S.methods.filter(m => (m.active || m.id === sel) && filter(m)).map(m => `<option value="${esc(m.id)}" ${m.id === sel ? "selected" : ""}>${esc(m.name)}</option>`).join("") + `<option value="${NEW}">+ Agregar método nuevo</option>`;
-const amountField = (label, val) => `<label class="f big">${label}<input name="amount" type="number" inputmode="decimal" step="0.01" min="0" value="${esc(val)}" placeholder="0.00"></label>`;
+const amountField = (label, val) => `<label class="f big">${label}<input name="amount" type="text" inputmode="decimal" autocomplete="off" value="${esc(val)}" placeholder="0.00"></label>`;
 const freqField = (r, salary) => `<label class="f">Frecuencia<select name="freq">${Object.entries(FREQS).filter(([k]) => k !== "salario" || salary || r.freq === "salario").map(([k, l]) => `<option value="${k}" ${k === r.freq ? "selected" : ""}>${k === "quincenal" ? "Quincenal (cada 15 días)" : k === "salario" ? "Quincena de salario (día 15 y último día del mes)" : l}</option>`).join("")}</select></label>`;
 const modeField = r => `<label class="f">Cuando toque<select name="mode"><option value="confirmar" ${r.mode !== "recordatorio" ? "selected" : ""}>Avisarme para confirmar el monto</option><option value="recordatorio" ${r.mode === "recordatorio" ? "selected" : ""}>Solo recordarme (lo registro yo)</option></select></label>`;
 
@@ -1532,7 +1542,7 @@ function openTx(t, preset = {}) {
     f.querySelector("[data-close]").onclick = close;
     f.querySelector("[data-del]")?.addEventListener("click", () => { if (confirm("¿Eliminar este movimiento?")) { close(); Store.delTx(t.id, "Movimiento eliminado"); } });
     f.querySelector("[data-save]").onclick = async () => {
-      const amount = parseFloat(f.amount.value), rt = realType(), ap = rt === "ahorro" || rt === "sacar";
+      const amount = parseAmount(f.amount.value), rt = realType(), ap = rt === "ahorro" || rt === "sacar";
       if (!(amount > 0)) { f.amount.focus(); toast("Escribe un monto mayor que cero"); return; }
       if (!f.date.value) { f.date.focus(); return; }
       if ((rt === "gasto" || rt === "ingreso") && (!f.categoryId.value || f.categoryId.value === NEW)) { toast("Elige una categoría"); return; }
@@ -1607,7 +1617,7 @@ function openPending(p) {
     f.querySelector("[data-close]").onclick = close;
     f.querySelector("[data-discard]").onclick = () => { if (confirm("¿Descartar este pendiente? No se registrará ningún movimiento.")) { close(); Store.discardPending(p); } };
     f.querySelector("[data-save]").onclick = async () => {
-      const amount = parseFloat(f.amount.value);
+      const amount = parseAmount(f.amount.value);
       if (!(amount > 0)) { f.amount.focus(); toast("Escribe un monto mayor que cero"); return; }
       if (f.categoryId && (!f.categoryId.value || f.categoryId.value === NEW)) { toast("Elige una categoría"); return; }
       close();
@@ -1649,7 +1659,7 @@ function openRec(r) {
     f.querySelector("[data-close]").onclick = close;
     f.querySelector("[data-del]")?.addEventListener("click", () => { if (confirm(`¿Eliminar el fijo "${r.name}"? Los movimientos ya registrados se conservan.`)) { close(); Store.delRec(r.id, "Fijo eliminado"); } });
     f.querySelector("[data-save]").onclick = () => {
-      const amount = parseFloat(f.amount.value), name = f.name.value.trim();
+      const amount = parseAmount(f.amount.value), name = f.name.value.trim();
       if (!name) { f.name.focus(); toast("Escribe un nombre"); return; }
       if (!(amount > 0)) { f.amount.focus(); toast("Escribe un monto mayor que cero"); return; }
       if (!f.categoryId.value || f.categoryId.value === NEW) { toast("Elige una categoría"); return; }
@@ -1672,7 +1682,7 @@ function openCat(c, kind) {
     <div class="mhead">${isNew ? "Nueva categoría" : "Editar categoría"}</div>
     <div class="mbody">
       <label class="f">Nombre<input name="name" maxlength="40" value="${esc(c.name)}" placeholder="Ej. Mascotas"></label>
-      ${c.kind === "gasto" ? `<label class="f">Presupuesto mensual (opcional)<input name="budget" type="number" inputmode="decimal" step="0.01" min="0" value="${c.budget || ""}" placeholder="0.00"></label>` : ""}
+      ${c.kind === "gasto" ? `<label class="f">Presupuesto mensual (opcional)<input name="budget" type="text" inputmode="decimal" autocomplete="off" value="${c.budget || ""}" placeholder="0.00"></label>` : ""}
       <div style="display:grid;gap:6px;font-size:.85rem;font-weight:600;color:var(--muted)">Color<div class="colors">${PALETTE.map(p => `<button type="button" style="background:${p}" data-color="${p}" aria-pressed="${p === color}" aria-label="Color ${p}"></button>`).join("")}</div></div>
     </div>${foot(isNew)}`,
   f => {
@@ -1683,7 +1693,7 @@ function openCat(c, kind) {
       const name = f.name.value.trim();
       if (!name) { f.name.focus(); toast("Escribe un nombre"); return; }
       close();
-      Store.saveCat({ ...c, name, color, budget: f.budget ? Math.max(0, parseFloat(f.budget.value) || 0) : 0 }, isNew ? "Categoría agregada" : "Cambios guardados");
+      Store.saveCat({ ...c, name, color, budget: f.budget ? Math.max(0, parseAmount(f.budget.value) || 0) : 0 }, isNew ? "Categoría agregada" : "Cambios guardados");
     };
     setTimeout(() => f.name.focus(), 50);
   });
@@ -1766,7 +1776,7 @@ function openGoal(g) {
     f.querySelector("[data-close]").onclick = close;
     f.querySelector("[data-del]")?.addEventListener("click", () => { if (confirm(`¿Eliminar la meta "${g.name}"? Las aportaciones registradas se conservan como movimientos.`)) { close(); Store.delGoal(g.id, "Meta eliminada"); } });
     f.querySelector("[data-save]").onclick = () => {
-      const name = f.name.value.trim(), target = parseFloat(f.amount.value);
+      const name = f.name.value.trim(), target = parseAmount(f.amount.value);
       if (!name) { f.name.focus(); toast("Escribe un nombre"); return; }
       if (!(target > 0)) { f.amount.focus(); toast("Escribe el monto objetivo"); return; }
       close();
@@ -1820,7 +1830,7 @@ function openRealBalance(p) {
   f => {
     f.querySelector("[data-close]").onclick = close;
     f.querySelector("[data-save]").onclick = async () => {
-      const real = parseFloat(f.amount.value);
+      const real = parseAmount(f.amount.value);
       if (!(real >= 0)) { f.amount.focus(); toast("Escribe el saldo"); return; }
       const diff = Math.round((real - st.value) * 100) / 100;
       close();
