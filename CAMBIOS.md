@@ -423,13 +423,11 @@ Hoy los pendientes se ven en el botón naranja del encabezado y en "Fijos del me
 
 ---
 
-## 10. Cambios anotados el 2026-10-31 (segunda tanda, sin implementar todavía)
-
-Solo anotados; **no ejecutar** hasta que el usuario lo indique.
+## 10. Cambios del 2026-10-31 (segunda tanda) — implementados en v2.0.1 (autorizados por el usuario)
 
 ### U. Bloquear registros sin conexión
 Hoy, sin internet, el **+** abre el formulario y solo al tocar "Agregar" sale el error "Sin conexión".
-- [ ] Sin conexión, el botón **+** se ve desactivado (gris) y al tocarlo dice: "Sin conexión: no puedes registrar movimientos hasta que vuelva el internet".
-- [ ] Lo mismo para todo lo que guarda o borra datos: editar o eliminar movimientos, confirmar o descartar pendientes, "Marcar pagado", fijos, categorías, métodos, lugares, metas, saldo real, tema de notificaciones, tokens, etc. Se pueden **ver** los datos guardados, pero no cambiarlos.
-- [ ] Si se pierde la conexión con un formulario abierto, al tocar "Agregar" o "Guardar" se avisa y **no se cierra** el formulario (para no perder lo escrito); al volver la señal se puede guardar.
-- [ ] Al volver la conexión, todo se reactiva solo.
+- [x] Sin conexión, el botón **+** se ve desactivado (gris) y al tocarlo dice: "Sin conexión: no puedes registrar movimientos hasta que vuelva el internet".
+- [x] Lo mismo para todo lo que guarda o borra datos: editar o eliminar movimientos, confirmar o descartar pendientes, "Marcar pagado", fijos, categorías, métodos, lugares, metas, saldo real, tema de notificaciones, tokens, etc. Se pueden **ver** los datos guardados, pero no cambiarlos.
+- [x] Si se pierde la conexión con un formulario abierto, al tocar "Agregar" o "Guardar" se avisa y **no se cierra** el formulario (para no perder lo escrito); al volver la señal se puede guardar.
+- [x] Al volver la conexión, todo se reactiva solo.

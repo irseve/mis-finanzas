@@ -306,6 +306,7 @@ label.f .mwrap input{background:transparent;border:0;padding:10px 0;color:transp
 .kv{display:flex;justify-content:space-between;gap:12px;align-items:baseline;border-top:1px solid var(--line);padding-top:8px}
 .kv:first-child{border-top:0;padding-top:0}
 .kv>span:last-child{text-align:right;min-width:0;overflow-wrap:anywhere}
+body.is-offline .fab{background:var(--muted);color:var(--surface);box-shadow:none;opacity:.7}
 [hidden]{display:none!important}
 </style>
 </head>
@@ -351,14 +352,14 @@ label.f .mwrap input{background:transparent;border:0;padding:10px 0;color:transp
 <div class="update-bar" id="updateBar" role="status" hidden><span>Nueva versión</span><button class="go" id="updateGo">Actualizar</button><button class="x" id="updateX" aria-label="Cerrar aviso">×</button></div>
 <dialog id="dlg"><form method="dialog" id="dlgForm" onsubmit="return false"></form></dialog>
 
-<script src="config.js?v=2.0.0"></script>
+<script src="config.js?v=2.0.1"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
 <script>
 (() => {
 "use strict";
 // ---------- versión ----------
 // Al subir cambios: actualiza APP_VERSION, APP_DATE, version.json y el ?v= de config.js.
-const APP_VERSION = "2.0.0";
+const APP_VERSION = "2.0.1";
 const APP_DATE = "2026-10-30";
 
 // ---------- utilities ----------
@@ -545,7 +546,7 @@ async function refresh(all = true) {
   if (!S.ready && !S.offline) { S.loadError = ""; render(); }
   try {
     await withTimeout((async () => { if (all) await loadBase(); await loadTx(); })(), 15000);
-    S.ready = true; S.offline = false; S.loadError = "";
+    S.ready = true; S.offline = false; S.loadError = ""; S.cacheAt = Date.now();
     clearInterval(retryT); retryT = null;
     setSync("on", "Sincronizado");
     if (all) saveCache();
@@ -1041,6 +1042,7 @@ function render() {
   $("#migBanner").hidden = !S.needsMigration; $("#migFile").textContent = S.needsMigration;
   const v = $("#view");
   $("#offBanner").hidden = !S.offline;
+  document.body.classList.toggle("is-offline", isOffline());
   if (S.offline) $("#offText").textContent = `Sin conexión · mostrando tus datos del ${new Date(S.cacheAt || Date.now()).toLocaleString("es-MX", { day:"numeric", month:"short", hour:"2-digit", minute:"2-digit" })} · Los cambios no se pueden guardar hasta que vuelva la conexión.`;
   if (!S.ready) {
     v.innerHTML = S.loadError
@@ -2113,7 +2115,17 @@ const goMonth = n => { S.ym = ymAdd(S.ym, n); render(); refresh(false); };
 $("#prevM").onclick = () => goMonth(-1);
 $("#nextM").onclick = () => goMonth(1);
 $("#monthBtn").onclick = e => { e.stopPropagation(); if ($("#mpick")) { closeMonthPicker(); return; } openMonthPicker($("#monthBtn"), S.ym, ym => { S.ym = ym; render(); refresh(false); }); };
-$("#fab").onclick = () => openTx();
+// ---------- sin conexión: se puede ver todo, pero no registrar ni cambiar nada ----------
+const isOffline = () => S.offline || !navigator.onLine;
+const OFFLINE_MSG = "Sin conexión: no puedes registrar ni cambiar nada hasta que vuelva el internet";
+const blockIfOffline = e => { if (!isOffline()) return false; e.preventDefault(); e.stopPropagation(); toast(OFFLINE_MSG); return true; };
+// Botones de formularios que guardan o borran: se avisa y el formulario se queda abierto (no se pierde lo escrito).
+form.addEventListener("click", e => { if (e.target.closest("[data-save],[data-del],[data-discard],.inline-new .btn:not(.ghost)")) blockIfOffline(e); }, true);
+// Acciones de las pantallas que guardan o borran directamente.
+const WRITE_ACTIONS = "[data-payocc],[data-discard],[data-delcat],[data-delmethod],[data-revtok],[data-deltok],[data-setrole],#tnGo,#newTok,#pushOn,#pushOff,#invite,[data-act=confirm-all],[data-act=prices]";
+$("#view").addEventListener("click", e => { if (e.target.closest(WRITE_ACTIONS)) blockIfOffline(e); }, true);
+$("#view").addEventListener("change", e => { if (e.target.matches("#cur,[data-notify]") && blockIfOffline(e)) render(); }, true);
+$("#fab").onclick = () => { if (isOffline()) { toast(OFFLINE_MSG); return; } openTx(); };
 $("#view").addEventListener("click", e => {
   const t = e.target.closest("[data-pdetail],[data-discard],[data-edit],[data-payocc],[data-openpend],[data-editrec],[data-editcat],[data-delcat],[data-newcat],[data-newsub],[data-editmethod],[data-delmethod],[data-editgoal],[data-place],[data-editplace],[data-realbal],[data-setpage],[data-back],[data-act]");
   if (!t) return;
@@ -2198,7 +2210,7 @@ $("#password").addEventListener("keydown", e => { if (e.key === "Enter") doAuth(
 $("#forgot").onclick = forgotPassword;
 document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && userId) refresh(true); });
 window.addEventListener("online", () => userId && refresh(true));
-window.addEventListener("offline", () => setSync("off", "Sin conexión"));
+window.addEventListener("offline", () => { setSync("off", "Sin conexión"); if (S.ready) { S.offline = true; render(); } });
 
 // ---------- start ----------
 if ("serviceWorker" in navigator) swReg().catch(() => {}); // guarda la app para abrirla sin conexión y recibe notificaciones
