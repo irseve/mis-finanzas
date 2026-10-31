@@ -196,6 +196,8 @@ label.f input,label.f select{background:var(--surface-2);border:1px solid var(--
 .update-bar .go{background:var(--brand);color:var(--brand-ink);padding:0 16px}
 .update-bar .x{background:transparent;color:inherit;min-width:44px;font-size:1.2rem;opacity:.7}
 .rowbtns{display:flex;gap:6px}
+.fixed-row.compact{flex-wrap:nowrap}
+.fixed-row.compact .mid{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tokbox{display:block;word-break:break-all;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:.85rem;user-select:all}
 .testn{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .testn input,.testn select{background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;color:var(--ink);font-size:1rem;width:100%}
@@ -314,14 +316,14 @@ a{color:var(--brand)}
 <div class="update-bar" id="updateBar" role="status" hidden><span>Hay una nueva versión</span><button class="go" id="updateGo">Actualizar</button><button class="x" id="updateX" aria-label="Cerrar aviso">×</button></div>
 <dialog id="dlg"><form method="dialog" id="dlgForm" onsubmit="return false"></form></dialog>
 
-<script src="config.js?v=1.9.6"></script>
+<script src="config.js?v=1.9.7"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
 <script>
 (() => {
 "use strict";
 // ---------- versión ----------
 // Al subir cambios: actualiza APP_VERSION, APP_DATE, version.json y el ?v= de config.js.
-const APP_VERSION = "1.9.6";
+const APP_VERSION = "1.9.7";
 const APP_DATE = "2026-10-30";
 
 // ---------- utilities ----------
@@ -520,6 +522,7 @@ const Store = {
   },
   saveCat: (c, msg) => check(sb.from("categories").upsert({ id:c.id, name:c.name, kind:c.kind, color:c.color, budget:c.budget || 0 }), msg).then(ok => (ok && refresh(), ok)),
   delCat: (id, msg) => check(sb.from("categories").delete().eq("id", id), msg).then(ok => (ok && refresh(), ok)),
+  delMethod: (id, msg) => check(sb.from("payment_methods").delete().eq("id", id), msg).then(ok => (ok && refresh(), ok)),
   saveMethod: (m, msg) => check(sb.from("payment_methods").upsert({ id:m.id, name:m.name, kind:m.kind, color:m.color, active:m.active }), msg).then(ok => (ok && refresh(), ok)),
   saveGoal: (g, msg) => check(sb.from("goals").upsert({ id:g.id, name:g.name, target_amount:g.target, target_date:g.targetDate || null, color:g.color, active:g.active }), msg).then(ok => (ok && refresh(), ok)),
   delGoal: (id, msg) => check(sb.from("goals").delete().eq("id", id), msg).then(ok => (ok && refresh(), ok)),
@@ -1320,14 +1323,13 @@ function viewCats(v) {
       <div class="mid"><b>${esc(c.name)}</b>${kind === "gasto" ? `<div class="sub num">${c.budget ? "Presupuesto " + fmt(c.budget) + " al mes" : "Sin presupuesto"}</div>` : ""}</div>
       <span class="rowbtns"><button class="btn ghost sm" data-editcat="${esc(c.id)}">Editar</button><button class="btn danger sm" data-delcat="${esc(c.id)}">Eliminar</button></span>
     </div>`).join("");
-  const KIND = { credito:"Crédito", debito:"Débito", transferencia:"Transferencia", spay:"SPAY", efectivo:"Efectivo", otro:"Otro" };
   const pages = {
     cats: () => `<section class="card">${head("De gasto", `<button class="btn sm" data-newcat="gasto">Nueva</button>`)}${sec("gasto")}</section>
       <section class="card">${head("De ingreso", `<button class="btn sm" data-newcat="ingreso">Nueva</button>`)}${sec("ingreso")}</section>`,
-    methods: () => `<section class="card">${head("Métodos de pago", `<button class="btn sm" data-act="newmethod">Nuevo</button>`)}${S.methods.map(m => `<div class="fixed-row">
+    methods: () => `<section class="card">${head("Tus métodos", `<button class="btn sm" data-act="newmethod">Nuevo</button>`)}${S.methods.map(m => `<div class="fixed-row compact">
         <span class="sw" style="background:${m.color};width:14px;height:14px"></span>
-        <div class="mid"><b>${esc(m.name)}</b><div class="sub">${KIND[m.kind] || ""}${m.active ? "" : " · desactivado"}</div></div>
-        <button class="btn ghost sm" data-editmethod="${esc(m.id)}">Editar</button></div>`).join("") || `<div class="sub">Sin métodos de pago.</div>`}
+        <div class="mid"><b>${esc(m.name)}</b></div>
+        <span class="rowbtns"><button class="btn ghost sm" data-editmethod="${esc(m.id)}">Editar</button><button class="btn danger sm" data-delmethod="${esc(m.id)}">Eliminar</button></span></div>`).join("") || `<div class="sub">Sin métodos de pago.</div>`}
       <div class="sub" style="margin-top:8px">Tip: incluye los últimos 4 dígitos en el nombre (por ejemplo "BBVA Débito 9607") para que los correos del banco elijan la cuenta solos.</div></section>`,
     notif: () => `<section class="card">
       ${S.pushOn ? `<div class="sub" style="margin-bottom:10px"><span class="pill ok">Activadas en este dispositivo</span></div><button class="btn ghost sm" id="pushOff">Desactivar en este dispositivo</button>`
@@ -1436,7 +1438,7 @@ function inlineNew(f, sel, kind) {
         if (!S.places.some(x => x.id === id)) S.places.push(p);
         sel.innerHTML = placeOptions(id);
       } else if (k === "method") {
-        const m = { id, name, kind: /efectivo/i.test(name) ? "efectivo" : /cr[eé]dito/i.test(name) ? "credito" : /d[eé]bito/i.test(name) ? "debito" : "otro", color: PALETTE[S.methods.length % PALETTE.length], active: true };
+        const m = { id, name, kind: guessMethodKind(name), color: PALETTE[S.methods.length % PALETTE.length], active: true };
         if (!await Store.saveMethod(m, "Método agregado")) { ok.disabled = false; return; }
         if (!S.methods.some(x => x.id === id)) S.methods.push(m);
         sel.innerHTML = methodOptions(id);
@@ -1733,29 +1735,58 @@ async function deleteCat(c) {
   });
 }
 
+// El método de pago solo pide nombre y color; el tipo se deduce del nombre (la app lo usa para el efectivo estimado).
+const guessMethodKind = name => /efectivo|cash/i.test(name) ? "efectivo" : /cr[eé]dito/i.test(name) ? "credito" : /d[eé]bito/i.test(name) ? "debito" : /spay/i.test(name) ? "spay" : /transfer|spei/i.test(name) ? "transferencia" : "otro";
 function openMethod(m) {
   const isNew = !m;
-  m = m || { id: uid(), name:"", kind:"credito", color: PALETTE[S.methods.length % PALETTE.length], active:true };
+  m = m || { id: uid(), name:"", color: PALETTE[S.methods.length % PALETTE.length], active:true };
   let color = m.color;
-  const KINDS = [["credito","Tarjeta de crédito"],["debito","Tarjeta de débito"],["transferencia","Transferencia"],["spay","SPAY"],["efectivo","Efectivo"],["otro","Otro"]];
   openDialog(`
     <div class="mhead">${isNew ? "Nuevo método de pago" : "Editar método de pago"}</div>
     <div class="mbody">
-      <label class="f">Nombre<input name="name" maxlength="40" value="${esc(m.name)}" placeholder="Ej. BBVA Crédito"></label>
-      <label class="f">Tipo<select name="kind">${KINDS.map(([k, l]) => `<option value="${k}" ${k === m.kind ? "selected" : ""}>${l}</option>`).join("")}</select></label>
+      <label class="f">Nombre<input name="name" maxlength="40" value="${esc(m.name)}" placeholder="Ej. BBVA Crédito 9607"></label>
       <div style="display:grid;gap:6px;font-size:.85rem;font-weight:600;color:var(--muted)">Color<div class="colors">${PALETTE.map(p => `<button type="button" style="background:${p}" data-color="${p}" aria-pressed="${p === color}" aria-label="Color ${p}"></button>`).join("")}</div></div>
-      ${isNew ? "" : `<label class="check"><input type="checkbox" name="active" ${m.active ? "checked" : ""}> Activo (si lo desactivas ya no aparece al registrar, pero se conserva el historial)</label>`}
-    </div>${foot(true, isNew ? "Agregar" : "Guardar cambios")}`,
+    </div>${foot(isNew)}`,
   f => {
     f.querySelectorAll("[data-color]").forEach(b => b.onclick = () => { color = b.dataset.color; f.querySelectorAll("[data-color]").forEach(x => x.setAttribute("aria-pressed", x === b)); });
     f.querySelector("[data-close]").onclick = close;
+    f.querySelector("[data-del]")?.addEventListener("click", () => deleteMethod(m));
     f.querySelector("[data-save]").onclick = () => {
       const name = f.name.value.trim();
       if (!name) { f.name.focus(); toast("Escribe un nombre"); return; }
       close();
-      Store.saveMethod({ ...m, name, kind: f.kind.value, color, active: f.active ? f.active.checked : true }, isNew ? "Método agregado" : "Cambios guardados");
+      Store.saveMethod({ ...m, name, kind: guessMethodKind(name), color, active: true }, isNew ? "Método agregado" : "Cambios guardados");
     };
     setTimeout(() => f.name.focus(), 50);
+  });
+}
+// Eliminar método: si tiene movimientos, se pasan a otro método o se quedan "Sin método" (nunca se borran).
+async function deleteMethod(m) {
+  const { count, error } = await sb.from("transactions").select("id", { count:"exact", head:true }).eq("payment_method_id", m.id);
+  if (error) { toast("No se pudo revisar el método: " + error.message); return; }
+  const recs = S.recs.filter(r => r.methodId === m.id).length, pends = pendingOpen().filter(p => p.methodId === m.id).length;
+  if (!count && !recs && !pends) {
+    if (confirm(`¿Eliminar "${m.name}"?`)) { close(); Store.delMethod(m.id, "Método eliminado"); }
+    return;
+  }
+  const others = S.methods.filter(x => x.id !== m.id && x.active);
+  openDialog(`
+    <div class="mhead">Eliminar "${esc(m.name)}"</div>
+    <div class="mbody">
+      <div class="warnbox">Este método tiene ${[count ? `${count} movimiento${count > 1 ? "s" : ""}` : "", recs ? `${recs} fijo${recs > 1 ? "s" : ""}` : "", pends ? `${pends} pendiente${pends > 1 ? "s" : ""}` : ""].filter(Boolean).join(", ")}. No se borra ninguno.</div>
+      <label class="f">¿A qué método los pasamos?<select name="target"><option value="">Dejarlos sin método</option>${others.map(x => `<option value="${esc(x.id)}">${esc(x.name)}</option>`).join("")}</select></label>
+    </div>
+    <div class="mfoot"><span class="spacer"></span><button type="button" class="btn ghost" data-close>Cancelar</button><button type="button" class="btn danger" data-save>Eliminar</button></div>`,
+  f => {
+    f.querySelector("[data-close]").onclick = close;
+    f.querySelector("[data-save]").onclick = async () => {
+      const to = f.target.value || null;
+      close();
+      for (const t of ["transactions", "recurrences", "pending_entries"])
+        if (!await check(sb.from(t).update({ payment_method_id: to }).eq("payment_method_id", m.id))) return;
+      if (lastMethod() === m.id) rememberMethod(to || "");
+      Store.delMethod(m.id, to ? `Movido a "${method(to)?.name}" y método eliminado` : "Método eliminado");
+    };
   });
 }
 
@@ -1851,7 +1882,7 @@ $("#nextM").onclick = () => goMonth(1);
 $("#monthBtn").onclick = e => { e.stopPropagation(); if ($("#mpick")) { closeMonthPicker(); return; } openMonthPicker($("#monthBtn"), S.ym, ym => { S.ym = ym; render(); refresh(false); }); };
 $("#fab").onclick = () => openTx();
 $("#view").addEventListener("click", e => {
-  const t = e.target.closest("[data-edit],[data-payocc],[data-openpend],[data-editrec],[data-editcat],[data-delcat],[data-newcat],[data-editmethod],[data-editgoal],[data-place],[data-editplace],[data-realbal],[data-setpage],[data-back],[data-act]");
+  const t = e.target.closest("[data-edit],[data-payocc],[data-openpend],[data-editrec],[data-editcat],[data-delcat],[data-newcat],[data-editmethod],[data-delmethod],[data-editgoal],[data-place],[data-editplace],[data-realbal],[data-setpage],[data-back],[data-act]");
   if (!t) return;
   const d = t.dataset;
   if (d.edit) openTx(S.tx.find(x => x.id === d.edit) || S.aptx.find(x => x.id === d.edit));
@@ -1862,6 +1893,7 @@ $("#view").addEventListener("click", e => {
   else if (d.delcat) deleteCat(S.categories.find(x => x.id === d.delcat));
   else if (d.newcat) openCat(null, d.newcat);
   else if (d.editmethod) openMethod(S.methods.find(x => x.id === d.editmethod));
+  else if (d.delmethod) deleteMethod(S.methods.find(x => x.id === d.delmethod));
   else if (d.editgoal) openGoal(S.goals.find(x => x.id === d.editgoal));
   else if (d.place) go("apartados", { apPlace: d.place }, "fwd");
   else if (d.editplace) openPlace(place(d.editplace));
