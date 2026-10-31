@@ -449,3 +449,12 @@ Hoy "Confirmar" abre la ventana para revisar monto, categoría, etc.
 - [ ] El botón **Confirmar** registra el movimiento de inmediato con sus datos actuales, sin abrir ninguna ventana (en "Fijos del mes", en la lista "Por confirmar" y en el detalle).
 - [ ] Aviso breve "Confirmado: Colegiatura $2,000" con opción **Deshacer** por unos segundos, por si se tocó por error.
 - [ ] Si se quiere cambiar algo antes, se usa un botón aparte **Editar** (en el detalle del movimiento por confirmar), que abre la ventana actual.
+
+### X. Pago de un fijo existente: sin el menú "¿A qué fecha corresponde?"
+Problema (captura del usuario): al registrar el salario del **30 de septiembre**, el campo Fecha decía 30/sep pero el menú de abajo proponía **31 de octubre**. El menú se calcula al elegir el fijo y no siempre se actualiza al cambiar la fecha en el iPhone; además, si la fecha ya estaba pagada, propone otra. Confunde tener dos fechas.
+- [ ] Quitar el menú "¿A qué fecha corresponde?". La única fecha es la del campo **Fecha** y el usuario elige la que quiera.
+- [ ] La app asigna sola el pago a la fecha programada **más cercana sin pagar** a esa fecha (para salario: 30/sep → quincena del 30 de septiembre) y lo muestra en una línea pequeña debajo: "Se registrará como el pago del 30 de septiembre".
+- [ ] Recalcular esa línea en cuanto cambie la fecha (escuchar también el evento `input`, que es el que dispara el iPhone).
+- [ ] Si la fecha programada más cercana **ya está pagada**, decirlo: "El pago del 30 de septiembre ya está registrado; este se tomará como el del 15 de octubre", para evitar duplicados sin sorpresas.
+- [ ] Si no hay ninguna fecha programada cerca (más de un periodo de distancia), registrar el movimiento ligado al fijo con su propia fecha, sin marcar otra como pagada.
+- [ ] La pregunta "¿Cambiar las próximas fechas?" solo aparece si la fecha elegida es distinta a la programada (nunca para salario).
