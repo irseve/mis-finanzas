@@ -360,3 +360,17 @@ Problema: al abrir la app con mala conexión se veía sin nada, sin explicar qu�
 
 ### O. Aviso de nueva versión abajo
 - [ ] El aviso "Hay una nueva versión · Actualizar" aparece **abajo** en lugar de arriba: justo encima de la barra de pestañas (sin tapar la barra ni el botón +), respetando el área segura del iPhone. En computadora, abajo al centro.
+
+### P. Campo de monto con formato de dinero mientras se escribe
+Aplica a todos los campos de monto (gasto, ingreso, retiro, apartados, confirmar pendientes, fijos, metas, saldo real).
+- [ ] Mostrar el **signo de pesos** fijo al inicio del campo (`$`), sin que el usuario tenga que escribirlo.
+- [ ] **Comas de miles automáticas** mientras se escribe: `1000` → `1,000`; `25000` → `25,000`; `1250000` → `1,250,000`. El cursor no debe brincar al reformatear.
+- [ ] **Centavos:**
+  - Si no se escriben, se ve `.00` en **tono claro** (como sugerencia) después del número: `$1,000` + `.00` gris.
+  - Si se escribe el punto y nada más (`1000.`), se toma como `.00` (el `00` se sigue viendo claro).
+  - Con un decimal (`1000.1`) se toma como `.10` (el `0` faltante en claro).
+  - Con dos decimales (`1000.15`) se toma tal cual.
+  - **Máximo dos decimales**: un tercer dígito después del punto no se acepta.
+- [ ] Solo se aceptan números y un punto decimal; la coma la pone la app (si el teclado escribe coma como decimal, se convierte en punto).
+- [ ] Teclado numérico con punto decimal en el iPhone.
+- [ ] Al guardar se usa el valor numérico (por ejemplo `1000.1` → 1000.10).
