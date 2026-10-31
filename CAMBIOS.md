@@ -357,3 +357,6 @@ Problema: al abrir la app con mala conexión se veía sin nada, sin explicar qu�
 - [ ] **Que la app abra aunque no haya internet:** hoy el service worker no guarda nada en caché, así que sin red el iPhone no puede ni cargar la página. Guardar la app (HTML, config.js y la librería de Supabase) para abrirla sin conexión: siempre se intenta primero la versión de internet (para no perder actualizaciones) y, si falla, se usa la guardada.
 - [ ] Que ningún error de conexión deje botones sin responder o pantallas a medias: todo error muestra un mensaje claro y permite reintentar.
 - Opcional, por confirmar: permitir **registrar movimientos sin conexión** y subirlos solos cuando regrese la señal.
+
+### O. Aviso de nueva versión abajo
+- [ ] El aviso "Hay una nueva versión · Actualizar" aparece **abajo** en lugar de arriba: justo encima de la barra de pestañas (sin tapar la barra ni el botón +), respetando el área segura del iPhone. En computadora, abajo al centro.
