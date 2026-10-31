@@ -307,6 +307,15 @@ label.f .mwrap input{background:transparent;border:0;padding:10px 0;color:transp
 .kv:first-child{border-top:0;padding-top:0}
 .kv>span:last-child{text-align:right;min-width:0;overflow-wrap:anywhere}
 body.is-offline .fab{background:var(--muted);color:var(--surface);box-shadow:none;opacity:.7}
+svg text.barlbl{font-size:10.5px;font-weight:700}
+.toast.undo{display:flex;align-items:center;gap:14px;pointer-events:auto;padding:8px 8px 8px 16px;width:min(380px,calc(100% - 24px))}
+.toast.undo span{flex:1}
+.toast.undo button{border:0;background:transparent;color:var(--bg);font-weight:800;text-decoration:underline;min-height:40px;padding:0 10px;cursor:pointer}
+.pendrow{flex-wrap:nowrap}
+.rowlink{display:flex;align-items:center;gap:12px;flex:1;min-width:0;border:0;background:transparent;color:inherit;font:inherit;text-align:left;padding:0;cursor:pointer}
+.rowlink .mid{display:grid;min-width:0}
+.rowlink .mid b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.occinfo{padding:10px 12px;border-radius:10px;background:var(--surface-2);color:var(--ink)}
 [hidden]{display:none!important}
 </style>
 </head>
@@ -352,14 +361,14 @@ body.is-offline .fab{background:var(--muted);color:var(--surface);box-shadow:non
 <div class="update-bar" id="updateBar" role="status" hidden><span>Nueva versión</span><button class="go" id="updateGo">Actualizar</button><button class="x" id="updateX" aria-label="Cerrar aviso">×</button></div>
 <dialog id="dlg"><form method="dialog" id="dlgForm" onsubmit="return false"></form></dialog>
 
-<script src="config.js?v=2.0.1"></script>
+<script src="config.js?v=2.0.2"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
 <script>
 (() => {
 "use strict";
 // ---------- versión ----------
 // Al subir cambios: actualiza APP_VERSION, APP_DATE, version.json y el ?v= de config.js.
-const APP_VERSION = "2.0.1";
+const APP_VERSION = "2.0.2";
 const APP_DATE = "2026-10-30";
 
 // ---------- utilities ----------
@@ -381,7 +390,17 @@ const parseAmount = v => {
   else if (x.includes(",")) x = /,\d{1,2}$/.test(x) ? x.replace(",", ".") : x.replace(/,/g, "");
   return parseFloat(x);
 };
-const toast = msg => { const t = $("#toast"), d = document.getElementById("dlg"); (d && d.open ? d : document.body).appendChild(t); t.textContent = msg; t.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("show"), 2600); };
+// Aviso con botón "Deshacer" (unos segundos).
+let undoT;
+const toastUndo = (msg, onUndo) => {
+  const t = $("#toast"), d = document.getElementById("dlg"); (d && d.open ? d : document.body).appendChild(t);
+  t.innerHTML = `<span></span><button type="button">Deshacer</button>`; t.firstChild.textContent = msg;
+  t.classList.add("show", "undo"); clearTimeout(toastT); clearTimeout(undoT);
+  const hide = () => t.classList.remove("show", "undo");
+  t.querySelector("button").onclick = () => { hide(); onUndo(); };
+  undoT = setTimeout(hide, 6000);
+};
+const toast = msg => { const t = $("#toast"), d = document.getElementById("dlg"); (d && d.open ? d : document.body).appendChild(t); t.classList.remove("undo"); clearTimeout(undoT); t.textContent = msg; t.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("show"), 2600); };
 
 const PALETTE = ["#1F6F5C","#8A3B6E","#C2761B","#2F5D9E","#B23A48","#5B8C2A","#7A5BB0","#2B8A8A","#A0682F","#5E6E67","#D08C9E","#3E7CB1"];
 const DEFAULT_CATS = [
@@ -603,6 +622,19 @@ const Store = {
     if (!await check(sb.from("transactions").insert(rows))) return;
     await check(sb.from("pending_entries").update({ status: "aceptado" }).in("id", list.map(p => p.id)));
     toast(`${rows.length} movimientos confirmados`); go("resumen", {}, "back");
+  },
+  // Confirmar con un toque: registra con los datos que ya tiene; "Deshacer" lo revierte por unos segundos.
+  quickConfirm: async p => {
+    const t = { id: uid(), type: p.type, amount: p.amount, categoryId: p.categoryId, methodId: p.methodId, date: p.date, note: p.note, recurrenceId: p.recurrenceId, dueDate: p.recurrenceId ? p.date : null };
+    if (!await check(sb.from("transactions").insert(txDb(t)))) return;
+    await check(sb.from("pending_entries").update({ status: "aceptado" }).eq("id", p.id));
+    if (S.tab === "pdetail") navBack();
+    refresh();
+    toastUndo(`Confirmado: ${p.note || cat(p.categoryId).name} ${fmt(p.amount)}`, async () => {
+      await check(sb.from("transactions").delete().eq("id", t.id));
+      await check(sb.from("pending_entries").update({ status: "pendiente" }).eq("id", p.id), "Se deshizo");
+      refresh();
+    });
   },
   discardPending: p => check(sb.from("pending_entries").update({ status: "descartado" }).eq("id", p.id), "Pendiente descartado").then(ok => (ok && refresh(), ok)),
   // Registra el pago de una fecha programada de un fijo (sin pendiente).
@@ -956,13 +988,21 @@ function chartSvg(bs) {
   const slot = per * bw + (per - 1) * 3 + gap, W = Math.max(360, 30 + bs.length * slot), H = 180, base = 140;
   const vals = bs.flatMap(b => show === "gasto" ? [b.gas] : show === "ingreso" ? [b.ing] : [b.gas, b.ing]);
   const max = Math.max(1, ...vals), x0 = 30 + (W - 30 - bs.length * slot) / 2;
+  // Cifra sobre cada barra: completa si hay pocas barras; si no, abreviada y en vertical para que quepa.
+  const full = !both && bs.length <= 6, vertical = both ? bs.length > 4 : bs.length > 8, maxH = vertical ? 82 : 110;
+  const short = v => v >= 1e6 ? `$${(v / 1e6).toFixed(v >= 1e7 ? 0 : 1)}M` : v >= 1e3 ? `$${(v / 1e3).toFixed(v >= 1e5 ? 0 : 1).replace(/\.0$/, "")}k` : `$${Math.round(v)}`;
   let g = "";
   bs.forEach((b, i) => {
     const x = x0 + i * slot + gap / 2, bars = show === "gasto" ? [["gas", "var(--spend)"]] : show === "ingreso" ? [["ing", "var(--income)"]] : [["ing", "var(--income)"], ["gas", "var(--spend)"]];
     bars.forEach(([k, color], j) => {
-      const v = b[k], h = Math.round(v / max * 110), bx = x + j * (bw + 3);
+      const v = b[k], h = Math.round(v / max * maxH), bx = x + j * (bw + 3);
       g += `<rect x="${bx}" y="${base - h}" width="${bw}" height="${Math.max(h, 1)}" rx="4" fill="${color}" opacity="${v ? 1 : .25}"><title>${b.label}: ${k === "ing" ? "ingresos" : "gastos"} ${fmt(v)}</title></rect>`;
-      if (!both && bs.length <= 12 && v) g += `<text x="${bx + bw / 2}" y="${base - h - 5}" text-anchor="middle" class="num">${fmt(v, true)}</text>`;
+      if (v) {
+        const label = full ? fmt(v, true) : short(v), cx = bx + bw / 2, y = base - h - 5;
+        g += vertical
+          ? `<text x="${cx}" y="${y}" transform="rotate(-90 ${cx} ${y})" dy="3.5" text-anchor="start" class="num barlbl" style="fill:${color}">${label}</text>`
+          : `<text x="${cx}" y="${y}" text-anchor="middle" class="num barlbl" style="fill:${both ? color : "var(--ink)"}">${label}</text>`;
+      }
     });
     const cx = x + (per * bw + (per - 1) * 3) / 2;
     if (bs.length <= 16 || i % Math.ceil(bs.length / 16) === 0) {
@@ -971,7 +1011,7 @@ function chartSvg(bs) {
     }
   });
   const tot = bs.reduce((a, b) => ({ gas: a.gas + b.gas, ing: a.ing + b.ing }), { gas: 0, ing: 0 });
-  return `<div class="scrollx"><svg class="chart" viewBox="0 0 ${W} ${H}" style="${bs.length > 16 ? `min-width:${Math.min(W, 1400)}px` : ""}" role="img" aria-label="Gráfica de ${show === "ambos" ? "ingresos y gastos" : show === "ingreso" ? "ingresos" : "gastos"}"><line x1="20" x2="${W}" y1="${base + .5}" y2="${base + .5}" stroke="var(--line)"/>${g}</svg></div>
+  return `<div class="scrollx"><svg class="chart" viewBox="0 0 ${W} ${H}" style="${W > 420 ? `min-width:${Math.min(W, 1400)}px` : ""}" role="img" aria-label="Gráfica de ${show === "ambos" ? "ingresos y gastos" : show === "ingreso" ? "ingresos" : "gastos"}"><line x1="20" x2="${W}" y1="${base + .5}" y2="${base + .5}" stroke="var(--line)"/>${g}</svg></div>
     <div class="legend num" style="margin-top:6px">${show !== "gasto" ? `<span><i class="sw" style="background:var(--income)"></i>Ingresos ${fmt(tot.ing)}</span>` : ""}${show !== "ingreso" ? `<span><i class="sw" style="background:var(--spend)"></i>Gastos ${fmt(tot.gas)}</span>` : ""}</div>`;
 }
 function chartCard() {
@@ -1176,7 +1216,7 @@ function fijosCard(o) {
 }
 function planRow(it) {
   const c = cat(it.r ? it.r.categoryId : it.pe?.categoryId), inc = it.type === "ingreso";
-  const btn = it.status === "confirmar" ? `<button class="btn sm" data-openpend="${esc(it.pe.id)}">Confirmar</button>`
+  const btn = it.status === "confirmar" ? `<button class="btn sm ${it.type === "ingreso" ? "inc" : it.type === "gasto" ? "spend" : ""}" data-quickconfirm="${esc(it.pe.id)}">Confirmar</button>`
     : it.status === "porpagar" ? `<button class="btn sm ${inc ? "inc" : "spend"}" data-payocc="${esc(it.r.id)}|${it.date}">${inc ? "Marcar recibido" : "Marcar pagado"}</button>`
     : it.status === "pagado" ? `<span class="pill ok">${inc ? "Recibido" : "Pagado"}</span>` : `<span class="pill">Omitido</span>`;
   return `<div class="fixed-row">
@@ -1288,11 +1328,14 @@ function viewFijos(v) {
 // Renglón de un movimiento por confirmar: al tocarlo se abre su detalle.
 function pendRow(p) {
   const c = cat(p.categoryId), inc = p.type === "ingreso";
-  return `<button class="fixed-row rowbtn" data-pdetail="${esc(p.id)}">
-    <span class="sw" style="background:${p.type === "retiro" ? "var(--muted)" : c.color};width:12px;height:12px"></span>
-    <div class="mid"><b>${esc(p.note || c.name)}</b><div class="sub">${SOURCE[p.source]} · ${p.type === "retiro" ? "Retiro" : esc(catLabel(p.categoryId))} · ${dShort(p.date)}</div></div>
-    <b class="num amt ${p.type}">${inc ? "+" : ""}${fmt(p.amount)}</b><span class="chev" aria-hidden="true">›</span>
-  </button>`;
+  return `<div class="fixed-row pendrow">
+    <button class="rowlink" data-pdetail="${esc(p.id)}">
+      <span class="sw" style="background:${p.type === "retiro" ? "var(--muted)" : c.color};width:12px;height:12px"></span>
+      <span class="mid"><b>${esc(p.note || c.name)}</b><span class="sub">${SOURCE[p.source]} · ${p.type === "retiro" ? "Retiro" : esc(catLabel(p.categoryId))} · ${dShort(p.date)} ›</span></span>
+      <b class="num amt ${p.type}">${inc ? "+" : ""}${fmt(p.amount)}</b>
+    </button>
+    <button class="btn sm ${inc ? "inc" : p.type === "gasto" ? "spend" : ""}" data-quickconfirm="${esc(p.id)}">Confirmar</button>
+  </div>`;
 }
 function viewPendDetail(v) {
   const p = S.pending.find(x => x.id === S.pendId && x.status === "pendiente");
@@ -1312,7 +1355,8 @@ function viewPendDetail(v) {
       <div style="font-weight:700;margin-top:4px">${esc(p.note || cat(p.categoryId).name)}</div>
       <div class="kvs">${kv("Fecha", dayName(p.date))}${p.type !== "retiro" ? kv("Categoría", esc(catLabel(p.categoryId))) : ""}${kv("Método de pago", esc(m?.name || "Sin método"))}</div>
       <div class="rowbtns" style="margin-top:16px;flex-wrap:wrap">
-        <button class="btn ${inc ? "inc" : p.type === "gasto" ? "spend" : ""}" data-openpend="${esc(p.id)}" style="min-height:44px">Confirmar…</button>
+        <button class="btn ${inc ? "inc" : p.type === "gasto" ? "spend" : ""}" data-quickconfirm="${esc(p.id)}" style="min-height:44px">Confirmar</button>
+        <button class="btn ghost" data-openpend="${esc(p.id)}" style="min-height:44px">Editar</button>
         <button class="btn danger" data-discard="${esc(p.id)}" style="min-height:44px">Descartar</button>
         ${r ? `<button class="btn ghost" data-editrec="${esc(r.id)}" style="min-height:44px">Ver el fijo</button>` : ""}
       </div>
@@ -1659,7 +1703,7 @@ function openTx(t, preset = {}) {
           <label class="f">¿Es de un fijo que ya tienes?<select name="existRec"></select></label>
           <div data-newrec style="display:grid;gap:12px"><div data-freqbox></div>${modeField({})}</div>
           <div data-oldrec hidden style="display:grid;gap:12px">
-            <label class="f">¿A qué fecha corresponde?<select name="occ"></select></label>
+            <div class="sub occinfo" data-occinfo></div>
             <div data-shiftbox hidden class="shiftbox"><div class="sub" data-shiftq></div>
               <label class="check"><input type="radio" name="shift" value="no" checked> No, solo esta vez</label>
               <label class="check"><input type="radio" name="shift" value="si"> Sí, a partir de ahora</label></div>
@@ -1687,14 +1731,25 @@ function openTx(t, preset = {}) {
     // Q. Pago de un fijo que ya existe: elegir el fijo, la fecha programada que cubre y si se recorre el calendario.
     const recOf = () => S.recs.find(r => r.id === f.existRec?.value);
     const fillRecs = () => { if (!f.existRec) return; const cur = f.existRec.value; f.existRec.innerHTML = `<option value="">No, es un fijo nuevo</option>` + S.recs.filter(r => r.type === type && r.active).map(r => `<option value="${esc(r.id)}" ${r.id === cur ? "selected" : ""}>${esc(r.name)} · ${esc(freqText(r))}</option>`).join(""); syncRec(); };
-    const openOccs = r => { // fechas programadas sin pagar: de 3 meses atrás a 2 meses adelante
-      const from = isoAdd(f.date.value || todayISO(), -92), to = isoAdd(f.date.value || todayISO(), 62), out = [];
-      for (let d = occOnOrAfter(r, from); d <= to && out.length < 60; d = occOnOrAfter(r, isoAdd(d, 1)))
-        if (!S.tx.some(x => x.recurrenceId === r.id && x.dueDate === d)) out.push(d);
-      return out;
+    // Fecha programada que cubre el pago: la más cercana a la fecha elegida que no esté pagada (dentro de un periodo).
+    const WINDOW = { diario: 1, semanal: 7, quincenal: 15, salario: 16, mensual: 31, bimestral: 62 };
+    const isPaid = (r, d) => S.tx.some(x => x.recurrenceId === r.id && x.dueDate === d);
+    let curOcc = null;
+    // Para pagos anteriores a la primera fecha del fijo, el calendario se extiende hacia atrás con la misma regla.
+    const backStart = (r, before) => {
+      if (r.start <= before) return r.start;
+      if (r.freq === "semanal" || r.freq === "quincenal" || r.freq === "diario") { const st = r.freq === "semanal" ? 7 : r.freq === "quincenal" ? 15 : 1; return isoAdd(r.start, -st * Math.ceil(isoDiff(r.start, before) / st)); }
+      const months = Math.ceil(isoDiff(r.start, before) / 28) + 2, m = ymAdd(ymOf(r.start), -(r.freq === "bimestral" ? months + (months % 2) : months));
+      return `${m}-${pad(Math.min(r.day || +r.start.slice(8), daysIn(m)))}`;
+    };
+    const pickOcc = (r0, date) => {
+      const w = WINDOW[r0.freq] || 31, all = [], r = { ...r0, start: backStart(r0, isoAdd(date, -w)) };
+      for (let d = occOnOrAfter(r, isoAdd(date, -w)); d <= isoAdd(date, w) && all.length < 80; d = occOnOrAfter(r, isoAdd(d, 1))) all.push(d);
+      all.sort((a, b) => Math.abs(isoDiff(a, date)) - Math.abs(isoDiff(b, date)) || a.localeCompare(b));
+      return { nearest: all[0] || null, occ: all.find(d => !isPaid(r, d)) || null };
     };
     const syncShift = () => {
-      const r = recOf(), occ = f.occ?.value, date = f.date.value;
+      const r = recOf(), occ = curOcc, date = f.date.value;
       const diff = r && occ && date && occ !== date;
       f.querySelector("[data-salnote]").hidden = !(r && r.freq === "salario" && diff);
       f.querySelector("[data-shiftbox]").hidden = !(diff && r.freq !== "salario");
@@ -1703,10 +1758,12 @@ function openTx(t, preset = {}) {
     const syncRec = () => {
       const r = recOf(); if (!f.existRec) return;
       f.querySelector("[data-newrec]").hidden = !!r; f.querySelector("[data-oldrec]").hidden = !r;
-      if (!r) return;
-      const occs = openOccs(r), date = f.date.value || todayISO();
-      const best = occs.slice().sort((a, b) => Math.abs(isoDiff(a, date)) - Math.abs(isoDiff(b, date)))[0];
-      f.occ.innerHTML = occs.map(d => `<option value="${d}" ${d === best ? "selected" : ""}>${dayName(d)}${d < todayISO() ? " (atrasado)" : ""}</option>`).join("") || `<option value="">No hay fechas pendientes</option>`;
+      if (!r) { curOcc = null; return; }
+      const date = f.date.value || todayISO(), { nearest, occ } = pickOcc(r, date), info = f.querySelector("[data-occinfo]");
+      curOcc = occ;
+      info.innerHTML = !occ ? `No hay una fecha programada sin pagar cerca; se registrará con su propia fecha (${dayName(date)}).`
+        : nearest && nearest !== occ ? `El pago del <b>${dayName(nearest)}</b> ya está registrado; este se tomará como el del <b>${dayName(occ)}</b>.`
+        : `Se registrará como el pago del <b>${dayName(occ)}</b>.`;
       syncShift();
     };
     f.existRec?.addEventListener("change", () => {
@@ -1719,7 +1776,7 @@ function openTx(t, preset = {}) {
       }
       syncRec();
     });
-    f.occ?.addEventListener("change", syncShift);
+    f.date.addEventListener("input", syncRec); // el iPhone avisa con "input" al mover la fecha
     f.date.addEventListener("change", syncRec);
     let picker = null;
     apply();
@@ -1782,8 +1839,8 @@ function openTx(t, preset = {}) {
       }
       const old = isNew && f.isFixed?.checked && (rt === "gasto" || rt === "ingreso") ? recOf() : null;
       if (old) { // pago de un fijo existente
-        const occ = f.occ.value;
-        if (!occ) { toast("Ese fijo no tiene fechas pendientes; desmarca \"Es fijo\" o elige otro"); return; }
+        syncRec();
+        const occ = curOcc || rec.date; // sin fecha programada cerca: queda ligado al fijo con su propia fecha
         rec.recurrenceId = old.id; rec.dueDate = occ;
         const pe = S.pending.find(p => p.recurrenceId === old.id && p.date === occ && p.status === "pendiente");
         if (pe) await sb.from("pending_entries").update({ status: "aceptado" }).eq("id", pe.id);
@@ -2122,15 +2179,16 @@ const blockIfOffline = e => { if (!isOffline()) return false; e.preventDefault()
 // Botones de formularios que guardan o borran: se avisa y el formulario se queda abierto (no se pierde lo escrito).
 form.addEventListener("click", e => { if (e.target.closest("[data-save],[data-del],[data-discard],.inline-new .btn:not(.ghost)")) blockIfOffline(e); }, true);
 // Acciones de las pantallas que guardan o borran directamente.
-const WRITE_ACTIONS = "[data-payocc],[data-discard],[data-delcat],[data-delmethod],[data-revtok],[data-deltok],[data-setrole],#tnGo,#newTok,#pushOn,#pushOff,#invite,[data-act=confirm-all],[data-act=prices]";
+const WRITE_ACTIONS = "[data-quickconfirm],[data-payocc],[data-discard],[data-delcat],[data-delmethod],[data-revtok],[data-deltok],[data-setrole],#tnGo,#newTok,#pushOn,#pushOff,#invite,[data-act=confirm-all],[data-act=prices]";
 $("#view").addEventListener("click", e => { if (e.target.closest(WRITE_ACTIONS)) blockIfOffline(e); }, true);
 $("#view").addEventListener("change", e => { if (e.target.matches("#cur,[data-notify]") && blockIfOffline(e)) render(); }, true);
 $("#fab").onclick = () => { if (isOffline()) { toast(OFFLINE_MSG); return; } openTx(); };
 $("#view").addEventListener("click", e => {
-  const t = e.target.closest("[data-pdetail],[data-discard],[data-edit],[data-payocc],[data-openpend],[data-editrec],[data-editcat],[data-delcat],[data-newcat],[data-newsub],[data-editmethod],[data-delmethod],[data-editgoal],[data-place],[data-editplace],[data-realbal],[data-setpage],[data-back],[data-act]");
+  const t = e.target.closest("[data-quickconfirm],[data-pdetail],[data-discard],[data-edit],[data-payocc],[data-openpend],[data-editrec],[data-editcat],[data-delcat],[data-newcat],[data-newsub],[data-editmethod],[data-delmethod],[data-editgoal],[data-place],[data-editplace],[data-realbal],[data-setpage],[data-back],[data-act]");
   if (!t) return;
   const d = t.dataset;
-  if (d.pdetail) go("pdetail", { pendId: d.pdetail }, "fwd");
+  if (d.quickconfirm) { const p = S.pending.find(x => x.id === d.quickconfirm); if (p) Store.quickConfirm(p); }
+  else if (d.pdetail) go("pdetail", { pendId: d.pdetail }, "fwd");
   else if (d.discard) { const p = S.pending.find(x => x.id === d.discard); if (p && confirm("¿Descartar este movimiento? No se registrará nada.")) { Store.discardPending(p); navBack(); } }
   else if (d.edit) openTx(S.tx.find(x => x.id === d.edit) || S.aptx.find(x => x.id === d.edit));
   else if (d.payocc) { const [id, due] = d.payocc.split("|"), r = S.recs.find(x => x.id === id); if (r) Store.payOccurrence(r, due); }
