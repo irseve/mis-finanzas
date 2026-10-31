@@ -390,7 +390,7 @@ Caso: no se confirmó a tiempo un fijo (o se pagó antes o después de su fecha)
     - **Quincena de salario (15 y último día del mes):** **no se puede cambiar**; siempre "solo esta vez". Solo se pregunta a qué quincena corresponde (la del 15 o la de fin de mes).
 - [x] Si esa fecha programada ya tenía un **pendiente por confirmar**, se marca como aceptado (no se duplica) y el monto queda como sugerencia para la próxima vez, igual que al confirmar desde Pendientes.
 - [x] Cuidar que no se registre dos veces la misma fecha programada: si ya está pagada, avisar y no permitir elegirla.
-- Pendiente de respuesta del usuario: si un solo pago cubre **dos fechas atrasadas**, ¿dos movimientos o uno? Por ahora cada movimiento cubre una fecha programada (se registra una vez por cada fecha).
+- **Decisión del usuario:** cada movimiento cubre **una sola fecha programada**. Si un pago cubre dos fechas atrasadas, se registra un movimiento por cada fecha. (Así funciona desde v2.0.0; no requiere cambios.)
 
 ### R. Frecuencia bimestral
 - [x] Nueva frecuencia **Bimestral (cada 2 meses)** para fijos, junto a diario, semanal, quincenal y mensual. Se repite el mismo día cada dos meses desde la primera fecha (por ejemplo 10/ene, 10/mar, 10/may…). Si el día no existe en ese mes (31 en abril), se usa el último día del mes, igual que en mensual.
