@@ -596,6 +596,7 @@ Objetivo del usuario: marcar gastos en grupos propios y ver al final del mes cu�
 - [ ] **Formulario del +:** campo opcional **"Grupo"** (Sin grupo / Casa / Médicos / Innecesarios… / "+ Agregar grupo nuevo"). También al confirmar pendientes, al editar un movimiento y en los fijos (un fijo puede tener grupo y sus pagos lo heredan).
 - [ ] **Resumen:** tarjeta **"Por grupo"** con el total del mes de cada grupo, su % del gasto y la comparación con el mes anterior (por ejemplo "Innecesarios $1,850 · 9% · ↑ $400 vs octubre"). Tocar un grupo muestra sus gastos.
 - [ ] **Movimientos:** filtro por grupo; el grupo aparece como etiqueta en cada gasto. CSV con columna Grupo.
-- [ ] Opcional: **tope mensual** por grupo (por ejemplo "Innecesarios: máximo $1,500"), con barra y aviso al pasarlo.
+- [ ] **Tope mensual opcional** por grupo (por ejemplo "Innecesarios: máximo $1,500"), con barra de avance en la tarjeta.
 - Requiere migración: tabla `expense_groups` (RLS por usuario) y columna `group_id` en `transactions`, `recurrences` y `pending_entries`.
-- Por confirmar: ¿solo para gastos o también para ingresos? ¿Quieres el tope mensual por grupo?
+- **Decisiones del usuario:** los grupos son **solo para gastos**. El **tope mensual es opcional** por grupo (se puede poner o no). La tarjeta "Por grupo" va en el **Resumen**.
+- [ ] Avisos del tope: dentro de la app (barra en ámbar al 80% y roja al pasarse) y **notificación** al llegar al 80% y al rebasar el tope (una vez por mes y grupo; se puede apagar en Ajustes → Notificaciones).
