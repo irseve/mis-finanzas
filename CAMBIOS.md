@@ -507,9 +507,13 @@ Es posible con la tecnología estándar de los navegadores para Face ID/Touch ID
 - [ ] En navegador web y computadora: solo correo y contraseña (como hoy).
 - [ ] Requiere: función nueva en el servidor que registre y verifique las llaves (passkeys) y abra la sesión; tabla de llaves por usuario y dispositivo (se pueden ver y borrar en Ajustes → Cuenta).
 - [ ] **Cierre de sesión automático** tras un tiempo sin usar la app. Al volver se pide Face ID/huella (celular) o contraseña (navegador).
-- Por confirmar con el usuario: ¿después de cuánto tiempo sin usarla? (propuesta: elegir en Ajustes entre 5, 15, 30 o 60 minutos; 15 por defecto). ¿También en el navegador o solo en el celular?
+- **Decisiones del usuario:** el cierre automático aplica **también en el navegador**.
+- Referencia investigada: la app de BBVA México se cierra sola tras **2 minutos** sin actividad (folleto oficial de la app); la banca en línea y el estándar de pagos con tarjeta (PCI DSS) usan **15 minutos** de inactividad como referencia común.
+- [ ] Propuesta de Claude (por confirmar): **celular 5 minutos** (volver a entrar es solo Face ID) y **navegador 15 minutos** (hay que escribir la contraseña). Configurable en Ajustes → Cuenta: 2, 5, 15 o 30 minutos.
+- [ ] Un minuto antes de cerrar en el navegador, aviso "Tu sesión se cerrará por inactividad · Seguir conectado".
 
 ### AC. Animación de bienvenida al iniciar sesión
 - [ ] Al iniciar sesión (con contraseña o Face ID), pantalla de bienvenida de 2–3 segundos: la palabra **"Hola"** se va "escribiendo" en letra manuscrita con trazo animado (inspirada en el saludo del iPhone, con diseño propio), sobre el color del tema; luego aparece "Irving" (nombre del perfil) y la pantalla se desvanece hacia el Resumen.
 - [ ] Se puede saltar tocando la pantalla. Respeta "Reducir movimiento" (solo aparece el texto, sin animación).
-- Por confirmar: ¿solo al iniciar sesión o también cada vez que se desbloquea con Face ID? ¿Que "Hola" cambie de idioma como en el iPhone (Hola, Hello, Bonjour…) o solo en español?
+- **Decisiones del usuario:** aparece **cada vez que se entra a la sesión**. Texto: **"Hola" + el nombre** (por ejemplo "Hola Irving"), con el **mismo tipo de animación que el saludo del iPhone**: letra cursiva de trazo continuo que se va dibujando como si se escribiera a mano.
+- Nota: el letrero "hello" del iPhone y su tipografía son diseño propio de Apple y no se pueden copiar tal cual; se recrea el mismo efecto con una tipografía cursiva de trazo similar (libre, de Google Fonts) convertida en trazos animados.
