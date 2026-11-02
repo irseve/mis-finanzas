@@ -494,4 +494,9 @@ Es posible con la tecnología estándar de los navegadores para Face ID/Touch ID
   - [ ] Al abrir la app (y al volver a ella después de X minutos en segundo plano, a elegir: al momento, 1, 5 o 15 minutos), la pantalla queda cubierta con un botón **"Desbloquear con Face ID"**; los datos no se muestran hasta desbloquear.
   - [ ] Si Face ID falla o no está disponible: "Usar contraseña" (inicia sesión de nuevo con correo y contraseña).
   - [ ] Es un bloqueo del dispositivo: la sesión sigue guardada en el teléfono, pero nadie puede ver tus finanzas sin tu cara o huella. Cada dispositivo se configura por separado.
+- **Precisiones del usuario (2026-11-02):**
+  - [ ] **Solo en el celular con la app instalada** (iPhone o Android, abierta desde el icono). En el navegador web o en computadora **no** se pide biometría ni aparece la opción.
+  - [ ] **No se elige el método: lo decide el teléfono.** El sistema usa lo que tenga: Face ID o Touch ID en iPhone; huella o reconocimiento facial en Android. Si el teléfono no tiene biometría, usa su código o patrón de desbloqueo.
+  - [ ] Antes de mostrar la opción, la app revisa que el teléfono tenga un método de desbloqueo disponible; si no lo tiene, la opción no aparece.
+  - [ ] Textos según el equipo: "Desbloquear con Face ID" en iPhone, "Desbloquear con huella o rostro" en Android.
 - Opción más completa (más trabajo) · **Iniciar sesión sin contraseña con passkey:** reemplaza correo y contraseña por Face ID también al iniciar sesión en un dispositivo nuevo. Requiere una función nueva en el servidor para verificar la llave; se puede hacer después si se quiere.
