@@ -578,3 +578,12 @@ Solo anotados; **no ejecutar** hasta que el usuario lo indique.
 - Por confirmar con el usuario:
   - ¿Con qué fecha se registra el movimiento vencido: la **programada** (como hoy) o la de **hoy**? Propuesta: dar las dos opciones en la ventana.
   - ¿La confirmación aplica también al botón **Confirmar** de los pendientes vencidos?
+
+### AK. Gráfica: al elegir Mes o Año, mostrar todo el historial
+Problema (usuario): al elegir **Mes** solo aparece noviembre, y en **Año** solo 2026. Causa: el periodo se queda en "Este mes" aunque se cambie la agrupación, así que solo hay una barra.
+- [ ] Al tocar **Mes**, el periodo cambia solo a **"Todo"**: una barra por cada mes desde el primer movimiento registrado hasta hoy.
+- [ ] Al tocar **Año**, el periodo cambia solo a **"Todo"**: una barra por cada año con movimientos (cuánto se gastó o ganó en cada año).
+- [ ] Al tocar **Semana**, el periodo vuelve a **"Este mes"** (las semanas del mes elegido).
+- [ ] Después se puede seguir eligiendo otro periodo en el menú (por ejemplo, Mes con "Últimos 6 meses").
+- [ ] Quitar del menú las combinaciones que solo darían una barra (por ejemplo "Este mes" cuando se agrupa por Mes, o "Este año" cuando se agrupa por Año).
+- [ ] Revisar que "Todo" cargue los movimientos de todos los años (hoy la app solo tiene a mano los últimos 6 meses y pide el resto al servidor).
