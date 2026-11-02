@@ -521,3 +521,26 @@ Es posible con la tecnología estándar de los navegadores para Face ID/Touch ID
 - [x] Se puede saltar tocando la pantalla. Respeta "Reducir movimiento" (solo aparece el texto, sin animación).
 - **Decisiones del usuario:** aparece **cada vez que se entra a la sesión**. Texto: **"Hola" + el nombre** (por ejemplo "Hola Irving"), con el **mismo tipo de animación que el saludo del iPhone**: letra cursiva de trazo continuo que se va dibujando como si se escribiera a mano.
 - Nota: el letrero "hello" del iPhone y su tipografía son diseño propio de Apple y no se pueden copiar tal cual; se recrea el mismo efecto con una tipografía cursiva de trazo similar (libre, de Google Fonts) convertida en trazos animados.
+
+---
+
+## 13. Cambios anotados el 2026-11-02 (segunda tanda, sin implementar todavía)
+
+Solo anotados; **no ejecutar** hasta que el usuario lo indique.
+
+### AD. El nombre de la bienvenida sale de los datos de la cuenta
+- [ ] Guardar el nombre en el **perfil de la cuenta** (datos del usuario en Supabase, `full_name`), no en un campo que el usuario escribe en la app. La app lo lee de la sesión, así que "Hola Irving" sale desde el primer inicio, en cualquier dispositivo.
+- [ ] Se quita el campo "Tu nombre" de Ajustes → Cuenta (solo se muestra el nombre).
+- [ ] Administración: al **agregar o invitar** un usuario se captura su nombre; el administrador puede corregirlo en la lista de usuarios.
+- [ ] Para la cuenta actual: llenarlo una vez desde el servidor (migración o una línea de SQL) con el nombre que confirme el usuario.
+- Por confirmar: nombre exacto para la cuenta actual (¿"Irving Segura"? En la bienvenida se usa solo el primer nombre).
+
+### AE. Pantalla de inicio de sesión que recuerda la cuenta y prioriza Face ID
+- [ ] Al cerrar sesión, la pantalla de inicio muestra la **última cuenta usada** (nombre y correo, por ejemplo "Irving · isegura@…") ya escrita; la **contraseña nunca se guarda ni se muestra**.
+- [ ] Si Face ID / huella está activado en ese teléfono: el botón principal es **"Entrar con Face ID"** y el campo de contraseña aparece **atenuado/plegado**, con el enlace "Entrar con contraseña" para desplegarlo.
+- [ ] Si no está activado (o en el navegador): se ve el correo ya escrito y el campo de contraseña normal.
+- [ ] Enlace "Usar otra cuenta" para borrar el correo recordado y escribir otro.
+
+### AF. El aviso "¿Usar llave de acceso?" del iPhone
+- Es la ventana de seguridad de Apple (nombre de la cuenta + Continuar → Face ID); la app no la puede quitar ni cambiar.
+- [ ] Opcional (por confirmar): usar el modo "autocompletar" de llaves de acceso: al tocar el campo de correo, el iPhone ofrece la llave arriba del teclado y basta tocarla y mirar el teléfono, sin la ventana grande. Se mantiene también el botón "Entrar con Face ID".
