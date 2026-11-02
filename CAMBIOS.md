@@ -524,26 +524,26 @@ Es posible con la tecnología estándar de los navegadores para Face ID/Touch ID
 
 ---
 
-## 13. Cambios anotados el 2026-11-02 (segunda tanda, sin implementar todavía)
+## 13. Cambios del 2026-11-02 (segunda tanda) — implementados en v2.2.0 (autorizados por el usuario)
 
-Solo anotados; **no ejecutar** hasta que el usuario lo indique.
+Requiere las migraciones 006 y 007 y volver a desplegar `notificaciones` y `admin-usuarios`. Pendiente de confirmar: ocultar montos en los avisos (AI, opcional).
 
 ### AD. El nombre de la bienvenida sale de los datos de la cuenta
-- [ ] Guardar el nombre en el **perfil de la cuenta** (datos del usuario en Supabase, `full_name`), no en un campo que el usuario escribe en la app. La app lo lee de la sesión, así que "Hola Irving" sale desde el primer inicio, en cualquier dispositivo.
-- [ ] Se quita el campo "Tu nombre" de Ajustes → Cuenta (solo se muestra el nombre).
-- [ ] Administración: al **agregar o invitar** un usuario se captura su nombre; el administrador puede corregirlo en la lista de usuarios.
-- [ ] Para la cuenta actual: llenarlo una vez desde el servidor (migración o una línea de SQL) con el nombre que confirme el usuario.
+- [x] Guardar el nombre en el **perfil de la cuenta** (datos del usuario en Supabase, `full_name`), no en un campo que el usuario escribe en la app. La app lo lee de la sesión, así que "Hola Irving" sale desde el primer inicio, en cualquier dispositivo.
+- [x] Se quita el campo "Tu nombre" de Ajustes → Cuenta (solo se muestra el nombre).
+- [x] Administración: al **agregar o invitar** un usuario se captura su nombre; el administrador puede corregirlo en la lista de usuarios.
+- [x] Para la cuenta actual: llenarlo una vez desde el servidor (migración o una línea de SQL) con el nombre que confirme el usuario.
 - **Decisión del usuario:** el nombre de la cuenta actual es **"Irving"** (solo el nombre, sin apellido).
 
 ### AE. Pantalla de inicio de sesión que recuerda la cuenta y prioriza Face ID
-- [ ] Al cerrar sesión, la pantalla de inicio muestra la **última cuenta usada** (nombre y correo, por ejemplo "Irving · isegura@…") ya escrita; la **contraseña nunca se guarda ni se muestra**.
-- [ ] Si Face ID / huella está activado en ese teléfono: el botón principal es **"Entrar con Face ID"** y el campo de contraseña aparece **atenuado/plegado**, con el enlace "Entrar con contraseña" para desplegarlo.
-- [ ] Si no está activado (o en el navegador): se ve el correo ya escrito y el campo de contraseña normal.
-- [ ] Enlace "Usar otra cuenta" para borrar el correo recordado y escribir otro.
+- [x] Al cerrar sesión, la pantalla de inicio muestra la **última cuenta usada** (nombre y correo, por ejemplo "Irving · isegura@…") ya escrita; la **contraseña nunca se guarda ni se muestra**.
+- [x] Si Face ID / huella está activado en ese teléfono: el botón principal es **"Entrar con Face ID"** y el campo de contraseña aparece **atenuado/plegado**, con el enlace "Entrar con contraseña" para desplegarlo.
+- [x] Si no está activado (o en el navegador): se ve el correo ya escrito y el campo de contraseña normal.
+- [x] Enlace "Usar otra cuenta" para borrar el correo recordado y escribir otro.
 
 ### AG. Al iniciar sesión, siempre al Resumen
-- [ ] Cada vez que se inicia sesión (con contraseña o Face ID, incluso tras el cierre por inactividad) la app abre en **Resumen**, en el mes actual, sin importar en qué pantalla se quedó antes (Ajustes, un lugar de Apartados, Fijos, etc.).
-- [ ] Al solo volver a la app sin que se haya cerrado la sesión, se queda donde estaba (como hoy).
+- [x] Cada vez que se inicia sesión (con contraseña o Face ID, incluso tras el cierre por inactividad) la app abre en **Resumen**, en el mes actual, sin importar en qué pantalla se quedó antes (Ajustes, un lugar de Apartados, Fijos, etc.).
+- [x] Al solo volver a la app sin que se haya cerrado la sesión, se queda donde estaba (como hoy).
 
 ### AH. Mandar avisos a pedido desde el chat con Claude — implementado (migración 006, autorizado por el usuario)
 - [x] Nueva acción en la función `notificaciones`: `{"action":"custom","title","body","minutes"}` con `Authorization: Bearer <token personal>` (los mismos tokens de Siri/Gmail, guardados hasheados). Programa un aviso para el dueño del token, al momento o en N minutos (máximo 7 días), con tipo "mensaje".
@@ -551,10 +551,10 @@ Solo anotados; **no ejecutar** hasta que el usuario lo indique.
 - [x] El usuario genera un token "Claude" y lo comparte en el chat; Claude envía los avisos con una llamada a la función cuando el usuario lo pida.
 - Requiere migración (agregar el tipo "mensaje" a los avisos) y volver a desplegar `notificaciones`.
 
-### AI. Avisos y varias cuentas en un mismo teléfono (propuesta, por confirmar)
+### AI. Avisos y varias cuentas en un mismo teléfono
 - Hoy un teléfono solo puede recibir avisos de la primera cuenta que los activó, y los sigue recibiendo aunque entre otra cuenta o se cierre sesión.
-- [ ] "Cerrar sesión" a mano apaga los avisos en ese teléfono; el cierre por inactividad no.
-- [ ] Si otra cuenta activa los avisos en ese teléfono, el teléfono pasa a esa cuenta (desde el servidor).
+- [x] "Cerrar sesión" a mano apaga los avisos en ese teléfono; el cierre por inactividad no.
+- [x] Si otra cuenta activa los avisos en ese teléfono, el teléfono pasa a esa cuenta (desde el servidor).
 - [ ] Opcional: avisos sin montos en la pantalla bloqueada ("Tienes un pago por confirmar").
 
 ### AF. El aviso "¿Usar llave de acceso?" del iPhone

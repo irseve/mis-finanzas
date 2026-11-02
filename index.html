@@ -325,6 +325,13 @@ svg text.barlbl{font-size:10.5px;font-weight:700}
 @keyframes write{to{clip-path:inset(-20% -10% -20% -10%)}}
 @media (prefers-reduced-motion:reduce){.hello span{animation:none;clip-path:none}}
 .idle-bar{z-index:61}
+.acct{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;background:var(--surface-2)}
+.acct-ic{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--brand);color:var(--brand-ink);font-weight:800;font-size:1.1rem;flex:none}
+.acct-tx{display:grid;min-width:0}
+.acct-tx .sub{overflow:hidden;text-overflow:ellipsis}
+.pwbox{display:grid;gap:12px;transition:opacity .25s}
+.pwbox.folded{display:none}
+.linkbtn.sm{min-height:28px;font-size:.85rem;padding:0 4px}
 [hidden]{display:none!important}
 </style>
 </head>
@@ -332,13 +339,18 @@ svg text.barlbl{font-size:10.5px;font-weight:700}
 <div class="login" id="login" hidden>
   <div class="card">
     <h1>Mis finanzas</h1>
-    <label class="f">Correo<input id="email" type="email" autocomplete="email" inputmode="email"></label>
-    <label class="f">Contraseña<input id="password" type="password" autocomplete="current-password"></label>
+    <div class="acct" id="acctBox" hidden><span class="acct-ic" id="acctIc" aria-hidden="true"></span><span class="acct-tx"><b id="acctName"></b><span class="sub" id="acctEmail"></span></span></div>
+    <label class="f" id="emailRow">Correo<input id="email" type="email" autocomplete="username" inputmode="email"></label>
     <div class="err" id="loginErr" role="alert"></div>
     <button class="btn biobtn" id="bioLogin" hidden></button>
-    <button class="btn" id="signin">Iniciar sesión</button>
-    <button class="btn ghost" id="signup">Crear cuenta</button>
-    <button class="linkbtn" id="forgot">¿Olvidaste tu contraseña?</button>
+    <button class="linkbtn" id="showPw" hidden>Entrar con contraseña</button>
+    <div class="pwbox" id="pwBox">
+      <label class="f">Contraseña<input id="password" type="password" autocomplete="current-password"></label>
+      <button class="btn" id="signin">Iniciar sesión</button>
+      <button class="btn ghost" id="signup">Crear cuenta</button>
+      <button class="linkbtn" id="forgot">¿Olvidaste tu contraseña?</button>
+    </div>
+    <button class="linkbtn" id="otherAcct" hidden>Usar otra cuenta</button>
   </div>
 </div>
 <div id="app" hidden>
@@ -373,14 +385,14 @@ svg text.barlbl{font-size:10.5px;font-weight:700}
 <div class="update-bar" id="updateBar" role="status" hidden><span>Nueva versión</span><button class="go" id="updateGo">Actualizar</button><button class="x" id="updateX" aria-label="Cerrar aviso">×</button></div>
 <dialog id="dlg"><form method="dialog" id="dlgForm" onsubmit="return false"></form></dialog>
 
-<script src="config.js?v=2.1.0"></script>
+<script src="config.js?v=2.2.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
 <script>
 (() => {
 "use strict";
 // ---------- versión ----------
 // Al subir cambios: actualiza APP_VERSION, APP_DATE, version.json y el ?v= de config.js.
-const APP_VERSION = "2.1.0";
+const APP_VERSION = "2.2.0";
 const APP_DATE = "2026-10-30";
 
 // ---------- utilities ----------
@@ -678,6 +690,9 @@ async function onSession(session) {
   if (!session) { userId = null; return showLogin(); }
   if (userId === session.user.id) return;
   userId = session.user.id; S.email = session.user.email || "";
+  S.accountName = (session.user.user_metadata?.full_name || "").trim();
+  try { localStorage.setItem(LAST_KEY, JSON.stringify({ email: S.email, name: S.accountName.split(/\s+/)[0] || "" })); } catch {}
+  if (welcomeNext) Object.assign(S, { tab: "resumen", ym: ymOf(todayISO()), setPage: null, apPlace: null, pendId: null }); // al iniciar sesión, siempre al Resumen
   if (welcomeNext) { welcomeNext = false; try { localStorage.setItem(ACT_KEY, String(Date.now())); } catch {} showWelcome(); }
   else if (checkIdle()) return; // la sesión guardada ya expiró por inactividad
   if (!S.ready && loadCache()) S.ready = true; // muestra lo último guardado mientras llega lo nuevo
@@ -685,6 +700,7 @@ async function onSession(session) {
   render();
   await refresh(true);
   startRealtime();
+  refreshPushState().then(render).catch(() => {});
 }
 async function doAuth(signup) {
   const email = $("#email").value.trim(), password = $("#password").value;
@@ -757,8 +773,19 @@ const swReg = () => navigator.serviceWorker.register("sw.js");
 const b64u = s => { const b = atob((s + "=".repeat((4 - s.length % 4) % 4)).replace(/-/g, "+").replace(/_/g, "/")); return Uint8Array.from(b, c => c.charCodeAt(0)); };
 async function refreshPushState() {
   if (!pushSupported() || Notification.permission !== "granted") { S.pushOn = false; return; }
-  const reg = await navigator.serviceWorker.getRegistration();
-  S.pushOn = !!(reg && await reg.pushManager.getSubscription());
+  const reg = await navigator.serviceWorker.getRegistration(), sub = reg && await reg.pushManager.getSubscription();
+  if (!sub || !userId) { S.pushOn = false; return; }
+  // Activadas solo si este teléfono está registrado para ESTA cuenta (podría ser de otra cuenta).
+  const { data } = await sb.from("push_subscriptions").select("id").eq("endpoint", sub.endpoint).maybeSingle();
+  S.pushOn = !!data;
+}
+// Deja de recibir en este teléfono los avisos de la cuenta actual.
+async function stopPushHere() {
+  try {
+    const reg = pushSupported() && await navigator.serviceWorker.getRegistration(), sub = reg && await reg.pushManager.getSubscription();
+    if (sub) { await sb.from("push_subscriptions").delete().eq("endpoint", sub.endpoint); await sub.unsubscribe(); }
+  } catch {}
+  S.pushOn = false;
 }
 // En iOS el permiso solo se puede pedir con un toque y con la app instalada en la pantalla de inicio.
 async function enablePush() {
@@ -773,14 +800,13 @@ async function enablePush() {
     const sub = await reg.pushManager.getSubscription() || await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64u(data.publicKey) });
     const j = sub.toJSON();
     const device = isIOS() ? "iPhone" : /Android/.test(navigator.userAgent) ? "Android" : "Computadora";
-    if (await check(sb.from("push_subscriptions").upsert({ endpoint: j.endpoint, p256dh: j.keys.p256dh, auth: j.keys.auth, device }, { onConflict: "endpoint" }), "Notificaciones activadas en este dispositivo")) { S.pushOn = true; render(); }
+    // El servidor registra el teléfono para esta cuenta; si era de otra cuenta, deja de recibir los de aquella.
+    const r = await sb.functions.invoke("notificaciones", { body: { action: "subscribe", endpoint: j.endpoint, p256dh: j.keys.p256dh, auth: j.keys.auth, device } });
+    if (r.error) { let m = r.error.message; try { m = (await r.error.context.json()).error || m; } catch {} toast("No se pudieron activar: " + m); return; }
+    S.pushOn = true; toast("Notificaciones activadas en este dispositivo"); render();
   } catch (e) { console.error(e); toast("No se pudieron activar: " + (e.message || e)); }
 }
-async function disablePush() {
-  const reg = await navigator.serviceWorker.getRegistration(), sub = reg && await reg.pushManager.getSubscription();
-  if (sub) { await sb.from("push_subscriptions").delete().eq("endpoint", sub.endpoint); await sub.unsubscribe(); }
-  S.pushOn = false; toast("Notificaciones desactivadas en este dispositivo"); render();
-}
+async function disablePush() { await stopPushHere(); toast("Notificaciones desactivadas en este dispositivo"); render(); }
 const saveNotify = () => check(sb.from("settings").upsert({ user_id: userId, notify: S.notify }), "Preferencias guardadas");
 
 // ---------- Face ID / huella (llaves de acceso) ----------
@@ -815,9 +841,16 @@ async function loginWithPasskey() {
   const { error } = await sb.auth.verifyOtp({ token_hash, type: "magiclink" });
   if (error) { welcomeNext = false; throw error; }
 }
+// La pantalla de inicio recuerda la última cuenta (nunca la contraseña) y, si hay Face ID/huella, lo pone primero.
+const LAST_KEY = "finanzas.lastAccount";
+const lastAccount = () => { try { return JSON.parse(localStorage.getItem(LAST_KEY) || "null"); } catch { return null; } };
 async function updateLoginBio() {
-  const b = $("#bioLogin"), on = !!pkLocal() && await bioAvailable();
-  b.hidden = !on; if (on) b.textContent = `Entrar con ${bioLabel()}`;
+  const acc = lastAccount(), bio = !!pkLocal() && await bioAvailable();
+  $("#acctBox").hidden = !acc; $("#emailRow").hidden = !!acc; $("#otherAcct").hidden = !acc;
+  if (acc) { $("#acctName").textContent = acc.name || acc.email; $("#acctEmail").textContent = acc.name ? acc.email : ""; $("#acctIc").textContent = (acc.name || acc.email).slice(0, 1).toUpperCase(); $("#email").value = acc.email; }
+  const b = $("#bioLogin"); b.hidden = !bio; if (bio) b.textContent = `Entrar con ${bioLabel()}`;
+  // Con Face ID: la contraseña queda atenuada y plegada, con "Entrar con contraseña" para abrirla.
+  $("#pwBox").classList.toggle("folded", bio); $("#showPw").hidden = !bio;
 }
 function offerBio() {
   openDialog(`
@@ -854,7 +887,9 @@ function checkIdle() {
   return false;
 }
 async function signOutClean(msg) {
+  if (!msg) await stopPushHere(); // "Cerrar sesión" a mano: este teléfono deja de recibir los avisos de la cuenta
   if (channel) sb.removeChannel(channel);
+  Object.assign(S, { tab: "resumen", setPage: null, apPlace: null, pendId: null });
   try { localStorage.removeItem(cacheKey()); } catch {} // tus datos guardados se borran del teléfono al salir
   userId = null; S.ready = false; S.offline = false;
   $("#idleBar").hidden = true;
@@ -867,7 +902,7 @@ setInterval(checkIdle, 15000);
 // ---------- bienvenida: "Hola" + tu nombre escrito a mano ----------
 let welcomeNext = false;
 function showWelcome() {
-  const name = (S.displayName || lsGet("finanzas.name") || "").trim().split(/\s+/)[0];
+  const name = (S.accountName || S.displayName || "").trim().split(/\s+/)[0];
   const w = $("#welcome");
   w.innerHTML = `<div class="hello"><span class="w1">Hola</span>${name ? ` <span class="w2">${esc(name)}</span>` : ""}</div>`;
   w.classList.remove("out"); w.hidden = false;
@@ -934,6 +969,7 @@ function openInvite() {
   openDialog(`
     <div class="mhead">Agregar usuario</div>
     <div class="mbody">
+      <label class="f">Nombre<input name="name" maxlength="60" autocomplete="off" placeholder="Ej. Ana"></label>
       <label class="f">Correo<input name="email" type="email" inputmode="email" autocomplete="off"></label>
       <label class="f">Contraseña inicial (opcional)<input name="password" type="text" autocomplete="off" placeholder="Déjala vacía para mandar invitación por correo"></label>
       <div class="sub">Sin contraseña, le llega un correo para crear la suya. Con contraseña, la cuenta queda lista y tú se la compartes. Cada usuario solo ve sus propias finanzas.</div>
@@ -942,11 +978,12 @@ function openInvite() {
   f => {
     f.querySelector("[data-close]").onclick = close;
     f.querySelector("[data-save]").onclick = async () => {
-      const email = f.email.value.trim(), password = f.password.value;
-      try { await adminCall(password ? { action: "create", email, password } : { action: "invite", email }); close(); toast(password ? "Usuario creado" : "Invitación enviada"); loadAdminUsers(); }
+      const email = f.email.value.trim(), password = f.password.value, name = f.name.value.trim();
+      if (!name) { f.name.focus(); toast("Escribe su nombre (aparece en la bienvenida)"); return; }
+      try { await adminCall(password ? { action: "create", email, password, name } : { action: "invite", email, name }); close(); toast(password ? "Usuario creado" : "Invitación enviada"); loadAdminUsers(); }
       catch (e) { toast(e.message); }
     };
-    setTimeout(() => f.email.focus(), 50);
+    setTimeout(() => f.name.focus(), 50);
   });
 }
 
@@ -1632,7 +1669,7 @@ function viewCats(v) {
       <div class="sub" style="margin-top:6px">Automático sigue el modo claro u oscuro de tu iPhone. En todos los temas los gastos van en rojo y los ingresos en verde.</div></section>`,
     account: () => `<section class="card">
       ${S.email ? `<div class="sub" style="margin-bottom:14px">Entraste como <b style="color:var(--ink)">${esc(S.email)}</b></div>` : ""}
-      ${S.has005 ? `<label class="f" style="margin-bottom:18px">Tu nombre (para la bienvenida)<input id="dispName" maxlength="40" value="${esc(S.displayName)}" placeholder="Ej. Irving"></label>` : ""}
+      ${S.accountName ? `<div class="sub" style="margin:-8px 0 14px">Nombre: <b style="color:var(--ink)">${esc(S.accountName)}</b></div>` : ""}
       <h2>Moneda</h2>
       <select id="cur" class="num" style="background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:10px 12px">${CURRENCIES.map(c => `<option ${c === S.currency ? "selected" : ""}>${c}</option>`).join("")}</select>
       <h2 style="margin-top:22px">Contraseña y sesión</h2>
@@ -1646,7 +1683,7 @@ function viewCats(v) {
     admin: () => `<section class="card">
       ${head("Usuarios", `<button class="btn sm" id="invite">Agregar usuario</button>`)}
       <div class="sub" style="margin-bottom:8px">Ser administrador no da acceso a las finanzas de otros usuarios.</div>
-      ${S.adminUsers === null ? `<button class="btn ghost sm" id="loadUsers">Ver usuarios</button>` : S.adminUsers.map(u => `<div class="fixed-row"><div class="mid"><b>${esc(u.email)}</b><div class="sub">${u.role === "admin" ? "Administrador" : "Usuario"}${u.confirmed ? "" : " · invitación pendiente"}${u.last_sign_in_at ? " · entró " + new Date(u.last_sign_in_at).toLocaleDateString("es-MX") : ""}</div></div><button class="btn ghost sm" data-setrole="${esc(u.id)}|${u.role === "admin" ? "user" : "admin"}">${u.role === "admin" ? "Quitar admin" : "Hacer admin"}</button></div>`).join("")}</section>
+      ${S.adminUsers === null ? `<button class="btn ghost sm" id="loadUsers">Ver usuarios</button>` : S.adminUsers.map(u => `<div class="fixed-row"><div class="mid"><b>${esc(u.name || "Sin nombre")}</b> <button class="linkbtn sm" data-setname="${esc(u.id)}" data-name="${esc(u.name || "")}">Cambiar</button><div class="sub">${esc(u.email)} · ${u.role === "admin" ? "Administrador" : "Usuario"}${u.confirmed ? "" : " · invitación pendiente"}${u.last_sign_in_at ? " · entró " + new Date(u.last_sign_in_at).toLocaleDateString("es-MX") : ""}</div></div><button class="btn ghost sm" data-setrole="${esc(u.id)}|${u.role === "admin" ? "user" : "admin"}">${u.role === "admin" ? "Quitar admin" : "Hacer admin"}</button></div>`).join("")}</section>
       <section class="card">
       <h2>Probar notificación</h2>
       <div class="testn">
@@ -1681,6 +1718,11 @@ function viewCats(v) {
   v.querySelectorAll("[data-deltok]").forEach(b => b.onclick = async () => { await check(sb.from("api_tokens").delete().eq("id", b.dataset.deltok)); refresh(); });
   $("#invite")?.addEventListener("click", openInvite);
   $("#loadUsers")?.addEventListener("click", loadAdminUsers);
+  v.querySelectorAll("[data-setname]").forEach(b => b.onclick = async () => {
+    const name = prompt("Nombre del usuario (aparece en su bienvenida):", b.dataset.name || "");
+    if (name == null || !name.trim()) return;
+    try { await adminCall({ action: "set-name", user_id: b.dataset.setname, name: name.trim() }); toast("Nombre actualizado"); loadAdminUsers(); } catch (e) { toast(e.message); }
+  });
   v.querySelectorAll("[data-setrole]").forEach(b => b.onclick = async () => {
     const [id, role] = b.dataset.setrole.split("|");
     try { await adminCall({ action: "set-role", user_id: id, role }); toast(role === "admin" ? "Ahora es administrador" : "Ya no es administrador"); loadAdminUsers(); } catch (e) { toast(e.message); }
@@ -1693,7 +1735,6 @@ function viewCats(v) {
   $("#chpass")?.addEventListener("click", () => openNewPassword(false));
   $("#logout")?.addEventListener("click", async () => { if (confirm("¿Cerrar sesión en este dispositivo?")) signOutClean(); });
   $("#idleSel")?.addEventListener("change", e => { try { localStorage.setItem(TIMEOUT_KEY, e.target.value); } catch {} markActive(); toast(`Se cerrará la sesión tras ${e.target.value} minutos sin usarla`); });
-  $("#dispName")?.addEventListener("change", e => { S.displayName = e.target.value.trim(); try { localStorage.setItem("finanzas.name", S.displayName); } catch {} check(sb.from("settings").upsert({ user_id: userId, display_name: S.displayName }), "Nombre guardado"); });
   v.querySelectorAll("[data-delpk]").forEach(b => b.onclick = async () => {
     if (!confirm("¿Quitar el acceso con Face ID/huella de ese teléfono? Tendrá que entrar con contraseña.")) return;
     if (await check(sb.from("webauthn_credentials").delete().eq("id", b.dataset.delpk), "Acceso quitado")) { if (pkLocal()?.id === b.dataset.delpk) try { localStorage.removeItem(PK_KEY); } catch {} refresh(); }
@@ -2423,6 +2464,8 @@ $("#bioLogin").onclick = async () => {
   b.disabled = false;
 };
 $("#idleStay").onclick = () => { lastMark = 0; markActive(); };
+$("#showPw").onclick = () => { $("#pwBox").classList.remove("folded"); $("#showPw").hidden = true; setTimeout(() => $("#password").focus(), 50); };
+$("#otherAcct").onclick = () => { try { localStorage.removeItem(LAST_KEY); } catch {} $("#email").value = ""; $("#password").value = ""; updateLoginBio(); $("#pwBox").classList.remove("folded"); $("#showPw").hidden = true; setTimeout(() => $("#email").focus(), 50); };
 document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && userId && !checkIdle()) refresh(true); });
 window.addEventListener("online", () => userId && refresh(true));
 window.addEventListener("offline", () => { setSync("off", "Sin conexión"); if (S.ready) { S.offline = true; render(); } });

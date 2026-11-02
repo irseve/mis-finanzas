@@ -2,7 +2,7 @@
 // - Guarda la app (página, config, librería) para poder abrirla sin conexión. Siempre intenta primero
 //   la red para no quedarse con versiones viejas; solo si falla usa lo guardado.
 // - Muestra las notificaciones.
-const CACHE = "mf-app-v3";
+const CACHE = "mf-app-v4";
 const SHELL = ["./", "index.html", "config.js", "manifest.json", "icon-192.png", "apple-touch-icon.png",
   "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"];
 

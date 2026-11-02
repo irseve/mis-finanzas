@@ -1,5 +1,7 @@
 // Mis finanzas · función "notificaciones"
 // - {"action":"public-key"}: regresa la llave pública para activar notificaciones en un dispositivo.
+// - {"action":"subscribe",endpoint,p256dh,auth,device} con la sesión del usuario: este teléfono recibe los avisos de esa cuenta
+//   (si antes era de otra cuenta, deja de recibir los de la anterior).
 // - {"action":"send"} con cabecera x-cron-secret: envía los avisos programados que ya vencieron (la llama pg_cron).
 // - {"action":"custom","title","body","minutes"} con "Authorization: Bearer <token personal>": aviso a pedido para el dueño
 //   del token (por ejemplo, el que manda Claude desde el chat). Al momento o en N minutos (máximo 7 días).
@@ -89,6 +91,17 @@ Deno.serve(async (req) => {
   try {
     const body = await req.json().catch(() => ({}));
     if (body.action === "public-key") return json({ publicKey: await webpush.exportApplicationServerKey(await vapidKeys()) });
+    if (body.action === "subscribe") {
+      const jwt = (req.headers.get("Authorization") ?? "").replace(/^Bearer\s+/i, "");
+      const { data: who } = await db.auth.getUser(jwt);
+      if (!who?.user) return json({ error: "Inicia sesión de nuevo" }, 401);
+      const endpoint = String(body.endpoint ?? ""), p256dh = String(body.p256dh ?? ""), auth = String(body.auth ?? "");
+      if (!/^https:\/\//.test(endpoint) || !p256dh || !auth) return json({ error: "Datos del dispositivo incompletos" }, 400);
+      await db.from("push_subscriptions").delete().eq("endpoint", endpoint);
+      const { error } = await db.from("push_subscriptions").insert({ user_id: who.user.id, endpoint, p256dh, auth, device: String(body.device ?? "").slice(0, 30) });
+      if (error) throw error;
+      return json({ ok: true });
+    }
     if (body.action === "custom") {
       const token = (req.headers.get("Authorization") ?? "").replace(/^Bearer\s+/i, "").trim();
       if (!token.startsWith("mf_")) return json({ error: "Falta el token personal" }, 401);

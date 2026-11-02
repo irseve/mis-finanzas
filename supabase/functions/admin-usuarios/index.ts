@@ -1,5 +1,5 @@
 // Mis finanzas · función "admin-usuarios" (solo administradores)
-// Acciones: list, invite {email}, create {email, password}, set-role {user_id, role}.
+// Acciones: list, invite {email, name}, create {email, password, name}, set-role {user_id, role}, set-name {user_id, name}.
 // Usa la llave de servicio, que solo existe en el servidor. El rol admin NO da acceso a las finanzas de otros.
 import { createClient } from "npm:@supabase/supabase-js@2.117.3";
 
@@ -39,13 +39,14 @@ Deno.serve(async (req) => {
         const { data: profiles } = await db.from("profiles").select("*");
         return json({ users: data.users.map((u) => {
           const p = profiles?.find((x) => x.user_id === u.id);
-          return { id: u.id, email: u.email, name: p?.display_name ?? "", role: p?.role ?? "user", created_at: u.created_at, last_sign_in_at: u.last_sign_in_at, confirmed: !!u.email_confirmed_at };
+          return { id: u.id, email: u.email, name: (u.user_metadata?.full_name as string) || "", role: p?.role ?? "user", created_at: u.created_at, last_sign_in_at: u.last_sign_in_at, confirmed: !!u.email_confirmed_at };
         }) });
       }
       case "invite": {
         const email = String(body.email ?? "").trim().toLowerCase();
         if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return json({ error: "Escribe un correo válido" }, 400);
-        const { error } = await db.auth.admin.inviteUserByEmail(email, { redirectTo: APP_URL });
+        const name = String(body.name ?? "").trim().slice(0, 60);
+        const { error } = await db.auth.admin.inviteUserByEmail(email, { redirectTo: APP_URL, data: name ? { full_name: name } : undefined });
         if (error) return json({ error: error.message }, 400);
         return json({ ok: true });
       }
@@ -53,7 +54,8 @@ Deno.serve(async (req) => {
         const email = String(body.email ?? "").trim().toLowerCase(), password = String(body.password ?? "");
         if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return json({ error: "Escribe un correo válido" }, 400);
         if (password.length < 6) return json({ error: "La contraseña debe tener al menos 6 caracteres" }, 400);
-        const { error } = await db.auth.admin.createUser({ email, password, email_confirm: true });
+        const name = String(body.name ?? "").trim().slice(0, 60);
+        const { error } = await db.auth.admin.createUser({ email, password, email_confirm: true, user_metadata: name ? { full_name: name } : undefined });
         if (error) return json({ error: error.message }, 400);
         return json({ ok: true });
       }
@@ -65,6 +67,14 @@ Deno.serve(async (req) => {
           if (target?.role === "admin" && (count ?? 0) <= 1) return json({ error: "Debe quedar al menos un administrador" }, 400);
         }
         const { error } = await db.from("profiles").upsert({ user_id: body.user_id, role }, { onConflict: "user_id" });
+        if (error) throw error;
+        return json({ ok: true });
+      }
+      case "set-name": {
+        const name = String(body.name ?? "").trim().slice(0, 60);
+        const { data: u, error: e1 } = await db.auth.admin.getUserById(String(body.user_id));
+        if (e1 || !u?.user) return json({ error: "Usuario no encontrado" }, 404);
+        const { error } = await db.auth.admin.updateUserById(u.user.id, { user_metadata: { ...(u.user.user_metadata ?? {}), full_name: name } });
         if (error) throw error;
         return json({ ok: true });
       }
