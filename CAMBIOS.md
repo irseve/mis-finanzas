@@ -600,3 +600,15 @@ Objetivo del usuario: marcar gastos en grupos propios y ver al final del mes cu�
 - Requiere migración: tabla `expense_groups` (RLS por usuario) y columna `group_id` en `transactions`, `recurrences` y `pending_entries`.
 - **Decisiones del usuario:** los grupos son **solo para gastos**. El **tope mensual es opcional** por grupo (se puede poner o no). La tarjeta "Por grupo" va en el **Resumen**.
 - [ ] Avisos del tope: dentro de la app (barra en ámbar al 80% y roja al pasarse) y **notificación** al llegar al 80% y al rebasar el tope (una vez por mes y grupo; se puede apagar en Ajustes → Notificaciones).
+
+### AM. Rediseño del Resumen: limpio y fácil de entender (propuesta de Claude, por aprobar)
+Investigación (resumen): las guías de diseño de tableros y finanzas coinciden en **mostrar primero un resumen y dar el detalle solo al tocar** (revelación progresiva), poner arriba **la cifra más importante**, agrupar lo relacionado y usar gráficas de barras o líneas. Apps como Copilot ponen arriba un **"Libre para gastar"** del mes, y Monarch destaca **cuánto te quedará**.
+
+Propuesta (máximo 5 bloques, siempre en el mismo orden):
+1. **¿Cómo voy este mes?** Una sola cifra grande: **"Te quedan $X"** (ingresos + por recibir − gastado − por pagar − apartado), con una barra Gastado / Por pagar / Libre y una línea "Gastaste $9,650 de $24,898".
+2. **Necesita tu atención** (solo aparece si hay algo): pendientes por confirmar, pagos vencidos y topes de grupo rebasados, en una lista corta; tocar lleva a cada uno.
+3. **Próximos pagos:** los 3 más cercanos y "Ver todos".
+4. **¿En qué se fue?** Una sola tarjeta con selector **Categorías · Grupos · Métodos**: los 5 principales con barra y % (y tope en grupos); "Ver todo" para el resto.
+5. **Tendencia:** la gráfica (mes a mes por defecto), con la comparación contra el mes anterior.
+- [ ] Se quitan del Resumen (o se mueven a su detalle): "Fijos vs. variables" (al detalle de Fijos), "Gastos más grandes" (a Movimientos, como orden "Más grandes"), cifras repetidas.
+- [ ] Antes de aplicarlo, mostrar al usuario una maqueta visual para aprobarla.
