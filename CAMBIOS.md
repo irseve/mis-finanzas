@@ -555,7 +555,7 @@ Requiere las migraciones 006 y 007 y volver a desplegar `notificaciones` y `admi
 - Hoy un teléfono solo puede recibir avisos de la primera cuenta que los activó, y los sigue recibiendo aunque entre otra cuenta o se cierre sesión.
 - [x] "Cerrar sesión" a mano apaga los avisos en ese teléfono; el cierre por inactividad no.
 - [x] Si otra cuenta activa los avisos en ese teléfono, el teléfono pasa a esa cuenta (desde el servidor).
-- [ ] Opcional: avisos sin montos en la pantalla bloqueada ("Tienes un pago por confirmar").
+- **Decisión del usuario:** los avisos siguen mostrando montos; la privacidad en la pantalla bloqueada queda a cargo de la configuración del iPhone (Configuración → Notificaciones → Finanzas → Mostrar vistas previas). No requiere cambios en la app.
 
 ### AF. El aviso "¿Usar llave de acceso?" del iPhone
 - Es la ventana de seguridad de Apple (nombre de la cuenta + Continuar → Face ID); la app no la puede quitar ni cambiar.
