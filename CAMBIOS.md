@@ -499,4 +499,17 @@ Es posible con la tecnología estándar de los navegadores para Face ID/Touch ID
   - [ ] **No se elige el método: lo decide el teléfono.** El sistema usa lo que tenga: Face ID o Touch ID en iPhone; huella o reconocimiento facial en Android. Si el teléfono no tiene biometría, usa su código o patrón de desbloqueo.
   - [ ] Antes de mostrar la opción, la app revisa que el teléfono tenga un método de desbloqueo disponible; si no lo tiene, la opción no aparece.
   - [ ] Textos según el equipo: "Desbloquear con Face ID" en iPhone, "Desbloquear con huella o rostro" en Android.
+- **Decisión del usuario:** sí quiere la opción completa (iniciar sesión con Face ID/huella), ver punto AB.
 - Opción más completa (más trabajo) · **Iniciar sesión sin contraseña con passkey:** reemplaza correo y contraseña por Face ID también al iniciar sesión en un dispositivo nuevo. Requiere una función nueva en el servidor para verificar la llave; se puede hacer después si se quiere.
+
+### AB. Iniciar sesión con Face ID/huella y cerrar sesión automáticamente
+- [ ] **Inicio de sesión con passkey** (en el celular con la app instalada): después del primer inicio con correo y contraseña, ofrecer "Usar Face ID para entrar". Las siguientes veces, el botón **"Entrar con Face ID"** (o "con huella" en Android) inicia sesión sin escribir la contraseña. El teléfono decide el método (Face ID, Touch ID, huella, rostro o código).
+- [ ] En navegador web y computadora: solo correo y contraseña (como hoy).
+- [ ] Requiere: función nueva en el servidor que registre y verifique las llaves (passkeys) y abra la sesión; tabla de llaves por usuario y dispositivo (se pueden ver y borrar en Ajustes → Cuenta).
+- [ ] **Cierre de sesión automático** tras un tiempo sin usar la app. Al volver se pide Face ID/huella (celular) o contraseña (navegador).
+- Por confirmar con el usuario: ¿después de cuánto tiempo sin usarla? (propuesta: elegir en Ajustes entre 5, 15, 30 o 60 minutos; 15 por defecto). ¿También en el navegador o solo en el celular?
+
+### AC. Animación de bienvenida al iniciar sesión
+- [ ] Al iniciar sesión (con contraseña o Face ID), pantalla de bienvenida de 2–3 segundos: la palabra **"Hola"** se va "escribiendo" en letra manuscrita con trazo animado (inspirada en el saludo del iPhone, con diseño propio), sobre el color del tema; luego aparece "Irving" (nombre del perfil) y la pantalla se desvanece hacia el Resumen.
+- [ ] Se puede saltar tocando la pantalla. Respeta "Reducir movimiento" (solo aparece el texto, sin animación).
+- Por confirmar: ¿solo al iniciar sesión o también cada vez que se desbloquea con Face ID? ¿Que "Hola" cambie de idioma como en el iPhone (Hola, Hello, Bonjour…) o solo en español?
