@@ -47,16 +47,21 @@ async function sendDue() {
   if (error) throw error;
   if (!due?.length) return { sent: 0 };
   const users = [...new Set(due.map((n) => n.user_id))];
-  const [{ data: subs }, { data: prefs }] = await Promise.all([
+  const pendIds = [...new Set(due.map((n) => n.pending_id).filter(Boolean))];
+  const [{ data: subs }, { data: prefs }, { data: pends }] = await Promise.all([
     db.from("push_subscriptions").select("*").in("user_id", users),
     db.from("settings").select("user_id, notify").in("user_id", users),
+    pendIds.length ? db.from("pending_entries").select("id, status").in("id", pendIds) : Promise.resolve({ data: [] }),
   ]);
+  // Si el movimiento ya se confirmó o descartó, su aviso ya no se manda.
+  const stillPending = new Set((pends ?? []).filter((p) => p.status === "pendiente").map((p) => p.id));
   const server = await webpush.ApplicationServer.new({ contactInformation: "https://irseve.github.io/mis-finanzas/", vapidKeys: await vapidKeys() });
   const gone = new Set<string>();
   let sent = 0;
   for (const n of due) {
     const notify = prefs?.find((p) => p.user_id === n.user_id)?.notify ?? {};
-    const allowed = n.kind === "prueba" || notify[n.kind] !== false; // todo activado salvo que el usuario lo apague
+    const allowed = (n.kind === "prueba" || notify[n.kind] !== false) // todo activado salvo que el usuario lo apague
+      && (!n.pending_id || stillPending.has(n.pending_id));
     if (allowed) {
       for (const s of subs ?? []) {
         if (s.user_id !== n.user_id || gone.has(s.id)) continue;

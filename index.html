@@ -13,7 +13,7 @@
 <link rel="icon" href="icon-192.png?v=1.7.0">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Sacramento&display=swap" rel="stylesheet">
 <script>
 // Temas: cada uno con versión clara y oscura. Regla fija en todos: gastos en rojo (--spend) e ingresos en verde (--income).
 window.THEMES = {
@@ -316,6 +316,15 @@ svg text.barlbl{font-size:10.5px;font-weight:700}
 .rowlink .mid{display:grid;min-width:0}
 .rowlink .mid b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .occinfo{padding:10px 12px;border-radius:10px;background:var(--surface-2);color:var(--ink)}
+.biobtn{min-height:48px;font-size:1.02rem}
+.welcome{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:var(--bg);padding:24px;transition:opacity .5s ease}
+.welcome.out{opacity:0}
+.hello{font-family:"Sacramento",cursive;font-size:clamp(60px,17vw,140px);line-height:1.15;color:var(--ink);-webkit-text-stroke:1.5px currentColor;text-align:center;max-width:100%}
+.hello span{display:inline-block;clip-path:inset(-20% 110% -20% -10%);animation:write 1.5s cubic-bezier(.45,.05,.35,1) forwards}
+.hello .w2{animation-duration:1.3s;animation-delay:1.35s}
+@keyframes write{to{clip-path:inset(-20% -10% -20% -10%)}}
+@media (prefers-reduced-motion:reduce){.hello span{animation:none;clip-path:none}}
+.idle-bar{z-index:61}
 [hidden]{display:none!important}
 </style>
 </head>
@@ -326,6 +335,7 @@ svg text.barlbl{font-size:10.5px;font-weight:700}
     <label class="f">Correo<input id="email" type="email" autocomplete="email" inputmode="email"></label>
     <label class="f">Contraseña<input id="password" type="password" autocomplete="current-password"></label>
     <div class="err" id="loginErr" role="alert"></div>
+    <button class="btn biobtn" id="bioLogin" hidden></button>
     <button class="btn" id="signin">Iniciar sesión</button>
     <button class="btn ghost" id="signup">Crear cuenta</button>
     <button class="linkbtn" id="forgot">¿Olvidaste tu contraseña?</button>
@@ -358,17 +368,19 @@ svg text.barlbl{font-size:10.5px;font-weight:700}
 </div>
 <button class="fab" id="fab" aria-label="Agregar movimiento" hidden>+</button>
 <div class="toast" id="toast" role="status"></div>
+<div class="welcome" id="welcome" hidden aria-live="polite"></div>
+<div class="update-bar idle-bar" id="idleBar" role="alert" hidden><span>Tu sesión se cerrará por inactividad</span><button class="go" id="idleStay">Seguir conectado</button></div>
 <div class="update-bar" id="updateBar" role="status" hidden><span>Nueva versión</span><button class="go" id="updateGo">Actualizar</button><button class="x" id="updateX" aria-label="Cerrar aviso">×</button></div>
 <dialog id="dlg"><form method="dialog" id="dlgForm" onsubmit="return false"></form></dialog>
 
-<script src="config.js?v=2.0.2"></script>
+<script src="config.js?v=2.1.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
 <script>
 (() => {
 "use strict";
 // ---------- versión ----------
 // Al subir cambios: actualiza APP_VERSION, APP_DATE, version.json y el ?v= de config.js.
-const APP_VERSION = "2.0.2";
+const APP_VERSION = "2.1.0";
 const APP_DATE = "2026-10-30";
 
 // ---------- utilities ----------
@@ -437,17 +449,19 @@ const rememberMethod = id => { try { if (id) localStorage.setItem(lastMethodKey,
 // Mismo cálculo que public.recurrence_on_or_after en la base de datos.
 const isoAdd = (iso, n) => { const [y, m, d] = iso.split("-").map(Number); return new Date(Date.UTC(y, m-1, d+n)).toISOString().slice(0, 10); };
 const isoDiff = (a, b) => { const p = s => s.split("-").map(Number), [y1,m1,d1] = p(a), [y2,m2,d2] = p(b); return Math.round((Date.UTC(y1,m1-1,d1) - Date.UTC(y2,m2-1,d2)) / 864e5); };
-const FREQS = { diario:"Diario", semanal:"Semanal", quincenal:"Quincenal", mensual:"Mensual", bimestral:"Bimestral", salario:"Quincena de salario" };
+const FREQS = { diario:"Diario", semanal:"Semanal", quincenal:"Quincenal", mensual:"Mensual", bimestral:"Bimestral", semestral:"Semestral", anual:"Anual", salario:"Quincena de salario" };
+const MONTH_STEP = { mensual: 1, bimestral: 2, semestral: 6, anual: 12 };
+const usesDay = f => f in MONTH_STEP;
 function occOnOrAfter(r, from) {
   const d = from > r.start ? from : r.start;
   if (r.freq === "diario") return d;
   if (r.freq === "semanal" || r.freq === "quincenal") { const st = r.freq === "semanal" ? 7 : 15; return isoAdd(r.start, st * Math.ceil(isoDiff(d, r.start) / st)); }
   const ym = ymOf(d), last = `${ym}-${pad(daysIn(ym))}`;
   if (r.freq === "salario") return d <= `${ym}-15` ? `${ym}-15` : d <= last ? last : `${ymAdd(ym, 1)}-15`;
-  // mensual: cada mes · bimestral: cada 2 meses contando desde el mes de la primera fecha
-  const step = r.freq === "bimestral" ? 2 : 1;
+  // mensual, bimestral, semestral o anual: cada 1, 2, 6 o 12 meses contando desde el mes de la primera fecha
+  const step = MONTH_STEP[r.freq] || 1;
   let c, m = ym;
-  if (step === 2) { const [y1, m1] = ym.split("-").map(Number), [y0, m0] = r.start.split("-").map(Number); if (((y1 - y0) * 12 + m1 - m0) % 2) m = ymAdd(m, 1); }
+  if (step > 1) { const [y1, m1] = ym.split("-").map(Number), [y0, m0] = r.start.split("-").map(Number), k = (((y1 - y0) * 12 + m1 - m0) % step + step) % step; if (k) m = ymAdd(m, step - k); }
   for (let i = 0; i < 2; i++, m = ymAdd(m, step)) { c = `${m}-${pad(Math.min(r.day || +r.start.slice(8), daysIn(m)))}`; if (c >= d) return c; }
   return c;
 }
@@ -459,7 +473,8 @@ function occInMonth(r, ym) {
 const freqText = r => {
   const dm = s => `${+s.slice(8)}/${s.slice(5,7)}`;
   return { diario:"Todos los días", semanal:`Cada semana desde ${dm(r.start)}`, quincenal:`Cada 15 días desde ${dm(r.start)}`,
-    mensual:`El día ${r.day || +r.start.slice(8)} de cada mes`, bimestral:`El día ${r.day || +r.start.slice(8)}, cada 2 meses`, salario:"Día 15 y último día de cada mes" }[r.freq];
+    mensual:`El día ${r.day || +r.start.slice(8)} de cada mes`, bimestral:`El día ${r.day || +r.start.slice(8)}, cada 2 meses`,
+    semestral:`Cada 6 meses (${dm(r.start)}…)`, anual:`Cada año, el ${+r.start.slice(8)} de ${monthName(ymOf(r.start), { month:"long" })}`, salario:"Día 15 y último día de cada mes" }[r.freq];
 };
 
 // ---------- Supabase ----------
@@ -479,7 +494,7 @@ const txDb = t => {
 const toPlace = r => ({ id:r.id, name:r.name, kind:r.kind, color:r.color, rate:+r.rate, rateUpdated:r.rate_updated_at, active:r.active });
 const toInstrument = r => ({ symbol:r.symbol, name:r.name, currency:r.currency, price:r.price == null ? null : +r.price, price_at:r.price_at });
 const toRec = r => ({ id:r.id, name:r.name, type:r.type, amount:+r.amount, original:+r.original_amount, categoryId:r.category_id, methodId:r.payment_method_id, freq:r.freq, start:r.start_date, day:r.day, mode:r.mode, next:r.next_date, active:r.active });
-const recDb = r => ({ id:r.id, name:r.name, type:r.type, amount:r.amount, original_amount:r.original ?? r.amount, category_id:r.categoryId || null, payment_method_id:r.methodId || null, freq:r.freq, start_date:r.start, day:r.freq === "mensual" || r.freq === "bimestral" ? (r.day || +r.start.slice(8)) : null, mode:r.mode, next_date:r.next || null, active:r.active });
+const recDb = r => ({ id:r.id, name:r.name, type:r.type, amount:r.amount, original_amount:r.original ?? r.amount, category_id:r.categoryId || null, payment_method_id:r.methodId || null, freq:r.freq, start_date:r.start, day:usesDay(r.freq) ? (r.day || +r.start.slice(8)) : null, mode:r.mode, next_date:r.next || null, active:r.active });
 const toPend = r => ({ id:r.id, source:r.source, type:r.type, amount:+r.amount, categoryId:r.category_id, methodId:r.payment_method_id, date:r.date, note:r.note || "", recurrenceId:r.recurrence_id, status:r.status, raw:r.raw || {}, created:r.created_at });
 const toCat = r => ({ id:r.id, name:r.name, kind:r.kind, color:r.color, budget:+r.budget, parentId:r.parent_id });
 const toMethod = r => ({ id:r.id, name:r.name, kind:r.kind, color:r.color, active:r.active });
@@ -499,7 +514,7 @@ let lastGen = 0;
 async function loadBase() {
   if (Date.now() - lastGen > 5 * 60e3) { lastGen = Date.now(); await sb.rpc("generate_pending_entries"); } // crea pendientes de fijos cuya fecha ya llegó
   const [a] = rangeFor(S.ym);
-  const [st, cs, pm, rc, pe, gl, sv, pf, tk, sp, ins, fd] = await Promise.all([
+  const [st, cs, pm, rc, pe, gl, sv, pf, tk, sp, ins, fd, wc] = await Promise.all([
     sb.from("settings").select("*").maybeSingle(),
     sb.from("categories").select("*").order("created_at"),
     sb.from("payment_methods").select("*").order("created_at"),
@@ -512,12 +527,18 @@ async function loadBase() {
     sb.from("savings_places").select("*").order("created_at"),
     sb.from("instruments").select("*"),
     sb.from("transactions").select("date").order("date").limit(1),
+    sb.from("webauthn_credentials").select("id,device,created_at,last_used_at").order("created_at"),
   ]);
   if (cs.error) throw cs.error;
   S.needsMigration = [pm, rc, pe, gl, sv].some(r => missingTable(r.error)) ? "001_metodos_fijos_pendientes_metas.sql"
     : [pf, tk].some(r => missingTable(r.error)) ? "002_notificaciones_usuarios_siri_gmail.sql"
     : [sp, ins].some(r => missingTable(r.error)) ? "003_apartados_inversiones.sql"
-    : (cs.data || []).length && !("parent_id" in cs.data[0]) ? "004_bimestral_subcategorias.sql" : "";
+    : (cs.data || []).length && !("parent_id" in cs.data[0]) ? "004_bimestral_subcategorias.sql"
+    : missingTable(wc.error) ? "005_semestral_anual_avisos_faceid.sql" : "";
+  S.has005 = !wc.error;
+  S.passkeys = wc.data || [];
+  S.displayName = st.data?.display_name || "";
+  try { if (S.displayName) localStorage.setItem("finanzas.name", S.displayName); } catch {}
   S.hasSubcats = !(cs.data || []).length || "parent_id" in cs.data[0];
   const err = [pm, rc, pe, gl, sv, pf, tk, sp, ins].find(r => r.error && !missingTable(r.error));
   if (err) throw err.error;
@@ -553,7 +574,7 @@ async function loadTx() {
   S.tx = data.map(toTx);
 }
 // Lo último que se descargó se guarda en el teléfono para mostrarlo si no hay conexión.
-const CACHE_KEYS = ["currency","notify","profile","tokens","categories","methods","recs","pending","goals","aptx","places","instruments","firstYm","tx","ym","hasSubcats","needsMigration"];
+const CACHE_KEYS = ["displayName","has005","currency","notify","profile","tokens","categories","methods","recs","pending","goals","aptx","places","instruments","firstYm","tx","ym","hasSubcats","needsMigration"];
 const cacheKey = () => "finanzas.cache." + userId;
 function saveCache() { try { const o = { at: Date.now() }; for (const k of CACHE_KEYS) o[k] = S[k]; localStorage.setItem(cacheKey(), JSON.stringify(o)); } catch {} }
 function loadCache() {
@@ -651,11 +672,14 @@ function setSync(state, text) { $("#sync").innerHTML = `<span class="dot ${state
 function showLogin(msg = "") {
   $("#app").hidden = true; $("#fab").hidden = true; $("#login").hidden = false;
   $("#loginErr").textContent = msg;
+  updateLoginBio();
 }
 async function onSession(session) {
   if (!session) { userId = null; return showLogin(); }
   if (userId === session.user.id) return;
   userId = session.user.id; S.email = session.user.email || "";
+  if (welcomeNext) { welcomeNext = false; try { localStorage.setItem(ACT_KEY, String(Date.now())); } catch {} showWelcome(); }
+  else if (checkIdle()) return; // la sesión guardada ya expiró por inactividad
   if (!S.ready && loadCache()) S.ready = true; // muestra lo último guardado mientras llega lo nuevo
   $("#login").hidden = true; $("#app").hidden = false; $("#fab").hidden = false;
   render();
@@ -667,9 +691,11 @@ async function doAuth(signup) {
   if (!email || password.length < 6) { $("#loginErr").textContent = "Escribe tu correo y una contraseña de al menos 6 caracteres."; return; }
   $("#loginErr").textContent = "";
   const btns = document.querySelectorAll("#login button"); btns.forEach(b => b.disabled = true);
+  if (!signup) { welcomeNext = true; S.offerBio = true; }
   const { data, error } = signup ? await sb.auth.signUp({ email, password }) : await sb.auth.signInWithPassword({ email, password });
   btns.forEach(b => b.disabled = false);
   if (error) {
+    welcomeNext = false; S.offerBio = false;
     const m = error.message || "";
     $("#loginErr").textContent = /Invalid login/i.test(m) ? "Correo o contraseña incorrectos." : /not confirmed/i.test(m) ? "Confirma tu correo primero (revisa tu bandeja)." : /not allowed|disabled/i.test(m) ? "El registro de cuentas nuevas está desactivado." : m;
     return;
@@ -723,7 +749,7 @@ function openNewPassword(fromEmail) {
 // ---------- notificaciones ----------
 const FN_URL = (window.SUPABASE_URL || "") + "/functions/v1";
 const DOCS = "https://github.com/irseve/mis-finanzas/blob/main/docs/";
-const NOTIFY_KINDS = [["recurrente","Fijos por confirmar (renta, colegiatura…)"],["ingreso","Ingresos fijos: capturar el monto (salario)"],["recordatorio","Recordatorios de pagos manuales"],["pendientes","Pendientes de Siri y del correo"],["meta","Sugerencia de ahorro al cobrar"]];
+const NOTIFY_KINDS = [["recurrente","Fijos por confirmar (renta, colegiatura…)"],["ingreso","Ingresos fijos: capturar el monto (salario)"],["recordatorio","Recordatorios de pagos manuales"],["pendientes","Pendientes de Siri y del correo"],["meta","Sugerencia de ahorro al cobrar"],["resumen","Resumen diario de pendientes (9:00 a.m.)"]];
 const isStandalone = () => navigator.standalone === true || matchMedia("(display-mode: standalone)").matches;
 const isIOS = () => /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 const pushSupported = () => "serviceWorker" in navigator && "PushManager" in window && "Notification" in window;
@@ -756,6 +782,105 @@ async function disablePush() {
   S.pushOn = false; toast("Notificaciones desactivadas en este dispositivo"); render();
 }
 const saveNotify = () => check(sb.from("settings").upsert({ user_id: userId, notify: S.notify }), "Preferencias guardadas");
+
+// ---------- Face ID / huella (llaves de acceso) ----------
+// Solo en el celular con la app instalada; el teléfono decide el método (Face ID, Touch ID, huella, rostro o código).
+const isMobileApp = () => isStandalone() && (isIOS() || /Android/i.test(navigator.userAgent));
+const bioLabel = () => isIOS() ? "Face ID" : "huella o rostro";
+const PK_KEY = "finanzas.passkey";
+const pkLocal = () => { try { return JSON.parse(localStorage.getItem(PK_KEY) || "null"); } catch { return null; } };
+async function bioAvailable() {
+  try { return isMobileApp() && !!window.PublicKeyCredential && await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable(); } catch { return false; }
+}
+const toB64u = buf => btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+const pkCall = async body => {
+  const { data, error } = await sb.functions.invoke("passkeys", { body });
+  if (error) { let m = error.message; try { m = (await error.context.json()).error || m; } catch {} throw new Error(m); }
+  return data;
+};
+const credJSON = (cred, extra) => ({ id: cred.id, rawId: toB64u(cred.rawId), type: cred.type, clientExtensionResults: cred.getClientExtensionResults?.() || {}, authenticatorAttachment: cred.authenticatorAttachment || undefined, response: extra(cred.response) });
+async function registerPasskey() {
+  const { options: o, challengeId } = await pkCall({ action: "register-options" });
+  const cred = await navigator.credentials.create({ publicKey: { ...o, challenge: b64u(o.challenge), user: { ...o.user, id: b64u(o.user.id) }, excludeCredentials: (o.excludeCredentials || []).map(c => ({ ...c, id: b64u(c.id) })) } });
+  const response = credJSON(cred, r => ({ clientDataJSON: toB64u(r.clientDataJSON), attestationObject: toB64u(r.attestationObject), transports: r.getTransports?.() || [] }));
+  await pkCall({ action: "register-verify", challengeId, response, device: isIOS() ? "iPhone" : "Android" });
+  try { localStorage.setItem(PK_KEY, JSON.stringify({ id: cred.id, email: S.email, at: Date.now() })); } catch {}
+}
+async function loginWithPasskey() {
+  const { options: o, challengeId } = await pkCall({ action: "login-options" });
+  const cred = await navigator.credentials.get({ publicKey: { ...o, challenge: b64u(o.challenge), allowCredentials: (o.allowCredentials || []).map(c => ({ ...c, id: b64u(c.id) })) } });
+  const response = credJSON(cred, r => ({ clientDataJSON: toB64u(r.clientDataJSON), authenticatorData: toB64u(r.authenticatorData), signature: toB64u(r.signature), userHandle: r.userHandle ? toB64u(r.userHandle) : undefined }));
+  const { token_hash } = await pkCall({ action: "login-verify", challengeId, response });
+  welcomeNext = true;
+  const { error } = await sb.auth.verifyOtp({ token_hash, type: "magiclink" });
+  if (error) { welcomeNext = false; throw error; }
+}
+async function updateLoginBio() {
+  const b = $("#bioLogin"), on = !!pkLocal() && await bioAvailable();
+  b.hidden = !on; if (on) b.textContent = `Entrar con ${bioLabel()}`;
+}
+function offerBio() {
+  openDialog(`
+    <div class="mhead">¿Entrar con ${bioLabel()}?</div>
+    <div class="mbody"><div class="sub">La próxima vez podrás entrar a Mis finanzas con ${bioLabel()} en lugar de escribir tu contraseña. Se activa solo en este teléfono y lo puedes quitar en Ajustes → Cuenta.</div></div>
+    <div class="mfoot"><span class="spacer"></span><button type="button" class="btn ghost" data-close>Ahora no</button><button type="button" class="btn" data-save>Activar</button></div>`,
+  f => {
+    f.querySelector("[data-close]").onclick = () => { try { localStorage.setItem("finanzas.passkeyAsked", "1"); } catch {} close(); };
+    f.querySelector("[data-save]").onclick = async () => {
+      try { await registerPasskey(); close(); toast(`Listo: la próxima vez entra con ${bioLabel()}`); refresh(); }
+      catch (e) { close(); toast(e.name === "NotAllowedError" ? "Se canceló la activación" : "No se pudo activar: " + e.message); }
+    };
+  });
+}
+
+// ---------- cerrar sesión por inactividad ----------
+// Por defecto: 5 minutos en el celular (volver a entrar es con Face ID/huella) y 15 en el navegador. Se cambia en Ajustes → Cuenta.
+const TIMEOUT_KEY = "finanzas.timeout", ACT_KEY = "finanzas.lastActive";
+const lsGet = k => { try { return localStorage.getItem(k); } catch { return null; } };
+const idleMinutes = () => +lsGet(TIMEOUT_KEY) || (isMobileApp() ? 5 : 15);
+const lastActive = () => +lsGet(ACT_KEY) || Date.now();
+let lastMark = 0;
+const markActive = () => {
+  const n = Date.now(); if (n - lastMark < 4000) return; lastMark = n;
+  try { localStorage.setItem(ACT_KEY, String(n)); } catch {}
+  $("#idleBar").hidden = true;
+};
+["pointerdown", "keydown", "touchstart", "wheel"].forEach(ev => document.addEventListener(ev, markActive, { passive: true }));
+function checkIdle() {
+  if (!userId) return false;
+  const left = lastActive() + idleMinutes() * 60e3 - Date.now();
+  if (left <= 0) { autoLogout(); return true; }
+  $("#idleBar").hidden = !(left <= 60e3 && document.visibilityState === "visible");
+  return false;
+}
+async function signOutClean(msg) {
+  if (channel) sb.removeChannel(channel);
+  try { localStorage.removeItem(cacheKey()); } catch {} // tus datos guardados se borran del teléfono al salir
+  userId = null; S.ready = false; S.offline = false;
+  $("#idleBar").hidden = true;
+  await sb.auth.signOut();
+  showLogin(msg || "");
+}
+const autoLogout = () => signOutClean("Cerramos tu sesión por inactividad.");
+setInterval(checkIdle, 15000);
+
+// ---------- bienvenida: "Hola" + tu nombre escrito a mano ----------
+let welcomeNext = false;
+function showWelcome() {
+  const name = (S.displayName || lsGet("finanzas.name") || "").trim().split(/\s+/)[0];
+  const w = $("#welcome");
+  w.innerHTML = `<div class="hello"><span class="w1">Hola</span>${name ? ` <span class="w2">${esc(name)}</span>` : ""}</div>`;
+  w.classList.remove("out"); w.hidden = false;
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let done = false;
+  const end = () => { if (done) return; done = true; w.classList.add("out"); setTimeout(() => { w.hidden = true; afterWelcome(); }, 500); };
+  const t = setTimeout(end, reduce ? 1300 : name ? 3300 : 2300);
+  w.onclick = () => { clearTimeout(t); end(); };
+}
+async function afterWelcome() {
+  if (S.offerBio && !pkLocal() && !lsGet("finanzas.passkeyAsked") && S.has005 && await bioAvailable()) offerBio();
+  S.offerBio = false;
+}
 
 // ---------- tokens para Siri y Gmail ----------
 function openNewToken() {
@@ -1290,7 +1415,7 @@ function viewFijos(v) {
   const list = monthTx(), plan = monthPlan(), month = esc(monthName(S.ym, {month:"long"}));
   const recRow = r => {
     const its = plan.filter(it => it.r === r), done = its.filter(it => it.status === "pagado").length, next = its.find(isOpen), c = cat(r.categoryId), inc = r.type === "ingreso";
-    const state = !r.active ? `<span class="pill">Pausado</span>` : !its.length ? `<span class="pill">Sin fechas este mes</span>`
+    const state = !r.active ? `<span class="pill">Pausado</span>` : !its.length ? `<span class="pill">Próximo: ${dShort(occOnOrAfter(r, todayISO()))}/${occOnOrAfter(r, todayISO()).slice(0, 4)}</span>`
       : next ? `<span class="pill pend">${next.status === "confirmar" ? "Por confirmar" : inc ? "Por recibir" : "Por pagar"} · ${dShort(next.date)}</span>` : `<span class="pill ok">${inc ? "Recibido" : "Pagado"}</span>`;
     return `<button class="fixed-row rowbtn" data-editrec="${esc(r.id)}">
       <span class="sw" style="background:${c.color};width:12px;height:12px"></span>
@@ -1507,10 +1632,17 @@ function viewCats(v) {
       <div class="sub" style="margin-top:6px">Automático sigue el modo claro u oscuro de tu iPhone. En todos los temas los gastos van en rojo y los ingresos en verde.</div></section>`,
     account: () => `<section class="card">
       ${S.email ? `<div class="sub" style="margin-bottom:14px">Entraste como <b style="color:var(--ink)">${esc(S.email)}</b></div>` : ""}
+      ${S.has005 ? `<label class="f" style="margin-bottom:18px">Tu nombre (para la bienvenida)<input id="dispName" maxlength="40" value="${esc(S.displayName)}" placeholder="Ej. Irving"></label>` : ""}
       <h2>Moneda</h2>
       <select id="cur" class="num" style="background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:10px 12px">${CURRENCIES.map(c => `<option ${c === S.currency ? "selected" : ""}>${c}</option>`).join("")}</select>
       <h2 style="margin-top:22px">Contraseña y sesión</h2>
-      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost sm" id="chpass">Cambiar contraseña</button><button class="btn ghost sm" id="logout">Cerrar sesión</button></div></section>`,
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost sm" id="chpass">Cambiar contraseña</button><button class="btn ghost sm" id="logout">Cerrar sesión</button></div>
+      <label class="f" style="margin-top:16px">Cerrar sesión si no uso la app por<select id="idleSel">${[2, 5, 15, 30].map(m => `<option value="${m}" ${m === idleMinutes() ? "selected" : ""}>${m} minutos</option>`).join("")}</select></label>
+      <div class="sub" style="margin-top:4px">Se aplica en este ${isMobileApp() ? "teléfono" : "navegador"}.</div></section>
+      ${S.has005 ? `<section class="card"><h2>${isMobileApp() ? bioLabel() : "Face ID o huella"}</h2>
+        ${isMobileApp() ? `<div data-biobox class="sub">Revisando…</div>` : `<div class="sub" style="margin-bottom:8px">Solo se usa en el celular con la app instalada. Desde aquí puedes quitar el acceso de un teléfono.</div>`}
+        ${S.passkeys.map(k => `<div class="fixed-row compact"><div class="mid"><b>${esc(k.device || "Teléfono")}</b><div class="sub">Desde ${new Date(k.created_at).toLocaleDateString("es-MX")}${k.last_used_at ? " · último uso " + new Date(k.last_used_at).toLocaleDateString("es-MX") : ""}${pkLocal()?.id === k.id ? " · este teléfono" : ""}</div></div><button class="btn danger sm" data-delpk="${esc(k.id)}">Quitar</button></div>`).join("")}
+      </section>` : ""}`,
     admin: () => `<section class="card">
       ${head("Usuarios", `<button class="btn sm" id="invite">Agregar usuario</button>`)}
       <div class="sub" style="margin-bottom:8px">Ser administrador no da acceso a las finanzas de otros usuarios.</div>
@@ -1559,7 +1691,25 @@ function viewCats(v) {
     toast("Prueba programada para las " + new Date(data).toLocaleTimeString("es-MX", { hour:"2-digit", minute:"2-digit", second:"2-digit" }) + (S.pushOn ? "" : " · Activa las notificaciones en este dispositivo para recibirla"));
   });
   $("#chpass")?.addEventListener("click", () => openNewPassword(false));
-  $("#logout")?.addEventListener("click", async () => { if (confirm("¿Cerrar sesión en este dispositivo?")) { if (channel) sb.removeChannel(channel); await sb.auth.signOut(); S.ready = false; } });
+  $("#logout")?.addEventListener("click", async () => { if (confirm("¿Cerrar sesión en este dispositivo?")) signOutClean(); });
+  $("#idleSel")?.addEventListener("change", e => { try { localStorage.setItem(TIMEOUT_KEY, e.target.value); } catch {} markActive(); toast(`Se cerrará la sesión tras ${e.target.value} minutos sin usarla`); });
+  $("#dispName")?.addEventListener("change", e => { S.displayName = e.target.value.trim(); try { localStorage.setItem("finanzas.name", S.displayName); } catch {} check(sb.from("settings").upsert({ user_id: userId, display_name: S.displayName }), "Nombre guardado"); });
+  v.querySelectorAll("[data-delpk]").forEach(b => b.onclick = async () => {
+    if (!confirm("¿Quitar el acceso con Face ID/huella de ese teléfono? Tendrá que entrar con contraseña.")) return;
+    if (await check(sb.from("webauthn_credentials").delete().eq("id", b.dataset.delpk), "Acceso quitado")) { if (pkLocal()?.id === b.dataset.delpk) try { localStorage.removeItem(PK_KEY); } catch {} refresh(); }
+  });
+  const bioBox = v.querySelector("[data-biobox]");
+  if (bioBox) bioAvailable().then(ok => {
+    const mine = pkLocal() && S.passkeys.some(k => k.id === pkLocal().id);
+    bioBox.innerHTML = !ok ? "Este teléfono no tiene un método de desbloqueo disponible para la app."
+      : mine ? `<span class="pill ok">Activado en este teléfono</span>`
+      : `<div style="margin-bottom:8px">Entra a la app con ${bioLabel()} en lugar de escribir tu contraseña.</div><button class="btn" id="bioOn" style="min-height:44px">Activar ${bioLabel()}</button>`;
+    bioBox.querySelector("#bioOn")?.addEventListener("click", async () => {
+      if (isOffline()) { toast(OFFLINE_MSG); return; }
+      try { await registerPasskey(); toast(`Listo: la próxima vez entra con ${bioLabel()}`); refresh(); }
+      catch (e) { toast(e.name === "NotAllowedError" ? "Se canceló la activación" : "No se pudo activar: " + e.message); }
+    });
+  });
 }
 
 // ---------- dialogs ----------
@@ -1612,7 +1762,7 @@ function moneyInit(input) {
   input.addEventListener("input", reformat);
   input.value = moneyFormat(input.value).text; paint();
 }
-const freqField = (r, salary) => `<label class="f">Frecuencia<select name="freq">${Object.entries(FREQS).filter(([k]) => (k !== "salario" || salary || r.freq === "salario") && (k !== "bimestral" || S.hasSubcats || r.freq === "bimestral")).map(([k, l]) => `<option value="${k}" ${k === r.freq ? "selected" : ""}>${k === "quincenal" ? "Quincenal (cada 15 días)" : k === "salario" ? "Quincena de salario (día 15 y último día del mes)" : k === "bimestral" ? "Bimestral (cada 2 meses)" : l}</option>`).join("")}</select></label>`;
+const freqField = (r, salary) => `<label class="f">Frecuencia<select name="freq">${Object.entries(FREQS).filter(([k]) => (k !== "salario" || salary || r.freq === "salario") && (k !== "bimestral" || S.hasSubcats || r.freq === "bimestral") && ((k !== "semestral" && k !== "anual") || S.has005 || r.freq === k)).map(([k, l]) => `<option value="${k}" ${k === r.freq ? "selected" : ""}>${k === "quincenal" ? "Quincenal (cada 15 días)" : k === "salario" ? "Quincena de salario (día 15 y último día del mes)" : k === "bimestral" ? "Bimestral (cada 2 meses)" : k === "semestral" ? "Semestral (cada 6 meses)" : k === "anual" ? "Anual (cada año)" : l}</option>`).join("")}</select></label>`;
 const modeField = r => `<label class="f">Cuando toque<select name="mode"><option value="confirmar" ${r.mode !== "recordatorio" ? "selected" : ""}>Avisarme para confirmar el monto</option><option value="recordatorio" ${r.mode === "recordatorio" ? "selected" : ""}>Solo recordarme (lo registro yo)</option></select></label>`;
 
 // "+ Agregar categoría/método nuevo" dentro de un select: muestra un campo para crearlo ahí mismo y lo deja seleccionado.
@@ -1732,14 +1882,14 @@ function openTx(t, preset = {}) {
     const recOf = () => S.recs.find(r => r.id === f.existRec?.value);
     const fillRecs = () => { if (!f.existRec) return; const cur = f.existRec.value; f.existRec.innerHTML = `<option value="">No, es un fijo nuevo</option>` + S.recs.filter(r => r.type === type && r.active).map(r => `<option value="${esc(r.id)}" ${r.id === cur ? "selected" : ""}>${esc(r.name)} · ${esc(freqText(r))}</option>`).join(""); syncRec(); };
     // Fecha programada que cubre el pago: la más cercana a la fecha elegida que no esté pagada (dentro de un periodo).
-    const WINDOW = { diario: 1, semanal: 7, quincenal: 15, salario: 16, mensual: 31, bimestral: 62 };
+    const WINDOW = { diario: 1, semanal: 7, quincenal: 15, salario: 16, mensual: 31, bimestral: 62, semestral: 183, anual: 366 };
     const isPaid = (r, d) => S.tx.some(x => x.recurrenceId === r.id && x.dueDate === d);
     let curOcc = null;
     // Para pagos anteriores a la primera fecha del fijo, el calendario se extiende hacia atrás con la misma regla.
     const backStart = (r, before) => {
       if (r.start <= before) return r.start;
       if (r.freq === "semanal" || r.freq === "quincenal" || r.freq === "diario") { const st = r.freq === "semanal" ? 7 : r.freq === "quincenal" ? 15 : 1; return isoAdd(r.start, -st * Math.ceil(isoDiff(r.start, before) / st)); }
-      const months = Math.ceil(isoDiff(r.start, before) / 28) + 2, m = ymAdd(ymOf(r.start), -(r.freq === "bimestral" ? months + (months % 2) : months));
+      const st = MONTH_STEP[r.freq] || 1, months = Math.ceil((Math.ceil(isoDiff(r.start, before) / 28) + 2) / st) * st, m = ymAdd(ymOf(r.start), -months);
       return `${m}-${pad(Math.min(r.day || +r.start.slice(8), daysIn(m)))}`;
     };
     const pickOcc = (r0, date) => {
@@ -1848,7 +1998,7 @@ function openTx(t, preset = {}) {
         if (old.amount !== rec.amount) upd.amount = rec.amount; // sugerencia para la próxima vez
         if (occ !== rec.date && old.freq !== "salario" && f.querySelector("[name=shift]:checked")?.value === "si") {
           const nr = { ...old, start: rec.date, day: +rec.date.slice(8) };
-          Object.assign(upd, { start_date: nr.start, day: nr.freq === "mensual" || nr.freq === "bimestral" ? nr.day : null, next_date: occOnOrAfter(nr, isoAdd(rec.date, 1)) });
+          Object.assign(upd, { start_date: nr.start, day: usesDay(nr.freq) ? nr.day : null, next_date: occOnOrAfter(nr, isoAdd(rec.date, 1)) });
         }
         if (Object.keys(upd).length) await check(sb.from("recurrences").update(upd).eq("id", old.id));
       }
@@ -2179,7 +2329,7 @@ const blockIfOffline = e => { if (!isOffline()) return false; e.preventDefault()
 // Botones de formularios que guardan o borran: se avisa y el formulario se queda abierto (no se pierde lo escrito).
 form.addEventListener("click", e => { if (e.target.closest("[data-save],[data-del],[data-discard],.inline-new .btn:not(.ghost)")) blockIfOffline(e); }, true);
 // Acciones de las pantallas que guardan o borran directamente.
-const WRITE_ACTIONS = "[data-quickconfirm],[data-payocc],[data-discard],[data-delcat],[data-delmethod],[data-revtok],[data-deltok],[data-setrole],#tnGo,#newTok,#pushOn,#pushOff,#invite,[data-act=confirm-all],[data-act=prices]";
+const WRITE_ACTIONS = "[data-delpk],[data-quickconfirm],[data-payocc],[data-discard],[data-delcat],[data-delmethod],[data-revtok],[data-deltok],[data-setrole],#tnGo,#newTok,#pushOn,#pushOff,#invite,[data-act=confirm-all],[data-act=prices]";
 $("#view").addEventListener("click", e => { if (e.target.closest(WRITE_ACTIONS)) blockIfOffline(e); }, true);
 $("#view").addEventListener("change", e => { if (e.target.matches("#cur,[data-notify]") && blockIfOffline(e)) render(); }, true);
 $("#fab").onclick = () => { if (isOffline()) { toast(OFFLINE_MSG); return; } openTx(); };
@@ -2266,7 +2416,14 @@ $("#signin").onclick = () => doAuth(false);
 $("#signup").onclick = () => doAuth(true);
 $("#password").addEventListener("keydown", e => { if (e.key === "Enter") doAuth(false); });
 $("#forgot").onclick = forgotPassword;
-document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && userId) refresh(true); });
+$("#bioLogin").onclick = async () => {
+  const b = $("#bioLogin"); b.disabled = true; $("#loginErr").textContent = "";
+  try { await loginWithPasskey(); }
+  catch (e) { $("#loginErr").textContent = e.name === "NotAllowedError" ? "Se canceló. Vuelve a intentarlo o entra con tu contraseña." : e.message; }
+  b.disabled = false;
+};
+$("#idleStay").onclick = () => { lastMark = 0; markActive(); };
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && userId && !checkIdle()) refresh(true); });
 window.addEventListener("online", () => userId && refresh(true));
 window.addEventListener("offline", () => { setSync("off", "Sin conexión"); if (S.ready) { S.offline = true; render(); } });
 

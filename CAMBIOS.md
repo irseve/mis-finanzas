@@ -461,18 +461,20 @@ Problema (captura del usuario): al registrar el salario del **30 de septiembre**
 
 ---
 
-## 12. Cambios anotados el 2026-11-02 (sin implementar todavía)
+## 12. Cambios del 2026-11-02 — implementados en v2.1.0 (autorizados por el usuario)
 
-Solo anotados; **no ejecutar** hasta que el usuario lo indique.
+Requiere la migración `005_semestral_anual_avisos_faceid.sql`, la función nueva `passkeys` y volver a desplegar `notificaciones`.
+Valores usados donde faltaba confirmar: resumen diario activado de inicio; cierre de sesión 5 min en celular y 15 en navegador (configurable 2/5/15/30); trimestral **no** agregado (pendiente de respuesta).
+Nota AA/AB: el bloqueo con Face ID quedó integrado en el inicio de sesión: al cerrarse la sesión por inactividad, en el celular se vuelve a entrar con Face ID/huella.
 
 ### Y. Frecuencias semestral y anual
-- [ ] **Semestral (cada 6 meses):** el mismo día cada 6 meses desde la primera fecha (por ejemplo 10/ene y 10/jul).
-- [ ] **Anual (cada año):** el mismo día y mes cada año (por ejemplo predial, tenencia, seguro del auto). Si la fecha es 29 de febrero, en años no bisiestos se usa el 28.
-- [ ] Igual que bimestral: si el día no existe en ese mes, se usa el último día del mes.
-- [ ] Incluirlas en: formulario del +, editar fijo, pestaña de fijos (agrupadas), próximos pagos, proyectado del mes, pendientes automáticos del servidor, avisos, pago de un fijo existente (asignar la fecha más cercana, también hacia atrás) y "¿Cambiar las próximas fechas?".
-- [ ] En "Fijos del mes", los semestrales y anuales solo aparecen en el mes que les toca; en el detalle de fijos se muestra cuándo es el próximo (por ejemplo "Próximo: 10 de enero de 2027").
+- [x] **Semestral (cada 6 meses):** el mismo día cada 6 meses desde la primera fecha (por ejemplo 10/ene y 10/jul).
+- [x] **Anual (cada año):** el mismo día y mes cada año (por ejemplo predial, tenencia, seguro del auto). Si la fecha es 29 de febrero, en años no bisiestos se usa el 28.
+- [x] Igual que bimestral: si el día no existe en ese mes, se usa el último día del mes.
+- [x] Incluirlas en: formulario del +, editar fijo, pestaña de fijos (agrupadas), próximos pagos, proyectado del mes, pendientes automáticos del servidor, avisos, pago de un fijo existente (asignar la fecha más cercana, también hacia atrás) y "¿Cambiar las próximas fechas?".
+- [x] En "Fijos del mes", los semestrales y anuales solo aparecen en el mes que les toca; en el detalle de fijos se muestra cuándo es el próximo (por ejemplo "Próximo: 10 de enero de 2027").
 - Requiere migración 005: agregar `semestral` y `anual` a las frecuencias y a `recurrence_on_or_after` (mismo cálculo que mensual/bimestral con saltos de 6 y 12 meses).
-- Por confirmar: ¿agregar también **trimestral** (cada 3 meses), ya que se hace con el mismo cálculo?
+- Pendiente de respuesta: ¿agregar también **trimestral** (cada 3 meses)?
 
 ### Z. Corregir avisos de "por confirmar" que no llegan (reporte del usuario)
 Diagnóstico: la notificación de prueba sí llega (el envío funciona), pero los avisos de pendientes no, por tres fallas de diseño:
@@ -481,13 +483,13 @@ Diagnóstico: la notificación de prueba sí llega (el envío funciona), pero lo
 3. Solo hay recordatorio diario para pendientes de Siri/Gmail; los fijos sin confirmar no se vuelven a recordar.
 
 Cambios (requiere migración 005 y actualizar la función `notificaciones`):
-- [ ] No borrar avisos al abrir la app; programar aviso para todo pendiente nuevo, lo cree el servidor o la app.
-- [ ] Guardar en cada aviso a qué pendiente corresponde; justo antes de enviarlo, **no mandarlo si ese pendiente ya se confirmó o descartó** (así no llegan avisos de algo ya atendido).
-- [ ] **Resumen diario a las 9:00 a.m.** si hay movimientos por confirmar de cualquier origen (fijos, Siri, correo): "Tienes 3 movimientos por confirmar · Sueldo $15,000, Colegiatura $2,000…". Un solo aviso al día, aunque se haya abierto la app.
-- [ ] El resumen diario es **opcional**: casilla "Resumen diario de pendientes (9:00 a.m.)" en Ajustes → Notificaciones, junto a las demás preferencias. Decisión del usuario.
+- [x] No borrar avisos al abrir la app; programar aviso para todo pendiente nuevo, lo cree el servidor o la app.
+- [x] Guardar en cada aviso a qué pendiente corresponde; justo antes de enviarlo, **no mandarlo si ese pendiente ya se confirmó o descartó** (así no llegan avisos de algo ya atendido).
+- [x] **Resumen diario a las 9:00 a.m.** si hay movimientos por confirmar de cualquier origen (fijos, Siri, correo): "Tienes 3 movimientos por confirmar · Sueldo $15,000, Colegiatura $2,000…". Un solo aviso al día, aunque se haya abierto la app.
+- [x] El resumen diario es **opcional**: casilla "Resumen diario de pendientes (9:00 a.m.)" en Ajustes → Notificaciones, junto a las demás preferencias. Decisión del usuario.
   - Por confirmar: ¿activado o desactivado de inicio? (propuesta: activado).
-- [ ] Mantener el aviso individual el día que toca cada fijo (9:00 a.m., o al momento si ya pasó esa hora).
-- [ ] Verificar con el usuario que las tareas automáticas (`generar-pendientes`, `recordar-pendientes`, `enviar-notificaciones`) estén activas.
+- [x] Mantener el aviso individual el día que toca cada fijo (9:00 a.m., o al momento si ya pasó esa hora).
+- [x] Verificar con el usuario que las tareas automáticas (`generar-pendientes`, `recordar-pendientes`, `enviar-notificaciones`) estén activas.
 
 ### AA. Desbloquear la app con Face ID o huella (propuesta, por confirmar)
 Es posible con la tecnología estándar de los navegadores para Face ID/Touch ID (WebAuthn/passkeys), que funciona en la app instalada en el iPhone (iOS 16 o más reciente).
@@ -505,17 +507,17 @@ Es posible con la tecnología estándar de los navegadores para Face ID/Touch ID
 - Opción más completa (más trabajo) · **Iniciar sesión sin contraseña con passkey:** reemplaza correo y contraseña por Face ID también al iniciar sesión en un dispositivo nuevo. Requiere una función nueva en el servidor para verificar la llave; se puede hacer después si se quiere.
 
 ### AB. Iniciar sesión con Face ID/huella y cerrar sesión automáticamente
-- [ ] **Inicio de sesión con passkey** (en el celular con la app instalada): después del primer inicio con correo y contraseña, ofrecer "Usar Face ID para entrar". Las siguientes veces, el botón **"Entrar con Face ID"** (o "con huella" en Android) inicia sesión sin escribir la contraseña. El teléfono decide el método (Face ID, Touch ID, huella, rostro o código).
-- [ ] En navegador web y computadora: solo correo y contraseña (como hoy).
-- [ ] Requiere: función nueva en el servidor que registre y verifique las llaves (passkeys) y abra la sesión; tabla de llaves por usuario y dispositivo (se pueden ver y borrar en Ajustes → Cuenta).
-- [ ] **Cierre de sesión automático** tras un tiempo sin usar la app. Al volver se pide Face ID/huella (celular) o contraseña (navegador).
+- [x] **Inicio de sesión con passkey** (en el celular con la app instalada): después del primer inicio con correo y contraseña, ofrecer "Usar Face ID para entrar". Las siguientes veces, el botón **"Entrar con Face ID"** (o "con huella" en Android) inicia sesión sin escribir la contraseña. El teléfono decide el método (Face ID, Touch ID, huella, rostro o código).
+- [x] En navegador web y computadora: solo correo y contraseña (como hoy).
+- [x] Requiere: función nueva en el servidor que registre y verifique las llaves (passkeys) y abra la sesión; tabla de llaves por usuario y dispositivo (se pueden ver y borrar en Ajustes → Cuenta).
+- [x] **Cierre de sesión automático** tras un tiempo sin usar la app. Al volver se pide Face ID/huella (celular) o contraseña (navegador).
 - **Decisiones del usuario:** el cierre automático aplica **también en el navegador**.
 - Referencia investigada: la app de BBVA México se cierra sola tras **2 minutos** sin actividad (folleto oficial de la app); la banca en línea y el estándar de pagos con tarjeta (PCI DSS) usan **15 minutos** de inactividad como referencia común.
-- [ ] Propuesta de Claude (por confirmar): **celular 5 minutos** (volver a entrar es solo Face ID) y **navegador 15 minutos** (hay que escribir la contraseña). Configurable en Ajustes → Cuenta: 2, 5, 15 o 30 minutos.
-- [ ] Un minuto antes de cerrar en el navegador, aviso "Tu sesión se cerrará por inactividad · Seguir conectado".
+- [x] Propuesta de Claude (por confirmar): **celular 5 minutos** (volver a entrar es solo Face ID) y **navegador 15 minutos** (hay que escribir la contraseña). Configurable en Ajustes → Cuenta: 2, 5, 15 o 30 minutos.
+- [x] Un minuto antes de cerrar en el navegador, aviso "Tu sesión se cerrará por inactividad · Seguir conectado".
 
 ### AC. Animación de bienvenida al iniciar sesión
-- [ ] Al iniciar sesión (con contraseña o Face ID), pantalla de bienvenida de 2–3 segundos: la palabra **"Hola"** se va "escribiendo" en letra manuscrita con trazo animado (inspirada en el saludo del iPhone, con diseño propio), sobre el color del tema; luego aparece "Irving" (nombre del perfil) y la pantalla se desvanece hacia el Resumen.
-- [ ] Se puede saltar tocando la pantalla. Respeta "Reducir movimiento" (solo aparece el texto, sin animación).
+- [x] Al iniciar sesión (con contraseña o Face ID), pantalla de bienvenida de 2–3 segundos: la palabra **"Hola"** se va "escribiendo" en letra manuscrita con trazo animado (inspirada en el saludo del iPhone, con diseño propio), sobre el color del tema; luego aparece "Irving" (nombre del perfil) y la pantalla se desvanece hacia el Resumen.
+- [x] Se puede saltar tocando la pantalla. Respeta "Reducir movimiento" (solo aparece el texto, sin animación).
 - **Decisiones del usuario:** aparece **cada vez que se entra a la sesión**. Texto: **"Hola" + el nombre** (por ejemplo "Hola Irving"), con el **mismo tipo de animación que el saludo del iPhone**: letra cursiva de trazo continuo que se va dibujando como si se escribiera a mano.
 - Nota: el letrero "hello" del iPhone y su tipografía son diseño propio de Apple y no se pueden copiar tal cual; se recrea el mismo efecto con una tipografía cursiva de trazo similar (libre, de Google Fonts) convertida en trazos animados.

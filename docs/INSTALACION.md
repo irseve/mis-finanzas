@@ -1,4 +1,4 @@
-# Dejar todo listo (versión 2.0.0)
+# Dejar todo listo (versión 2.1.0)
 
 Sigue los pasos en orden. Los pasos 1 a 4 se hacen una sola vez, desde una computadora, en <https://supabase.com/dashboard> → tu proyecto.
 
@@ -9,12 +9,13 @@ Sigue los pasos en orden. Los pasos 1 a 4 se hacen una sola vez, desde una compu
 3. **New query** otra vez: pega todo [`migrations/002_notificaciones_usuarios_siri_gmail.sql`](../migrations/002_notificaciones_usuarios_siri_gmail.sql) → **Run**.
 4. Y lo mismo con [`migrations/003_apartados_inversiones.sql`](../migrations/003_apartados_inversiones.sql) (Apartados e inversiones).
 5. Y [`migrations/004_bimestral_subcategorias.sql`](../migrations/004_bimestral_subcategorias.sql) (frecuencia bimestral y subcategorías).
+6. Y [`migrations/005_semestral_anual_avisos_faceid.sql`](../migrations/005_semestral_anual_avisos_faceid.sql) (semestral y anual, avisos de pendientes, resumen diario, nombre y Face ID).
 
 Atajo: [`migrations/instalar_todo.sql`](../migrations/instalar_todo.sql) trae todos juntos; pégalo una sola vez.
 
 Debe decir *Success*. Si aparece un aviso de que pg_cron o pg_net no están disponibles, actívalos (paso 1) y vuelve a correr la 002. Ninguna de las dos borra tus datos.
 
-## 2. Instalar las 4 funciones del servidor
+## 2. Instalar las 5 funciones del servidor
 
 Repite esto para cada función de la tabla:
 
@@ -29,6 +30,9 @@ Repite esto para cada función de la tabla:
 | `admin-usuarios` | [`supabase/functions/admin-usuarios/index.ts`](../supabase/functions/admin-usuarios/index.ts) | Agregar usuarios y administradores |
 | `registrar` | [`supabase/functions/registrar/index.ts`](../supabase/functions/registrar/index.ts) | Recibir gastos de Siri y de Gmail |
 | `precios` | [`supabase/functions/precios/index.ts`](../supabase/functions/precios/index.ts) | Buscar instrumentos (VOO, NAFTRAC…) y actualizar sus precios |
+| `passkeys` | [`supabase/functions/passkeys/index.ts`](../supabase/functions/passkeys/index.ts) | Entrar con Face ID o huella |
+
+Si una función ya existe y su código cambió (por ejemplo `notificaciones` en la versión 2.1.0), entra a la función → pestaña **Code** → reemplaza todo el código → **Deploy**.
 
 No hace falta configurar ningún secreto: las funciones usan las llaves que Supabase ya les da, y las llaves de notificaciones se crean solas la primera vez.
 
