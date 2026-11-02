@@ -474,7 +474,7 @@ Nota AA/AB: el bloqueo con Face ID quedó integrado en el inicio de sesión: al 
 - [x] Incluirlas en: formulario del +, editar fijo, pestaña de fijos (agrupadas), próximos pagos, proyectado del mes, pendientes automáticos del servidor, avisos, pago de un fijo existente (asignar la fecha más cercana, también hacia atrás) y "¿Cambiar las próximas fechas?".
 - [x] En "Fijos del mes", los semestrales y anuales solo aparecen en el mes que les toca; en el detalle de fijos se muestra cuándo es el próximo (por ejemplo "Próximo: 10 de enero de 2027").
 - Requiere migración 005: agregar `semestral` y `anual` a las frecuencias y a `recurrence_on_or_after` (mismo cálculo que mensual/bimestral con saltos de 6 y 12 meses).
-- Pendiente de respuesta: ¿agregar también **trimestral** (cada 3 meses)?
+- **Decisión del usuario:** no se agrega trimestral.
 
 ### Z. Corregir avisos de "por confirmar" que no llegan (reporte del usuario)
 Diagnóstico: la notificación de prueba sí llega (el envío funciona), pero los avisos de pendientes no, por tres fallas de diseño:
@@ -533,7 +533,7 @@ Solo anotados; **no ejecutar** hasta que el usuario lo indique.
 - [ ] Se quita el campo "Tu nombre" de Ajustes → Cuenta (solo se muestra el nombre).
 - [ ] Administración: al **agregar o invitar** un usuario se captura su nombre; el administrador puede corregirlo en la lista de usuarios.
 - [ ] Para la cuenta actual: llenarlo una vez desde el servidor (migración o una línea de SQL) con el nombre que confirme el usuario.
-- Por confirmar: nombre exacto para la cuenta actual (¿"Irving Segura"? En la bienvenida se usa solo el primer nombre).
+- **Decisión del usuario:** el nombre de la cuenta actual es **"Irving"** (solo el nombre, sin apellido).
 
 ### AE. Pantalla de inicio de sesión que recuerda la cuenta y prioriza Face ID
 - [ ] Al cerrar sesión, la pantalla de inicio muestra la **última cuenta usada** (nombre y correo, por ejemplo "Irving · isegura@…") ya escrita; la **contraseña nunca se guarda ni se muestra**.
@@ -543,4 +543,5 @@ Solo anotados; **no ejecutar** hasta que el usuario lo indique.
 
 ### AF. El aviso "¿Usar llave de acceso?" del iPhone
 - Es la ventana de seguridad de Apple (nombre de la cuenta + Continuar → Face ID); la app no la puede quitar ni cambiar.
-- [ ] Opcional (por confirmar): usar el modo "autocompletar" de llaves de acceso: al tocar el campo de correo, el iPhone ofrece la llave arriba del teclado y basta tocarla y mirar el teléfono, sin la ventana grande. Se mantiene también el botón "Entrar con Face ID".
+- **Decisión del usuario:** el acceso con Face ID **se queda como está** (botón + ventana de Apple). No se agrega el modo autocompletar ni se hace app nativa.
+- ~~Opcional: usar el modo "autocompletar" de llaves de acceso: al tocar el campo de correo, el iPhone ofrece la llave arriba del teclado y basta tocarla y mirar el teléfono, sin la ventana grande. Se mantiene también el botón "Entrar con Face ID".~~
