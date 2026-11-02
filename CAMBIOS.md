@@ -541,6 +541,10 @@ Solo anotados; **no ejecutar** hasta que el usuario lo indique.
 - [ ] Si no está activado (o en el navegador): se ve el correo ya escrito y el campo de contraseña normal.
 - [ ] Enlace "Usar otra cuenta" para borrar el correo recordado y escribir otro.
 
+### AG. Al iniciar sesión, siempre al Resumen
+- [ ] Cada vez que se inicia sesión (con contraseña o Face ID, incluso tras el cierre por inactividad) la app abre en **Resumen**, en el mes actual, sin importar en qué pantalla se quedó antes (Ajustes, un lugar de Apartados, Fijos, etc.).
+- [ ] Al solo volver a la app sin que se haya cerrado la sesión, se queda donde estaba (como hoy).
+
 ### AF. El aviso "¿Usar llave de acceso?" del iPhone
 - Es la ventana de seguridad de Apple (nombre de la cuenta + Continuar → Face ID); la app no la puede quitar ni cambiar.
 - **Decisión del usuario:** el acceso con Face ID **se queda como está** (botón + ventana de Apple). No se agrega el modo autocompletar ni se hace app nativa.
