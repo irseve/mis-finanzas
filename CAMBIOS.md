@@ -486,3 +486,12 @@ Cambios (requiere migración 005 y actualizar la función `notificaciones`):
 - [ ] **Resumen diario a las 9:00 a.m.** si hay movimientos por confirmar de cualquier origen (fijos, Siri, correo): "Tienes 3 movimientos por confirmar · Sueldo $15,000, Colegiatura $2,000…". Un solo aviso al día, aunque se haya abierto la app.
 - [ ] Mantener el aviso individual el día que toca cada fijo (9:00 a.m., o al momento si ya pasó esa hora).
 - [ ] Verificar con el usuario que las tareas automáticas (`generar-pendientes`, `recordar-pendientes`, `enviar-notificaciones`) estén activas.
+
+### AA. Desbloquear la app con Face ID o huella (propuesta, por confirmar)
+Es posible con la tecnología estándar de los navegadores para Face ID/Touch ID (WebAuthn/passkeys), que funciona en la app instalada en el iPhone (iOS 16 o más reciente).
+- Opción recomendada · **Bloqueo de la app con Face ID:**
+  - [ ] En Ajustes → Cuenta, interruptor "Pedir Face ID al abrir". Al activarlo, el iPhone pide Face ID una vez para registrar el dispositivo.
+  - [ ] Al abrir la app (y al volver a ella después de X minutos en segundo plano, a elegir: al momento, 1, 5 o 15 minutos), la pantalla queda cubierta con un botón **"Desbloquear con Face ID"**; los datos no se muestran hasta desbloquear.
+  - [ ] Si Face ID falla o no está disponible: "Usar contraseña" (inicia sesión de nuevo con correo y contraseña).
+  - [ ] Es un bloqueo del dispositivo: la sesión sigue guardada en el teléfono, pero nadie puede ver tus finanzas sin tu cara o huella. Cada dispositivo se configura por separado.
+- Opción más completa (más trabajo) · **Iniciar sesión sin contraseña con passkey:** reemplaza correo y contraseña por Face ID también al iniciar sesión en un dispositivo nuevo. Requiere una función nueva en el servidor para verificar la llave; se puede hacer después si se quiere.
