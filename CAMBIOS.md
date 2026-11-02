@@ -484,6 +484,8 @@ Cambios (requiere migración 005 y actualizar la función `notificaciones`):
 - [ ] No borrar avisos al abrir la app; programar aviso para todo pendiente nuevo, lo cree el servidor o la app.
 - [ ] Guardar en cada aviso a qué pendiente corresponde; justo antes de enviarlo, **no mandarlo si ese pendiente ya se confirmó o descartó** (así no llegan avisos de algo ya atendido).
 - [ ] **Resumen diario a las 9:00 a.m.** si hay movimientos por confirmar de cualquier origen (fijos, Siri, correo): "Tienes 3 movimientos por confirmar · Sueldo $15,000, Colegiatura $2,000…". Un solo aviso al día, aunque se haya abierto la app.
+- [ ] El resumen diario es **opcional**: casilla "Resumen diario de pendientes (9:00 a.m.)" en Ajustes → Notificaciones, junto a las demás preferencias. Decisión del usuario.
+  - Por confirmar: ¿activado o desactivado de inicio? (propuesta: activado).
 - [ ] Mantener el aviso individual el día que toca cada fijo (9:00 a.m., o al momento si ya pasó esa hora).
 - [ ] Verificar con el usuario que las tareas automáticas (`generar-pendientes`, `recordar-pendientes`, `enviar-notificaciones`) estén activas.
 
