@@ -561,3 +561,20 @@ Requiere las migraciones 006 y 007 y volver a desplegar `notificaciones` y `admi
 - Es la ventana de seguridad de Apple (nombre de la cuenta + Continuar → Face ID); la app no la puede quitar ni cambiar.
 - **Decisión del usuario:** el acceso con Face ID **se queda como está** (botón + ventana de Apple). No se agrega el modo autocompletar ni se hace app nativa.
 - ~~Opcional: usar el modo "autocompletar" de llaves de acceso: al tocar el campo de correo, el iPhone ofrece la llave arriba del teclado y basta tocarla y mirar el teléfono, sin la ventana grande. Se mantiene también el botón "Entrar con Face ID".~~
+
+---
+
+## 14. Cambios anotados el 2026-11-02 (tercera tanda, sin implementar todavía)
+
+Solo anotados; **no ejecutar** hasta que el usuario lo indique.
+
+### AJ. "Fijos del mes": botones a la derecha y confirmación para pagos fuera de fecha
+- [ ] En cada renglón de "Fijos del mes" (y en "Por confirmar"), el botón **Marcar pagado / Marcar recibido / Confirmar** va **a la derecha**, en la misma línea que el nombre y el monto (hoy en el teléfono baja a otra línea a la izquierda).
+- [ ] Si el pago está **fuera de fecha** (vencido), al tocar **Marcar pagado** (gastos) o **Marcar recibido** (ingresos) aparece una ventana de confirmación:
+  - "¿Seguro que quieres marcar como pagado este movimiento fuera de fecha?"
+  - Muestra nombre, monto y la fecha en que estaba programado (por ejemplo "Gasolina · $600 · programado el 2/10").
+  - Botones: **Cancelar** y **Sí, marcar pagado** (o "Sí, marcar recibido").
+- [ ] Los que están en fecha se marcan directo, como hoy.
+- Por confirmar con el usuario:
+  - ¿Con qué fecha se registra el movimiento vencido: la **programada** (como hoy) o la de **hoy**? Propuesta: dar las dos opciones en la ventana.
+  - ¿La confirmación aplica también al botón **Confirmar** de los pendientes vencidos?
