@@ -473,3 +473,16 @@ Solo anotados; **no ejecutar** hasta que el usuario lo indique.
 - [ ] En "Fijos del mes", los semestrales y anuales solo aparecen en el mes que les toca; en el detalle de fijos se muestra cuándo es el próximo (por ejemplo "Próximo: 10 de enero de 2027").
 - Requiere migración 005: agregar `semestral` y `anual` a las frecuencias y a `recurrence_on_or_after` (mismo cálculo que mensual/bimestral con saltos de 6 y 12 meses).
 - Por confirmar: ¿agregar también **trimestral** (cada 3 meses), ya que se hace con el mismo cálculo?
+
+### Z. Corregir avisos de "por confirmar" que no llegan (reporte del usuario)
+Diagnóstico: la notificación de prueba sí llega (el envío funciona), pero los avisos de pendientes no, por tres fallas de diseño:
+1. Al abrir la app, `generate_pending_entries` (llamada por el usuario) **borra** los avisos aún no enviados de fijos ("pend:rec:%"). Si se abre la app antes de las 9:00, el aviso del día se pierde.
+2. Los pendientes que crea la app al abrirse (antes que la tarea de las 00:05, o atrasados) **nunca programan aviso**.
+3. Solo hay recordatorio diario para pendientes de Siri/Gmail; los fijos sin confirmar no se vuelven a recordar.
+
+Cambios (requiere migración 005 y actualizar la función `notificaciones`):
+- [ ] No borrar avisos al abrir la app; programar aviso para todo pendiente nuevo, lo cree el servidor o la app.
+- [ ] Guardar en cada aviso a qué pendiente corresponde; justo antes de enviarlo, **no mandarlo si ese pendiente ya se confirmó o descartó** (así no llegan avisos de algo ya atendido).
+- [ ] **Resumen diario a las 9:00 a.m.** si hay movimientos por confirmar de cualquier origen (fijos, Siri, correo): "Tienes 3 movimientos por confirmar · Sueldo $15,000, Colegiatura $2,000…". Un solo aviso al día, aunque se haya abierto la app.
+- [ ] Mantener el aviso individual el día que toca cada fijo (9:00 a.m., o al momento si ya pasó esa hora).
+- [ ] Verificar con el usuario que las tareas automáticas (`generar-pendientes`, `recordar-pendientes`, `enviar-notificaciones`) estén activas.
