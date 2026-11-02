@@ -545,10 +545,10 @@ Solo anotados; **no ejecutar** hasta que el usuario lo indique.
 - [ ] Cada vez que se inicia sesión (con contraseña o Face ID, incluso tras el cierre por inactividad) la app abre en **Resumen**, en el mes actual, sin importar en qué pantalla se quedó antes (Ajustes, un lugar de Apartados, Fijos, etc.).
 - [ ] Al solo volver a la app sin que se haya cerrado la sesión, se queda donde estaba (como hoy).
 
-### AH. Mandar avisos a pedido desde el chat con Claude
-- [ ] Nueva acción en la función `notificaciones`: `{"action":"custom","title","body","minutes"}` con `Authorization: Bearer <token personal>` (los mismos tokens de Siri/Gmail, guardados hasheados). Programa un aviso para el dueño del token, al momento o en N minutos (máximo 7 días), con tipo "mensaje".
-- [ ] El token solo permite mandar avisos y registrar pendientes; no da acceso a ver datos. Se revoca en Ajustes → Siri y correo.
-- [ ] El usuario genera un token "Claude" y lo comparte en el chat; Claude envía los avisos con una llamada a la función cuando el usuario lo pida.
+### AH. Mandar avisos a pedido desde el chat con Claude — implementado (migración 006, autorizado por el usuario)
+- [x] Nueva acción en la función `notificaciones`: `{"action":"custom","title","body","minutes"}` con `Authorization: Bearer <token personal>` (los mismos tokens de Siri/Gmail, guardados hasheados). Programa un aviso para el dueño del token, al momento o en N minutos (máximo 7 días), con tipo "mensaje".
+- [x] El token solo permite mandar avisos y registrar pendientes; no da acceso a ver datos. Se revoca en Ajustes → Siri y correo.
+- [x] El usuario genera un token "Claude" y lo comparte en el chat; Claude envía los avisos con una llamada a la función cuando el usuario lo pida.
 - Requiere migración (agregar el tipo "mensaje" a los avisos) y volver a desplegar `notificaciones`.
 
 ### AI. Avisos y varias cuentas en un mismo teléfono (propuesta, por confirmar)
