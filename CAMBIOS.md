@@ -587,3 +587,15 @@ Problema (usuario): al elegir **Mes** solo aparece noviembre, y en **Año** solo
 - [ ] Después se puede seguir eligiendo otro periodo en el menú (por ejemplo, Mes con "Últimos 6 meses").
 - [ ] Quitar del menú las combinaciones que solo darían una barra (por ejemplo "Este mes" cuando se agrupa por Mes, o "Este año" cuando se agrupa por Año).
 - [ ] Revisar que "Todo" cargue los movimientos de todos los años (hoy la app solo tiene a mano los últimos 6 meses y pide el resto al servidor).
+
+### AL. Grupos de gastos (por ejemplo "Casa", "Médicos", "Innecesarios")
+Objetivo del usuario: marcar gastos en grupos propios y ver al final del mes cuánto se fue en cada uno (sobre todo "Innecesarios") para tomar decisiones.
+- Diferencia con las categorías: la **categoría** dice *qué* es (Comida, Gasolina); el **grupo** es una etiqueta propia de *para qué* o *cómo lo juzgo* (Casa, Médicos, Innecesarios). Un "Café" puede ser categoría Comida y grupo Innecesarios.
+- [ ] **Cada gasto puede estar en un solo grupo** (o en ninguno). No se puede meter un gasto en varios grupos.
+- [ ] **Ajustes → Grupos:** crear, editar (nombre y color), eliminar. Al eliminar un grupo con gastos, los gastos se quedan sin grupo o se pasan a otro (nunca se borran).
+- [ ] **Formulario del +:** campo opcional **"Grupo"** (Sin grupo / Casa / Médicos / Innecesarios… / "+ Agregar grupo nuevo"). También al confirmar pendientes, al editar un movimiento y en los fijos (un fijo puede tener grupo y sus pagos lo heredan).
+- [ ] **Resumen:** tarjeta **"Por grupo"** con el total del mes de cada grupo, su % del gasto y la comparación con el mes anterior (por ejemplo "Innecesarios $1,850 · 9% · ↑ $400 vs octubre"). Tocar un grupo muestra sus gastos.
+- [ ] **Movimientos:** filtro por grupo; el grupo aparece como etiqueta en cada gasto. CSV con columna Grupo.
+- [ ] Opcional: **tope mensual** por grupo (por ejemplo "Innecesarios: máximo $1,500"), con barra y aviso al pasarlo.
+- Requiere migración: tabla `expense_groups` (RLS por usuario) y columna `group_id` en `transactions`, `recurrences` y `pending_entries`.
+- Por confirmar: ¿solo para gastos o también para ingresos? ¿Quieres el tope mensual por grupo?
