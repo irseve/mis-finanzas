@@ -458,3 +458,18 @@ Problema (captura del usuario): al registrar el salario del **30 de septiembre**
 - [x] Si la fecha programada más cercana **ya está pagada**, decirlo: "El pago del 30 de septiembre ya está registrado; este se tomará como el del 15 de octubre", para evitar duplicados sin sorpresas.
 - [x] Si no hay ninguna fecha programada cerca (más de un periodo de distancia), registrar el movimiento ligado al fijo con su propia fecha, sin marcar otra como pagada.
 - [x] La pregunta "¿Cambiar las próximas fechas?" solo aparece si la fecha elegida es distinta a la programada (nunca para salario).
+
+---
+
+## 12. Cambios anotados el 2026-11-02 (sin implementar todavía)
+
+Solo anotados; **no ejecutar** hasta que el usuario lo indique.
+
+### Y. Frecuencias semestral y anual
+- [ ] **Semestral (cada 6 meses):** el mismo día cada 6 meses desde la primera fecha (por ejemplo 10/ene y 10/jul).
+- [ ] **Anual (cada año):** el mismo día y mes cada año (por ejemplo predial, tenencia, seguro del auto). Si la fecha es 29 de febrero, en años no bisiestos se usa el 28.
+- [ ] Igual que bimestral: si el día no existe en ese mes, se usa el último día del mes.
+- [ ] Incluirlas en: formulario del +, editar fijo, pestaña de fijos (agrupadas), próximos pagos, proyectado del mes, pendientes automáticos del servidor, avisos, pago de un fijo existente (asignar la fecha más cercana, también hacia atrás) y "¿Cambiar las próximas fechas?".
+- [ ] En "Fijos del mes", los semestrales y anuales solo aparecen en el mes que les toca; en el detalle de fijos se muestra cuándo es el próximo (por ejemplo "Próximo: 10 de enero de 2027").
+- Requiere migración 005: agregar `semestral` y `anual` a las frecuencias y a `recurrence_on_or_after` (mismo cálculo que mensual/bimestral con saltos de 6 y 12 meses).
+- Por confirmar: ¿agregar también **trimestral** (cada 3 meses), ya que se hace con el mismo cálculo?
