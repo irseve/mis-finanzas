@@ -612,14 +612,14 @@ div.arow{cursor:default}
 <div class="update-bar" id="updateBar" role="status" hidden><span>Nueva versión</span><button class="go" id="updateGo">Actualizar</button><button class="x" id="updateX" aria-label="Cerrar aviso">×</button></div>
 <dialog id="dlg"><form method="dialog" id="dlgForm" onsubmit="return false"></form></dialog>
 
-<script src="config.js?v=2.6.0"></script>
+<script src="config.js?v=2.7.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
 <script>
 (() => {
 "use strict";
 // ---------- versión ----------
 // Al subir cambios: actualiza APP_VERSION, APP_DATE, version.json y el ?v= de config.js.
-const APP_VERSION = "2.6.0";
+const APP_VERSION = "2.7.0";
 const APP_DATE = "2026-11-03";
 
 // ---------- utilities ----------
@@ -1154,6 +1154,17 @@ function openGuide(backLabel) {
     else { g.hidden = true; document.body.style.overflow = ""; }
   };
   g.hidden = false; g.scrollTop = 0; document.body.style.overflow = "hidden";
+}
+
+// Compartir la app (cualquier usuario): solo el enlace, nunca datos.
+const SHARE_TEXT = "Te recomiendo Mis finanzas para llevar tus gastos e ingresos: " + APP_LINK + " · Ábrelo en Safari y toca «Agregar como app» para instalarla.";
+async function shareApp() {
+  if (navigator.share) {
+    try { await navigator.share({ title: "Mis finanzas", text: SHARE_TEXT }); return; }
+    catch (e) { if (e.name === "AbortError") return; } // si la persona cierra el menú, no pasa nada
+  }
+  try { await navigator.clipboard.writeText(SHARE_TEXT); toast("Enlace copiado. Pégalo donde quieras compartirlo."); }
+  catch { prompt("Copia este mensaje para compartir la app:", SHARE_TEXT); }
 }
 
 // ---------- cerrar sesión por inactividad ----------
@@ -2333,6 +2344,7 @@ const SET_ICONS = {
   look: ["M12 3a9 9 0 1 0 0 18c1 0 1.5-.8 1.5-1.5S13 18 13 17s1-1.5 2-1.5h2a4 4 0 0 0 4-4A9 9 0 0 0 12 3zM7.5 11h.01M10 7.5h.01M15 7.5h.01", "#2B8A8A"],
   security: ["M6 11h12v10H6zM8 11V7a4 4 0 0 1 8 0v4", "#5E6E67"], admin: ["M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM2 21v-1a6 6 0 0 1 12 0v1M16 3.5a4 4 0 0 1 0 7.5M22 21v-1a6 6 0 0 0-4-5.6", "#3E7CB1"],
   about: ["M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 11v6M12 7.5h.01", "#5B8C2A"],
+  share: ["M12 3v12M8 7l4-4 4 4M6 11H5v10h14V11h-1", "#1F6F5C"],
 };
 const SET_GROUPS = [
   ["cats", "Categorías", () => `${S.categories.length} categorías`],
@@ -2351,16 +2363,17 @@ function viewCats(v) {
   if (!g) {
     const name = S.accountName || S.displayName || "Tu cuenta", bio = S.has005 && pkLocal() && S.passkeys.some(k => k.id === pkLocal().id);
     const nf = S.recs.filter(r => r.type === "gasto").length, ni = S.recs.filter(r => r.type === "ingreso").length;
-    const row = k => { if (k === "fijos") return [k, "Fijos", nf || ni ? `${nf} gasto${nf === 1 ? "" : "s"} y ${ni} ingreso${ni === 1 ? "" : "s"}` : "Renta, colegiatura, salario…"];
+    const row = k => { if (k === "share") return [k, "Compartir la app", "Mándale el enlace a quien quieras"];
+      if (k === "fijos") return [k, "Fijos", nf || ni ? `${nf} gasto${nf === 1 ? "" : "s"} y ${ni} ingreso${ni === 1 ? "" : "s"}` : "Renta, colegiatura, salario…"];
       const x = SET_GROUPS.find(y => y[0] === k); return x && (!x[3] || x[3]()) ? [k, x[1], x[2]()] : null; };
     const sec = (label, keys) => { const rows = keys.map(row).filter(Boolean);
       return `<div class="mvday"><span>${label}</span></div><section class="card mvcard">${rows.map(([k, l, sum]) =>
-        `<button type="button" class="mvrow" ${k === "fijos" ? `data-act="fijos-aj"` : `data-setpage="${k}"`}><span class="mvic sq sm" style="--c:${SET_ICONS[k][1]}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${SET_ICONS[k][0]}"/></svg></span><span class="mid"><b>${esc(l)}</b><span class="sub">${esc(sum)}</span></span><span class="chev" aria-hidden="true">›</span></button>`).join("")}</section>`; };
+        `<button type="button" class="mvrow" ${k === "fijos" ? `data-act="fijos-aj"` : k === "share" ? `data-act="shareapp"` : `data-setpage="${k}"`}><span class="mvic sq sm" style="--c:${SET_ICONS[k][1]}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${SET_ICONS[k][0]}"/></svg></span><span class="mid"><b>${esc(l)}</b><span class="sub">${esc(sum)}</span></span><span class="chev" aria-hidden="true">›</span></button>`).join("")}</section>`; };
     v.innerHTML = `<div class="grid rsm">
       <button type="button" class="card acctcard" data-setpage="account"><span class="avatar">${esc(name.slice(0, 1).toUpperCase())}</span><span class="mid"><b>${esc(name)}</b><span class="sub">${esc([S.email, bio ? "Biométricos activados" : ""].filter(Boolean).join(" · "))}</span></span><span class="chev" aria-hidden="true">›</span></button>
       ${sec("Tu dinero", ["cats", "groups", "methods", "fijos"])}
       ${sec("Avisos y atajos", ["notif", "siri"])}
-      ${sec("App", ["look", "security", "admin", "about"])}
+      ${sec("App", ["share", "look", "security", "admin", "about"])}
       <button type="button" class="card logoutcard" id="logout">Cerrar sesión</button>
       <div class="sub" style="text-align:center;font-size:.78rem">Mis finanzas · versión ${APP_VERSION}</div>
     </div>`;
@@ -3278,6 +3291,7 @@ $("#view").addEventListener("click", e => {
   else if (d.act === "newmethod") openMethod();
   else if (d.act === "newgroup") openGroup();
   else if (d.act === "guide") openGuide("Ajustes");
+  else if (d.act === "shareapp") shareApp();
   else if (d.act === "heroflip") { lsSet(HERO_KEY, lsGet(HERO_KEY) === "gastado" ? "libre" : "gastado"); render(); }
   else if (d.act === "closecard") { lsSet(CLOSE_KEY, ymAdd(ymOf(todayISO()), -1)); render(); }
   else if (d.act === "seeprev") { S.ym = ymAdd(ymOf(todayISO()), -1); render(); window.scrollTo(0, 0); refresh(false); }

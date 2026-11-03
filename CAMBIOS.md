@@ -806,9 +806,7 @@ El usuario respondió "Sí" a aplicar AU, AW y AX, y decidió que **no** haya ap
 - [x] **AX.** Ajustes → Usuarios con el diseño nuevo: carga sola, "¿Quién usa la app?" con el total y los nuevos del mes, buscador (con más de 5 usuarios), lista de más nuevo a más viejo con fecha de registro, última entrada y etiquetas (Tú, Administrador, Sin confirmar). Al tocar un usuario: cambiar nombre y hacer o quitar administrador. Nunca muestra finanzas.
 - Corrección: las migraciones 005, 006, 008 y 009 ahora agregan la lista de tipos de aviso con `not valid`, para que `instalar_todo.sql` (o cualquiera de ellas) se pueda volver a correr aunque ya existan avisos de tipos nuevos (antes fallaba al reinstalar). Probado: dos reinstalaciones seguidas sin errores, y los tipos de aviso inválidos se siguen rechazando.
 
-## 20. Cambios anotados el 2026-11-03 (sin aplicar todavía)
-
-Solo anotados; **no ejecutar** hasta que el usuario lo indique.
+## 20. Cambios anotados el 2026-11-03 — AZ ✅ aplicado en la versión 2.7.0
 
 ### AZ. "Compartir la app" en Ajustes (para cualquier usuario)
 - [ ] Renglón nuevo en Ajustes, sección **App**, con icono de compartir: **"Compartir la app"** · "Mándale el enlace a quien quieras".
