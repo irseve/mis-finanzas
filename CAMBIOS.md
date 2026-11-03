@@ -813,3 +813,12 @@ El usuario respondió "Sí" a aplicar AU, AW y AX, y decidió que **no** haya ap
 - [ ] Al tocarlo se abre el menú de compartir del teléfono (WhatsApp, Mensajes, correo, AirDrop…) con este mensaje: "Te recomiendo Mis finanzas para llevar tus gastos e ingresos: https://irseve.github.io/mis-finanzas/ · Ábrelo en Safari y toca «Agregar como app» para instalarla."
 - [ ] Si el teléfono o el navegador no tiene ese menú, el enlace se copia y aparece "Enlace copiado".
 - Lo ven todos los usuarios, no solo los administradores. No comparte nada de las finanzas de nadie, solo el enlace.
+
+### BA. Crear cuenta con pantalla propia — ✅ aplicado en la versión 2.8.0 (2026-11-03)
+El usuario preguntó qué pasa al tocar "Crear cuenta" y pidió "haz todo eso":
+- [x] "Crear cuenta" abre una pantalla con el diseño de la app: nombre, correo, contraseña y "Escríbela otra vez".
+- [x] Revisa que haya nombre, que el correo sea válido, que la contraseña tenga 6 o más caracteres y que las dos coincidan.
+- [x] Mensajes en español (correo ya registrado, correo mal escrito, contraseña débil, demasiados intentos), también en el inicio de sesión.
+- [x] El nombre se guarda en la cuenta: la bienvenida dice "Hola, nombre" y el aviso al administrador dice "Nuevo usuario: nombre".
+- [x] Al terminar entra con la animación de bienvenida y le ofrece activar los biométricos (en el celular con la app instalada).
+- [x] Si Supabase vuelve a pedir confirmación por correo, avisa "Cuenta creada. Revisa tu correo…".

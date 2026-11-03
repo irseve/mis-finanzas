@@ -506,6 +506,9 @@ div.mvrow{cursor:default}
 .gtoggle::after{content:"";position:absolute;top:2px;right:2px;width:24px;height:24px;border-radius:12px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25)}
 .gcopy{display:flex;align-items:center;gap:10px;padding:10px 12px}
 .gcopy span{flex:1;font-size:.82rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.suform{gap:12px}
+.suform .f input{font-size:16px}
+.suform .err{color:var(--warn);font-size:.9rem;min-height:1.2em}
 .gdone{background:color-mix(in srgb,var(--brand) 14%,var(--bg));flex-direction:row;align-items:center;gap:14px}
 .gdone img{width:52px;height:52px;border-radius:12px;flex:none}
 .logoutcard{width:100%;min-height:52px;border:0;color:var(--spend);font:inherit;font-size:.95rem;font-weight:700;cursor:pointer}
@@ -612,14 +615,14 @@ div.arow{cursor:default}
 <div class="update-bar" id="updateBar" role="status" hidden><span>Nueva versión</span><button class="go" id="updateGo">Actualizar</button><button class="x" id="updateX" aria-label="Cerrar aviso">×</button></div>
 <dialog id="dlg"><form method="dialog" id="dlgForm" onsubmit="return false"></form></dialog>
 
-<script src="config.js?v=2.7.0"></script>
+<script src="config.js?v=2.8.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
 <script>
 (() => {
 "use strict";
 // ---------- versión ----------
 // Al subir cambios: actualiza APP_VERSION, APP_DATE, version.json y el ?v= de config.js.
-const APP_VERSION = "2.7.0";
+const APP_VERSION = "2.8.0";
 const APP_DATE = "2026-11-03";
 
 // ---------- utilities ----------
@@ -949,7 +952,7 @@ async function onSession(session) {
 async function doAuth(signup) {
   const email = $("#email").value.trim(), password = $("#password").value;
   if (!email || password.length < 6) { $("#loginErr").textContent = "Escribe tu correo y una contraseña de al menos 6 caracteres."; return; }
-  $("#loginErr").textContent = "";
+  $("#loginErr").textContent = ""; $("#loginErr").className = "err";
   const btns = document.querySelectorAll("#login button"); btns.forEach(b => b.disabled = true);
   if (!signup) { welcomeNext = true; S.offerBio = true; }
   const { data, error } = signup ? await sb.auth.signUp({ email, password }) : await sb.auth.signInWithPassword({ email, password });
@@ -957,10 +960,55 @@ async function doAuth(signup) {
   if (error) {
     welcomeNext = false; S.offerBio = false;
     const m = error.message || "";
-    $("#loginErr").textContent = /Invalid login/i.test(m) ? "Correo o contraseña incorrectos." : /not confirmed/i.test(m) ? "Confirma tu correo primero (revisa tu bandeja)." : /not allowed|disabled/i.test(m) ? "El registro de cuentas nuevas está desactivado." : m;
+    $("#loginErr").textContent = /Invalid login/i.test(m) ? "Correo o contraseña incorrectos." : /not confirmed/i.test(m) ? "Confirma tu correo primero (revisa tu bandeja)." : authMsg(m);
     return;
   }
   if (signup && !data.session) $("#loginErr").textContent = "Cuenta creada. Revisa tu correo para confirmarla y luego inicia sesión.";
+}
+
+// ---------- crear cuenta: pantalla propia (nombre, correo, contraseña dos veces) ----------
+const authMsg = m => /already registered|already been registered|exists/i.test(m) ? "Ese correo ya tiene cuenta. Regresa e inicia sesión."
+  : /invalid format|validate email|invalid email/i.test(m) ? "Revisa tu correo: parece que está mal escrito."
+  : /password should|weak password|at least/i.test(m) ? "La contraseña es muy débil. Usa al menos 6 caracteres, mejor con letras y números."
+  : /rate limit|too many/i.test(m) ? "Hubo demasiados intentos. Espera unos minutos y vuelve a intentarlo."
+  : /not allowed|disabled/i.test(m) ? "El registro de cuentas nuevas está desactivado." : m;
+function openSignup() {
+  const g = $("#guide");
+  g.innerHTML = `<div class="gwrap">
+    <div class="ghead"><button type="button" class="hback" data-gclose>‹ Iniciar sesión</button><h1 id="guideTitle">Crear cuenta</h1></div>
+    <section class="gcard gintro"><img src="apple-touch-icon.png" alt=""><span style="display:flex;flex-direction:column;gap:4px"><b>Bienvenido a Mis finanzas</b><span class="sub">Lleva tus gastos, ingresos, fijos y ahorros. Ningún otro usuario puede ver tus datos.</span></span></section>
+    <form class="gcard suform" id="suForm" novalidate>
+      <label class="f">¿Cómo te llamas?<input name="name" autocomplete="given-name" maxlength="60" placeholder="Ej. Juan" required></label>
+      <label class="f">Correo<input name="email" type="email" inputmode="email" autocomplete="email" value="${esc($("#email").value.trim())}" required></label>
+      <label class="f">Contraseña<input name="pw" type="password" autocomplete="new-password" minlength="6" required></label>
+      <label class="f">Escríbela otra vez<input name="pw2" type="password" autocomplete="new-password" minlength="6" required></label>
+      <div class="sub" style="font-size:.82rem">Al menos 6 caracteres. Guárdala bien: con ella entras desde cualquier teléfono.</div>
+      <div class="err" id="suErr" role="alert"></div>
+      <button type="submit" class="btn wide" id="suGo">Crear cuenta</button>
+    </form>
+    <button type="button" class="lnk" data-gclose style="align-self:center;font-size:.95rem">¿Ya tienes cuenta? Inicia sesión</button>
+  </div>`;
+  const f = $("#suForm"), err = $("#suErr");
+  g.onclick = e => { if (e.target.closest("[data-gclose]")) { g.hidden = true; document.body.style.overflow = ""; } };
+  f.onsubmit = async e => {
+    e.preventDefault();
+    const name = f.name.value.trim(), email = f.email.value.trim(), pw = f.pw.value, pw2 = f.pw2.value;
+    const bad = !name ? [f.name, "Escribe tu nombre."] : !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email) ? [f.email, "Escribe un correo válido."]
+      : pw.length < 6 ? [f.pw, "La contraseña debe tener al menos 6 caracteres."] : pw !== pw2 ? [f.pw2, "Las contraseñas no coinciden. Escríbela igual las dos veces."] : null;
+    if (bad) { err.textContent = bad[1]; bad[0].focus(); return; }
+    if (!navigator.onLine) { err.textContent = "Necesitas conexión a internet para crear tu cuenta."; return; }
+    err.textContent = ""; const go = $("#suGo"); go.disabled = true; go.textContent = "Creando tu cuenta…";
+    welcomeNext = true; S.offerBio = true; // al entrar: "Hola, nombre" y la oferta de biométricos
+    const { data, error } = await sb.auth.signUp({ email, password: pw, options: { data: { full_name: name } } });
+    go.disabled = false; go.textContent = "Crear cuenta";
+    if (error) { welcomeNext = false; S.offerBio = false; err.textContent = authMsg(error.message || ""); return; }
+    // Supabase no avisa si el correo ya existe cuando pide confirmación: en ese caso no hay identidades.
+    if (data.user && Array.isArray(data.user.identities) && !data.user.identities.length) { welcomeNext = false; S.offerBio = false; err.textContent = authMsg("already registered"); return; }
+    g.hidden = true; document.body.style.overflow = "";
+    if (!data.session) { welcomeNext = false; S.offerBio = false; $("#email").value = email; $("#loginErr").className = "err ok"; $("#loginErr").textContent = "Cuenta creada. Revisa tu correo para confirmarla y luego inicia sesión."; }
+  };
+  g.hidden = false; g.scrollTop = 0; document.body.style.overflow = "hidden";
+  setTimeout(() => f.name.focus(), 60);
 }
 
 // ---------- contraseña ----------
@@ -3352,7 +3400,7 @@ document.addEventListener("keydown", e => { if (e.key === "Escape") closeMonthPi
 $("#offBanner").addEventListener("click", e => { if (e.target.closest("[data-act=retry]")) { setSync("off", "Reintentando…"); refresh(true); } });
 $("#signin").onclick = () => doAuth(false);
 $("#installRow").onclick = () => openGuide("Iniciar sesión");
-$("#signup").onclick = () => doAuth(true);
+$("#signup").onclick = () => openSignup();
 $("#password").addEventListener("keydown", e => { if (e.key === "Enter") doAuth(false); });
 $("#forgot").onclick = forgotPassword;
 $("#bioLogin").onclick = async () => {
