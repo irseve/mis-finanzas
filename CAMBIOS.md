@@ -22,7 +22,7 @@ Este documento es la guía de trabajo para Claude Code. Implementa los cambios *
 ## 2. Reglas de trabajo
 
 0. **No cambiar la app sin permiso explícito (regla del usuario, 2026-10-31):** cuando el usuario pida algo, **solo anotarlo** en este archivo y **preguntar**. No modificar la app ni subir cambios a `main` hasta que el usuario diga explícitamente que se apliquen (por ejemplo "actualiza los cambios"), porque quiere juntar varios cambios y aplicarlos al mismo tiempo. Excepción: anotar en este archivo.
-0b. **Avisar cada cambio (regla del usuario, 2026-11-03):** cada vez que se suba un cambio o actualización, mandar una notificación al iPhone del usuario con lo que cambió.
+0b. **Avisar solo las versiones nuevas (regla del usuario, 2026-11-03, corregida el mismo día):** mandar una notificación **solo cuando una actualización de la app ya esté publicada y lista** (nueva versión). No avisar por notas en este archivo, maquetas ni respuestas. El aviso se manda con el token personal del usuario, así que **solo le llega a él** (el administrador); los demás usuarios nunca reciben estos avisos.
 1. **Sube los cambios directo a `main`** al terminar cada fase, con un mensaje de commit claro en español.
 2. **Nunca pierdas ni alteres datos existentes.** Todo cambio de base de datos va en una migración nueva en `migrations/NNN_descripcion.sql`, idempotente (`if not exists`, etc.). Si tienes acceso a Supabase por MCP, aplícala; si no, al final indícale al usuario exactamente qué archivo correr en el SQL Editor **antes** de abrir la app.
 3. **Seguridad:**
