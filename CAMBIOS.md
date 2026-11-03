@@ -628,8 +628,9 @@ Propuesta (máximo 5 bloques, siempre en el mismo orden):
 ### AN. Ver rápido el mes anterior y volver siempre al mes en curso
 Necesidad del usuario: los primeros días del mes casi no hay nada registrado y se quiere repasar el mes que acaba de cerrar, sin perder que la app abra siempre en el mes en curso.
 - [ ] **Tarjeta "Cierre del mes"** arriba del Resumen, **del día 1 al 5** de cada mes:
-  - "**Octubre cerró** · Gastaste $12,250 de $24,898 · Te sobraron $3,400" y el enlace **"Ver resumen de octubre ›"**, que cambia el Resumen a ese mes.
+  - "**Octubre cerró** · Gastaste $12,250 de $24,898.60 de ingresos · te sobraron $12,648.60" y el enlace **"Ver resumen de octubre ›"**, que cambia el Resumen a ese mes.
   - Desaparece sola el día 6, o antes si se cierra con la ✕ (se recuerda en ese teléfono para ese mes).
+  - **Decisión del usuario:** si se gastó menos que los ingresos del mes: "te sobraron **$X**" en **verde**; si se gastó más: "**te pasaste por $X**" en **rojo**. (La base es lo ingresado ese mes; hoy la app no tiene presupuesto general.)
 - [ ] **Siempre volver al mes en curso:**
   - Al iniciar sesión (ya se hace hoy).
   - También al abrir la app tras **30 minutos** o más sin usarla.
