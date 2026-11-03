@@ -621,3 +621,6 @@ Propuesta (máximo 5 bloques, siempre en el mismo orden):
   - Se busca desde la fecha de inicio de cada fijo hasta ayer.
   - Hoy la app solo los marca dentro del mes abierto (`monthPlan`); al cambiar de mes se pierden de vista. Con este cambio siguen apareciendo hasta que se pagan, se confirman o se descartan.
   - Cada uno muestra la fecha en que estaba programado (por ejemplo "Internet $599 · era el 30 oct").
+- **Decisión del usuario sobre la cifra principal:** un botón **muy discreto** (icono pequeño de flechas ⇅, en gris, junto a la etiqueta) cambia entre **"Te quedan libres $X"** y **"Gastado este mes $X"** (en rojo, con "de $ingresos · N%").
+  - La app recuerda la última elección en ese teléfono.
+  - Por defecto: "Te quedan libres".
