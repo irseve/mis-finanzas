@@ -612,3 +612,7 @@ Propuesta (máximo 5 bloques, siempre en el mismo orden):
 5. **Tendencia:** la gráfica (mes a mes por defecto), con la comparación contra el mes anterior.
 - [ ] Se quitan del Resumen (o se mueven a su detalle): "Fijos vs. variables" (al detalle de Fijos), "Gastos más grandes" (a Movimientos, como orden "Más grandes"), cifras repetidas.
 - [ ] Antes de aplicarlo, mostrar al usuario una maqueta visual para aprobarla.
+- Maqueta hecha (claro y oscuro): https://claude.ai/artifact/CvW4v86VpMUM9xhVash2go
+- **Decisiones del usuario sobre la maqueta:**
+  - Se quita la línea "unos $X por día" debajo de "Te quedan libres".
+- Por definir: qué hace el botón **Pagar** de un pago vencido en "Necesita tu atención". Propuesta: abre la misma ventana de AJ (nombre, monto editable, método y fecha programada; botones **Registrar con fecha programada**, **Registrar con fecha de hoy** y **Cancelar**) y registra el gasto sin salir del Resumen.
