@@ -23,6 +23,11 @@ Este documento es la guía de trabajo para Claude Code. Implementa los cambios *
 
 0. **No cambiar la app sin permiso explícito (regla del usuario, 2026-10-31):** cuando el usuario pida algo, **solo anotarlo** en este archivo y **preguntar**. No modificar la app ni subir cambios a `main` hasta que el usuario diga explícitamente que se apliquen (por ejemplo "actualiza los cambios"), porque quiere juntar varios cambios y aplicarlos al mismo tiempo. Excepción: anotar en este archivo.
 0b. **Avisar solo las versiones nuevas (regla del usuario, 2026-11-03, corregida el mismo día):** mandar una notificación **solo cuando una actualización de la app ya esté publicada y lista** (nueva versión). No avisar por notas en este archivo, maquetas ni respuestas. El aviso se manda con el token personal del usuario, así que **solo le llega a él** (el administrador); los demás usuarios nunca reciben estos avisos.
+0c. **Supabase primero (regla del usuario, 2026-11-03):** antes de lanzar cualquier actualización de la app, todo lo que necesite en Supabase tiene que estar listo. Orden obligatorio:
+   1. Claude prepara las migraciones y los cambios de funciones y los sube **sin** tocar todavía la app (`index.html`, `version.json`), porque subir la app a `main` la publica en GitHub Pages.
+   2. Claude le da al usuario los pasos exactos (qué archivo correr en el SQL Editor y qué función reinstalar) y **espera** a que diga que ya lo hizo.
+   3. Claude comprueba desde aquí lo que se pueda revisar (tablas y columnas nuevas con la llave pública; respuesta de las funciones). Lo que no se pueda revisar desde aquí (por ejemplo un trigger), se le pide al usuario que lo confirme.
+   4. Solo entonces se sube la versión nueva de la app y se manda la notificación de que está lista.
 1. **Sube los cambios directo a `main`** al terminar cada fase, con un mensaje de commit claro en español.
 2. **Nunca pierdas ni alteres datos existentes.** Todo cambio de base de datos va en una migración nueva en `migrations/NNN_descripcion.sql`, idempotente (`if not exists`, etc.). Si tienes acceso a Supabase por MCP, aplícala; si no, al final indícale al usuario exactamente qué archivo correr en el SQL Editor **antes** de abrir la app.
 3. **Seguridad:**
