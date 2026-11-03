@@ -715,3 +715,28 @@ Conceptos que se repiten en todas: encabezado "Hola, nombre" + título, etiqueta
   - Movimientos carga del servidor de 10 en 10 con todos los filtros (la búsqueda, el orden y el CSV usan todos los movimientos, no solo los cargados). Sin conexión usa lo guardado en el teléfono.
   - Fijos se puede abrir desde el Resumen ("Ver todos") y desde Ajustes → Fijos; el "‹" regresa a donde estabas.
   - Ajustes: nueva página "Seguridad" (contraseña, tiempo para cerrar sesión y Face ID); "Cuenta" queda con nombre, correo y moneda; "Administración" ahora se llama "Usuarios"; "Cerrar sesión" va al final de Ajustes.
+
+---
+
+## 18. Cambios anotados el 2026-11-03 (sin aplicar todavía)
+
+Solo anotados; **no ejecutar** hasta que el usuario lo indique.
+
+### AR. Privacidad entre usuarios (pregunta del usuario: "que nadie, ni siquiera yo, pueda ver los datos de cada usuario")
+Revisión de Claude (2026-11-03):
+- **Ya está:** todas las tablas tienen seguridad por fila (cada persona solo puede leer y cambiar lo suyo). Las funciones de la base que se saltan esa regla solo trabajan con la cuenta de quien las llama o solo las usa el servidor. Ser administrador en la app **no** da acceso a las finanzas de nadie: la función de usuarios solo ve correo, nombre y rol.
+- **Lo que no se puede evitar con la configuración actual:** quien sea dueño del proyecto de Supabase (el panel, el SQL Editor y la llave de servicio) puede ver todos los datos, porque se guardan legibles en la base. Para que ni el dueño pueda verlos haría falta **cifrado de extremo a extremo** (cada usuario cifra sus datos en su teléfono con una clave que solo él sabe).
+  - Costo de ese cifrado: el servidor ya no podría leer montos ni nombres, así que dejarían de funcionar o habría que rehacer los avisos con monto, los fijos que se crean solos, el aviso de topes, Siri y el correo de BBVA, la búsqueda y los totales del servidor. Si alguien olvida su clave de cifrado, **pierde sus datos** (nadie puede recuperarlos).
+- Propuesta de Claude (por confirmar):
+  - [ ] Quitar "Crear cuenta" del inicio de sesión y desactivar el registro abierto en Supabase (Authentication → Sign In / Providers → "Allow new users to sign up" apagado). Así solo entra quien el administrador invita.
+  - [ ] Proteger el acceso del dueño: verificación en dos pasos en Supabase y en GitHub, y no compartir la llave de servicio.
+  - [ ] Un aviso de privacidad corto para los usuarios invitados, que diga quién administra el sistema.
+  - [ ] (Opcional, proyecto grande) cifrado de extremo a extremo, con los costos de arriba.
+
+### AS. "Agregar como app" desde el inicio de sesión
+Pedido del usuario: un botón pequeño en el inicio de sesión que lleve a una pantalla con los pasos para agregar la app en el iPhone, con el mismo diseño de la app. Maqueta: https://claude.ai/artifact/CvW4v86VpMUM9xhVash2go (fila "Agregar como app").
+- [ ] **Inicio de sesión:** debajo de la tarjeta, un renglón discreto "Agregar como app en tu iPhone · Pantalla completa, avisos y Face ID ›". Solo aparece si la app **no** está abierta ya desde el icono.
+- [ ] **Pantalla "Agregar como app":** tarjeta con el icono y para qué sirve; selector **iPhone · Android**; en iPhone 4 pasos con dibujos (1. Abrir en Safari, con "Copiar enlace"; 2. Botón Compartir; 3. "Agregar a inicio"; 4. "Agregar"); al final "¡Listo! Ábrela desde el icono" y el botón "Entendido". En Android, los pasos de Chrome (⋮ → Instalar app).
+- [ ] La app elige sola la pestaña iPhone o Android según el teléfono, y si se abrió fuera de Safari en el iPhone, resalta el paso 1.
+- [ ] (Propuesta) También en Ajustes → Acerca de, "Agregar como app", si se abrió desde el navegador.
+- En la maqueta se quitó "Crear cuenta" (depende de la decisión en AR).
