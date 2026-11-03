@@ -615,14 +615,14 @@ div.arow{cursor:default}
 <div class="update-bar" id="updateBar" role="status" hidden><span>Nueva versión</span><button class="go" id="updateGo">Actualizar</button><button class="x" id="updateX" aria-label="Cerrar aviso">×</button></div>
 <dialog id="dlg"><form method="dialog" id="dlgForm" onsubmit="return false"></form></dialog>
 
-<script src="config.js?v=2.8.0"></script>
+<script src="config.js?v=2.8.1"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
 <script>
 (() => {
 "use strict";
 // ---------- versión ----------
 // Al subir cambios: actualiza APP_VERSION, APP_DATE, version.json y el ?v= de config.js.
-const APP_VERSION = "2.8.0";
+const APP_VERSION = "2.8.1";
 const APP_DATE = "2026-11-03";
 
 // ---------- utilities ----------
@@ -2393,6 +2393,7 @@ const SET_ICONS = {
   security: ["M6 11h12v10H6zM8 11V7a4 4 0 0 1 8 0v4", "#5E6E67"], admin: ["M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM2 21v-1a6 6 0 0 1 12 0v1M16 3.5a4 4 0 0 1 0 7.5M22 21v-1a6 6 0 0 0-4-5.6", "#3E7CB1"],
   about: ["M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 11v6M12 7.5h.01", "#5B8C2A"],
   share: ["M12 3v12M8 7l4-4 4 4M6 11H5v10h14V11h-1", "#1F6F5C"],
+  install: ["M7 2h10a2.5 2.5 0 0 1 2.5 2.5v15A2.5 2.5 0 0 1 17 22H7a2.5 2.5 0 0 1-2.5-2.5v-15A2.5 2.5 0 0 1 7 2zM11 18h2", "#2F6EA8"],
 };
 const SET_GROUPS = [
   ["cats", "Categorías", () => `${S.categories.length} categorías`],
@@ -2412,16 +2413,17 @@ function viewCats(v) {
     const name = S.accountName || S.displayName || "Tu cuenta", bio = S.has005 && pkLocal() && S.passkeys.some(k => k.id === pkLocal().id);
     const nf = S.recs.filter(r => r.type === "gasto").length, ni = S.recs.filter(r => r.type === "ingreso").length;
     const row = k => { if (k === "share") return [k, "Compartir la app", "Mándale el enlace a quien quieras"];
+      if (k === "install") return [k, "Agregar como app", isStandalone() ? "Pasos para iPhone y Android (por si ayudas a alguien)" : "Ponla en tu pantalla de inicio: iPhone y Android"];
       if (k === "fijos") return [k, "Fijos", nf || ni ? `${nf} gasto${nf === 1 ? "" : "s"} y ${ni} ingreso${ni === 1 ? "" : "s"}` : "Renta, colegiatura, salario…"];
       const x = SET_GROUPS.find(y => y[0] === k); return x && (!x[3] || x[3]()) ? [k, x[1], x[2]()] : null; };
     const sec = (label, keys) => { const rows = keys.map(row).filter(Boolean);
       return `<div class="mvday"><span>${label}</span></div><section class="card mvcard">${rows.map(([k, l, sum]) =>
-        `<button type="button" class="mvrow" ${k === "fijos" ? `data-act="fijos-aj"` : k === "share" ? `data-act="shareapp"` : `data-setpage="${k}"`}><span class="mvic sq sm" style="--c:${SET_ICONS[k][1]}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${SET_ICONS[k][0]}"/></svg></span><span class="mid"><b>${esc(l)}</b><span class="sub">${esc(sum)}</span></span><span class="chev" aria-hidden="true">›</span></button>`).join("")}</section>`; };
+        `<button type="button" class="mvrow" ${k === "fijos" ? `data-act="fijos-aj"` : k === "share" ? `data-act="shareapp"` : k === "install" ? `data-act="guide"` : `data-setpage="${k}"`}><span class="mvic sq sm" style="--c:${SET_ICONS[k][1]}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${SET_ICONS[k][0]}"/></svg></span><span class="mid"><b>${esc(l)}</b><span class="sub">${esc(sum)}</span></span><span class="chev" aria-hidden="true">›</span></button>`).join("")}</section>`; };
     v.innerHTML = `<div class="grid rsm">
       <button type="button" class="card acctcard" data-setpage="account"><span class="avatar">${esc(name.slice(0, 1).toUpperCase())}</span><span class="mid"><b>${esc(name)}</b><span class="sub">${esc([S.email, bio ? "Biométricos activados" : ""].filter(Boolean).join(" · "))}</span></span><span class="chev" aria-hidden="true">›</span></button>
       ${sec("Tu dinero", ["cats", "groups", "methods", "fijos"])}
       ${sec("Avisos y atajos", ["notif", "siri"])}
-      ${sec("App", ["share", "look", "security", "admin", "about"])}
+      ${sec("App", ["share", "install", "look", "security", "admin", "about"])}
       <button type="button" class="card logoutcard" id="logout">Cerrar sesión</button>
       <div class="sub" style="text-align:center;font-size:.78rem">Mis finanzas · versión ${APP_VERSION}</div>
     </div>`;
@@ -2512,7 +2514,7 @@ function viewCats(v) {
     about: () => `<section class="card">
       <div class="sub num" style="margin-bottom:10px">Versión instalada: ${APP_VERSION} · ${APP_DATE}</div>
       <button class="btn ghost" id="checkUpd" style="min-height:44px">Buscar actualizaciones</button></section>
-      ${isStandalone() ? "" : `<button type="button" class="installrow" data-act="guide" style="width:100%"><span class="iric"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2.5"/><path d="M11 18h2"/></svg></span><span class="mid"><b>Agregar como app${isIOS() ? " en tu iPhone" : ""}</b><span class="sub">Pantalla completa, avisos y biométricos</span></span><span class="chev" aria-hidden="true">›</span></button>`}`,
+`,
   };
   v.innerHTML = `<div class="grid rsm">${pages[g[0]]()}</div>`;
   $("#checkUpd")?.addEventListener("click", async e => {

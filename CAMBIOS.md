@@ -822,3 +822,9 @@ El usuario preguntó qué pasa al tocar "Crear cuenta" y pidió "haz todo eso":
 - [x] El nombre se guarda en la cuenta: la bienvenida dice "Hola, nombre" y el aviso al administrador dice "Nuevo usuario: nombre".
 - [x] Al terminar entra con la animación de bienvenida y le ofrece activar los biométricos (en el celular con la app instalada).
 - [x] Si Supabase vuelve a pedir confirmación por correo, avisa "Cuenta creada. Revisa tu correo…".
+
+### BB. "Agregar como app" visible en Ajustes — ✅ aplicado en la versión 2.8.1 (2026-11-03)
+Pedido del usuario: tener las instrucciones para agregar la app al inicio en Ajustes ("aplica los cambios de una vez").
+- [x] Renglón "Agregar como app" en Ajustes → App (debajo de "Compartir la app"), siempre visible, con icono de teléfono. Abre la guía de iPhone y Android; el "‹" regresa a Ajustes.
+- [x] Si la app ya está abierta desde el icono dice "Pasos para iPhone y Android (por si ayudas a alguien)"; si no, "Ponla en tu pantalla de inicio".
+- [x] Se quitó el acceso repetido que estaba escondido en Acerca de.
