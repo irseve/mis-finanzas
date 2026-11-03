@@ -683,9 +683,7 @@ Propuesta de Claude para lo que choca con cambios anteriores:
 
 ---
 
-## 17. Cambios anotados el 2026-11-03 (sin aplicar todavía)
-
-Solo anotados; **no ejecutar** hasta que el usuario lo indique.
+## 17. Cambios anotados el 2026-11-03 — ✅ aplicados en la versión 2.4.0
 
 ### AQ. Llevar el estilo del Resumen a las demás pantallas
 Pedido del usuario: aplicar los mismos conceptos del Resumen a las demás opciones, con una maqueta de cada una, y rediseñar Movimientos (la parte de arriba tiene demasiadas cosas).
@@ -710,3 +708,10 @@ Conceptos que se repiten en todas: encabezado "Hola, nombre" + título, etiqueta
     - Arriba, "¿Cuánto se va en fijos?": cuánto suman al mes los gastos fijos y qué parte de los ingresos fijos es (los semanales y bimestrales se cuentan como su equivalente al mes).
     - Se quita "Fijos vs. variables" (era por mes).
   - [ ] **Detalle de un fijo (pantalla nueva):** al tocar un fijo se abre su historial: Pendiente (con "Pagar"), Próximos (Por pagar, con "Marcar pagado" en el siguiente) y Pagados (con la fecha real en que se pagó). Arriba el monto, cada cuánto, método, categoría y grupo, y cuánto se ha pagado en el año. "Editar" abre el formulario de siempre.
+
+- **Aplicado en 2.4.0 (2026-11-03)**, copiando el diseño de las maquetas (medidas, colores, letras y acomodo), no solo el contenido, como pidió el usuario ("recuerda actualizar el diseño, no como la vez pasada"). Cada pantalla se revisó contra su maqueta en claro y oscuro antes de subir.
+  - Encabezado: "Hola, nombre" + título; en las pantallas de detalle, "‹ Resumen / ‹ Fijos / ‹ Ajustes…" arriba del título. El selector de mes solo aparece en el Resumen.
+  - El botón + solo aparece donde lo tiene la maqueta (Resumen, Movimientos y Apartados; en Apartados abre directo "Apartar").
+  - Movimientos carga del servidor de 10 en 10 con todos los filtros (la búsqueda, el orden y el CSV usan todos los movimientos, no solo los cargados). Sin conexión usa lo guardado en el teléfono.
+  - Fijos se puede abrir desde el Resumen ("Ver todos") y desde Ajustes → Fijos; el "‹" regresa a donde estabas.
+  - Ajustes: nueva página "Seguridad" (contraseña, tiempo para cerrar sesión y Face ID); "Cuenta" queda con nombre, correo y moneda; "Administración" ahora se llama "Usuarios"; "Cerrar sesión" va al final de Ajustes.
