@@ -785,3 +785,14 @@ Hoy ya existe en Ajustes → Usuarios (solo administradores), pero hay que tocar
 - [ ] Buscador por nombre o correo, y orden de más nuevo a más viejo.
 - [ ] Siguen "Agregar usuario", "Cambiar nombre" y "Hacer admin / Quitar admin". Nunca muestra las finanzas de nadie.
 - AV, actualización (2026-11-03): Brevo le pidió al usuario verificar su cuenta por SMS y no pudo. Alternativas que dio Claude: (1) **Gmail como servidor de correo** con una "contraseña de aplicación" de Google (smtp.gmail.com, puerto 587; requiere verificación en dos pasos en la cuenta de Google; unos 500 correos al día); (2) **apagar "Confirm email"** en Supabase para que crear cuenta no necesite correo (el registro entra directo; la recuperación de contraseña por correo seguiría necesitando un servidor de correo). La app ya maneja las dos: si Supabase no pide confirmar, al crear la cuenta entra directo.
+
+### AY. Aprobar cuentas nuevas sin correo (sin aplicar todavía)
+Pedido del usuario (2026-11-03): que un amigo cree su propia cuenta y que el administrador reciba el aviso y la apruebe, sin depender del correo.
+- Requisito en Supabase (lo hace el usuario): apagar **Confirm email** (Authentication → Sign In / Providers → Email). Así crear cuenta no necesita correo.
+- [ ] Al crear su cuenta, la persona ve: "Tu cuenta está en revisión. Te avisaremos cuando Irving la apruebe." (todavía no puede usar la app).
+- [ ] Al administrador le llega la notificación "Nuevo usuario: nombre o correo" (AW). Al tocarla abre Ajustes → Usuarios, donde aparece arriba "Por aprobar" con los botones **Aprobar** y **Rechazar**.
+- [ ] Al aprobarla, la app de la persona entra sola (o la próxima vez que la abra). Al rechazarla, la cuenta se borra.
+- [ ] Las cuentas que ya existen quedan aprobadas.
+- [ ] (Opcional) "Enviar enlace para cambiar contraseña": el administrador genera un enlace de un solo uso y se lo manda por WhatsApp a quien olvidó su contraseña, sin correo.
+- Requiere migración 009 (columna "aprobado" en los perfiles y el aviso al administrador).
+- Mientras tanto ya se puede hoy: el administrador crea la cuenta en Ajustes → Usuarios → Agregar usuario, con una contraseña inicial, y se la pasa a su amigo; él la cambia en Ajustes → Seguridad.
