@@ -828,3 +828,16 @@ Pedido del usuario: tener las instrucciones para agregar la app al inicio en Aju
 - [x] Renglón "Agregar como app" en Ajustes → App (debajo de "Compartir la app"), siempre visible, con icono de teléfono. Abre la guía de iPhone y Android; el "‹" regresa a Ajustes.
 - [x] Si la app ya está abierta desde el icono dice "Pasos para iPhone y Android (por si ayudas a alguien)"; si no, "Ponla en tu pantalla de inicio".
 - [x] Se quitó el acceso repetido que estaba escondido en Acerca de.
+
+## 21. Cambios anotados el 2026-11-03 (sin aplicar todavía)
+
+Solo anotados; **no ejecutar** hasta que el usuario lo indique.
+
+### BC. Fijos: cuánto toca pagar en cada mes
+Pedido del usuario: en Fijos poder elegir el mes para saber cuánto se va a pagar ese mes (noviembre, octubre…), porque con los bimestrales, semestrales y anuales la cantidad cambia de un mes a otro.
+Propuesta de Claude (por confirmar):
+- [ ] La tarjeta de arriba pasa a ser **"¿Cuánto toca pagar en noviembre?"** con el mes adentro de la tarjeta (‹ Noviembre 2026 ›, y al tocar el nombre se abre el selector de mes). Muestra el total de gastos fijos que caen en ese mes, cuánto ya se pagó y cuánto falta, con su barra (pagado en rojo, por pagar en ámbar).
+- [ ] Debajo, **"Próximos 6 meses"**: una barra por mes con el total de fijos de cada uno, para ver qué meses vienen más pesados (por ejemplo el mes del seguro anual). Tocar una barra cambia el mes de la tarjeta.
+- [ ] La lista sigue mostrando todos los fijos, pero los que tocan en el mes elegido van arriba con su fecha y estado ("Pagado ✓ 1 nov", "Por pagar · 5 nov"), y los que no tocan ese mes van abajo, en gris, con "No toca este mes · siguiente: 8 dic".
+- [ ] En la pestaña Ingresos fijos funciona igual ("¿Cuánto me llega en noviembre?").
+- La parte de "¿Cuánto se va en fijos?" (promedio al mes) se queda como una línea chica dentro de la tarjeta: "En promedio: $12,026 al mes".
