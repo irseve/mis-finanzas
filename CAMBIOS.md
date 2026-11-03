@@ -576,7 +576,7 @@ Solo anotados; **no ejecutar** hasta que el usuario lo indique.
   - Botones: **Cancelar** y **Sí, marcar pagado** (o "Sí, marcar recibido").
 - [ ] Los que están en fecha se marcan directo, como hoy.
 - Por confirmar con el usuario:
-  - ¿Con qué fecha se registra el movimiento vencido: la **programada** (como hoy) o la de **hoy**? Propuesta: dar las dos opciones en la ventana.
+  - ¿Con qué fecha se registra el movimiento vencido: la **programada** (como hoy) o la de **hoy**? Propuesta: dar las dos opciones en la ventana. **Decidido (2026-11-03): la ventana ofrece las dos fechas** (programada u hoy).
   - ¿La confirmación aplica también al botón **Confirmar** de los pendientes vencidos?
 
 ### AK. Gráfica: al elegir Mes o Año, mostrar todo el historial
@@ -615,7 +615,7 @@ Propuesta (máximo 5 bloques, siempre en el mismo orden):
 - Maqueta hecha (claro y oscuro): https://claude.ai/artifact/CvW4v86VpMUM9xhVash2go
 - **Decisiones del usuario sobre la maqueta:**
   - Se quita la línea "unos $X por día" debajo de "Te quedan libres".
-- Por definir: qué hace el botón **Pagar** de un pago vencido en "Necesita tu atención". Propuesta: abre la misma ventana de AJ (nombre, monto editable, método y fecha programada; botones **Registrar con fecha programada**, **Registrar con fecha de hoy** y **Cancelar**) y registra el gasto sin salir del Resumen.
+- **Decisión del usuario sobre el botón Pagar** de un pago vencido en "Necesita tu atención": abre la misma ventana de AJ (nombre, monto editable, método y fecha programada; botones **Registrar con fecha programada**, **Registrar con fecha de hoy** y **Cancelar**) y registra el gasto sin salir del Resumen.
 - **Decisión del usuario sobre los vencidos:** "Necesita tu atención" busca los pagos vencidos **de cualquier mes, sin límite de tiempo** (no solo del mes que se está viendo).
   - Vencido = fecha programada de un fijo que ya pasó y que no está registrado (por pagar) o cuyo pendiente no se ha confirmado.
   - Se busca desde la fecha de inicio de cada fijo hasta ayer.
