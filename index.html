@@ -29,7 +29,7 @@ window.THEMES = {
                                 D:{bg:"#110D1B",surface:"#1B1529",surface2:"#221B33",ink:"#EEE8FA",muted:"#A69CC0",line:"#2E2545",brand:"#A78BFA",brandInk:"#120B22",spend:"#F87171",onSpend:"#1A0808",income:"#4ADE80",onIncome:"#06140B",warn:"#FBBF24",track:"#272038"} },
 };
 (() => {
-  const vars = (t, dark) => `--bg:${t.bg};--surface:${t.surface};--surface-2:${t.surface2};--ink:${t.ink};--muted:${t.muted};--line:${t.line};--brand:${t.brand};--brand-ink:${t.brandInk};--spend:${t.spend};--on-spend:${t.onSpend};--income:${t.income};--on-income:${t.onIncome};--warn:${t.warn};--track:${t.track};--shadow:${dark ? "none" : "0 1px 0 rgba(0,0,0,.06)"};color-scheme:${dark ? "dark" : "light"};`;
+  const vars = (t, dark) => `--bg:${t.bg};--surface:${t.surface};--surface-2:${t.surface2};--ink:${t.ink};--muted:${t.muted};--line:${t.line};--brand:${t.brand};--brand-ink:${t.brandInk};--spend:${t.spend};--on-spend:${t.onSpend};--income:${t.income};--on-income:${t.onIncome};--warn:${t.warn};--track:${t.track};--save:${dark ? "#6FA8DC" : "#2F6EA8"};--shadow:${dark ? "none" : "0 1px 0 rgba(0,0,0,.06)"};color-scheme:${dark ? "dark" : "light"};`;
   let css = "";
   for (const [k, t] of Object.entries(THEMES)) {
     const sel = k === "clasico" ? ":root" : `:root[data-palette="${k}"]`;
@@ -332,6 +332,49 @@ svg text.barlbl{font-size:10.5px;font-weight:700}
 .pwbox{display:grid;gap:12px;transition:opacity .25s}
 .pwbox.folded{display:none}
 .linkbtn.sm{min-height:28px;font-size:.85rem;padding:0 4px}
+/* Maqueta aprobada (2.3.1): encabezado, barra de abajo, + redondo */
+.hhead{display:flex;flex-direction:column;gap:2px;padding:4px 4px 0}
+.hhello{display:flex;align-items:center;gap:8px;font-size:.82rem;color:var(--muted);font-weight:500}
+.hhello .sync span:last-child{display:none}
+.ptitle{margin:0;font-size:1.65rem;font-weight:800;letter-spacing:-.02em;line-height:1.1}
+header.top .month{border-radius:22px;padding:0}
+header.top .month .monthbtn{height:44px;padding:0 14px;display:inline-flex;align-items:center;gap:6px;font-size:.95rem;font-weight:600}
+header.top .month .monthbtn span{min-width:0}
+header.top .month .monthbtn svg{fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+nav.tabs button[aria-current="true"]{background:transparent;color:var(--brand);font-weight:700}
+@media (min-width:721px){nav.tabs button[aria-current="true"]{background:color-mix(in srgb,var(--brand) 14%,transparent)}}
+nav.tabs svg{stroke-width:1.9}
+.fab{width:60px;height:60px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center}
+.fab svg{fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round}
+/* Resumen como en la maqueta */
+.rsm .card{border-radius:20px;border-color:transparent;box-shadow:none}
+.rsm h2,.rsm .ktitle{font-size:.8rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin:0}
+.rsm .shead{margin-bottom:6px;min-height:28px}
+.lnk{border:0;background:transparent;color:var(--brand);font:inherit;font-size:.9rem;font-weight:600;cursor:pointer;padding:8px 0 8px 10px;min-height:36px}
+.lnk.sm{font-size:.82rem;padding:2px 0 2px 8px;min-height:30px}
+.uright{display:flex;flex-direction:column;align-items:flex-end;flex:none}
+.uright > b{font-size:.95rem}
+.srow{display:grid;gap:6px;padding:6px 0}
+.srow.tap{width:100%;border:0;background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.stop{display:flex;align-items:baseline;gap:8px;font-size:.95rem}
+.stop .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.stop .pct{font-size:.82rem;color:var(--muted)}
+.sbar{height:8px;border-radius:4px;background:var(--track);overflow:hidden}
+.sbar i{display:block;height:100%;border-radius:4px}
+.scap{font-size:.82rem;font-weight:600}
+details.srow > summary{list-style:none;cursor:pointer;display:grid;gap:6px}
+details.srow > summary::-webkit-details-marker{display:none}
+.spendseg{display:grid;grid-template-columns:repeat(var(--n,3),minmax(0,1fr));gap:4px;padding:4px;background:var(--track);border:0;border-radius:12px;margin:2px 0 6px}
+.spendseg button{height:40px;border-radius:9px;font-size:.9rem}
+.tdiff{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin:2px 0 10px}
+.tdiff b{font-size:1.35rem}
+.tbars{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;align-items:end;height:150px}
+.tcol{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:6px;height:100%}
+.tcol .v{font-size:.7rem;color:var(--muted);font-weight:600}
+.tcol i{display:block;width:100%;border-radius:6px 6px 3px 3px;background:var(--track);border:1px solid var(--line);box-sizing:border-box}
+.tcol.cur i{background:var(--spend);border:0}
+.tcol .l{font-size:.75rem;font-weight:600;color:var(--muted)}
+.tcol.cur .l{font-weight:800;color:var(--ink)}
 /* Resumen 2.3 */
 .ktitle{margin:0 0 6px}
 .hlabel{display:flex;align-items:center;justify-content:space-between;gap:8px}
@@ -397,44 +440,44 @@ div.arow{cursor:default}
 <div id="app" hidden>
 <div class="wrap">
   <header class="top">
-    <div>
-      <div class="brand">Mis finanzas</div>
-      <div class="sync" id="sync"><span class="dot"></span><span>Conectando…</span></div>
+    <div class="hhead">
+      <div class="hhello"><span id="helloTx">Hola</span><span class="sync" id="sync"><span class="dot"></span><span>Conectando…</span></span></div>
+      <h1 class="ptitle" id="pageTitle">Resumen</h1>
     </div>
     <button class="pendbtn" id="pendBtn" hidden>Pendientes <b>0</b></button>
     <div class="month" role="group" aria-label="Mes">
-      <button id="prevM" aria-label="Mes anterior">‹</button>
-      <button type="button" id="monthBtn" class="monthbtn" aria-label="Elegir mes" aria-haspopup="dialog"><span id="monthLabel"></span></button>
-      <button id="nextM" aria-label="Mes siguiente">›</button>
+      <button id="prevM" aria-label="Mes anterior" hidden>‹</button>
+      <button type="button" id="monthBtn" class="monthbtn" aria-label="Elegir mes" aria-haspopup="dialog"><span id="monthLabel"></span><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+      <button id="nextM" aria-label="Mes siguiente" hidden>›</button>
     </div>
     <button type="button" class="nowbtn" id="nowBtn" hidden></button>
   </header>
   <nav class="tabs" id="tabs">
-    <button data-tab="resumen" aria-current="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12A9 9 0 1 1 12 3v9z"/><path d="M15 3.5A9 9 0 0 1 20.5 9H15z"/></svg>Resumen</button>
-    <button data-tab="movs"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4v16M3 8l4-4 4 4M17 20V4M13 16l4 4 4-4"/></svg>Movimientos</button>
-    <button data-tab="apartados"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"/></svg>Apartados</button>
-    <button data-tab="cats"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>Ajustes</button>
+    <button data-tab="resumen" aria-current="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>Resumen</button>
+    <button data-tab="movs"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>Movimientos</button>
+    <button data-tab="apartados"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18"/></svg>Apartados</button>
+    <button data-tab="cats"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Ajustes</button>
   </nav>
   <div class="banner offbanner" id="offBanner" hidden><span id="offText"></span> <button class="btn ghost sm" data-act="retry">Reintentar</button></div>
   <div class="banner" id="migBanner" hidden><b>Falta actualizar la base de datos.</b> En Supabase → SQL Editor, corre el archivo <code id="migFile"></code> de la carpeta <code>migrations</code> del repositorio y vuelve a abrir la app.</div>
   <main id="view"></main>
 </div>
 </div>
-<button class="fab" id="fab" aria-label="Agregar movimiento" hidden>+</button>
+<button class="fab" id="fab" aria-label="Agregar movimiento" hidden><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
 <div class="toast" id="toast" role="status"></div>
 <div class="welcome" id="welcome" hidden aria-live="polite"></div>
 <div class="update-bar idle-bar" id="idleBar" role="alert" hidden><span>Tu sesión se cerrará por inactividad</span><button class="go" id="idleStay">Seguir conectado</button></div>
 <div class="update-bar" id="updateBar" role="status" hidden><span>Nueva versión</span><button class="go" id="updateGo">Actualizar</button><button class="x" id="updateX" aria-label="Cerrar aviso">×</button></div>
 <dialog id="dlg"><form method="dialog" id="dlgForm" onsubmit="return false"></form></dialog>
 
-<script src="config.js?v=2.3.0"></script>
+<script src="config.js?v=2.3.1"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
 <script>
 (() => {
 "use strict";
 // ---------- versión ----------
 // Al subir cambios: actualiza APP_VERSION, APP_DATE, version.json y el ?v= de config.js.
-const APP_VERSION = "2.3.0";
+const APP_VERSION = "2.3.1";
 const APP_DATE = "2026-11-03";
 
 // ---------- utilities ----------
@@ -1276,7 +1319,7 @@ function chartCard() {
   const seg = (name, opts) => `<div class="seg sm" role="group">${opts.map(([k, l]) => `<button type="button" data-chart-${name}="${k}" aria-pressed="${c[name] === k}">${l}</button>`).join("")}</div>`;
   const period = from === to ? monthName(from) : `${monthName(from, { month:"short", year:"numeric" })} – ${monthName(to, { month:"short", year:"numeric" })}`;
   return `<section class="card">
-    ${head("Tendencia")}
+    ${head("Tendencia", `<button type="button" class="lnk" data-act="chartadv">Listo</button>`)}
     ${trendLine()}
     <div class="chartctl">
       ${seg("group", [["semana","Semana"],["mes","Mes"],["ano","Año"]])}
@@ -1334,13 +1377,16 @@ function closeMonthPicker() { $("#mpick")?.remove(); document.removeEventListene
 // ---------- views ----------
 const pendingOpen = () => S.pending.filter(p => p.status === "pendiente");
 function render() {
-  $("#monthLabel").textContent = monthName(S.ym);
+  $("#monthLabel").textContent = cap1(monthName(S.ym, { month:"long" })) + " " + S.ym.slice(0, 4);
+  $("#pageTitle").textContent = { resumen:"Resumen", movs:"Movimientos", fijos:"Fijos", apartados:"Apartados", cats:"Ajustes", pend:"Por confirmar", pdetail:"Por confirmar" }[S.tab] || "Mis finanzas";
+  const first = (S.accountName || S.displayName || "").trim().split(/\s+/)[0];
+  $("#helloTx").textContent = first ? `Hola, ${first}` : "Hola";
   const curYm = ymOf(todayISO()), nb = $("#nowBtn");
   nb.hidden = S.ym === curYm || !["resumen", "movs"].includes(S.tab); nb.textContent = `Volver a ${monthName(curYm, { month:"long" })}`;
   const tabOf = { fijos: "resumen", pend: "", pdetail: "", apartados: "apartados" };
   document.querySelectorAll("#tabs button").forEach(b => b.setAttribute("aria-current", b.dataset.tab === (S.tab in tabOf ? tabOf[S.tab] : S.tab)));
   const n = pendingOpen().length, pb = $("#pendBtn");
-  pb.hidden = !n; pb.querySelector("b").textContent = n; pb.setAttribute("aria-current", S.tab === "pend" || S.tab === "pdetail");
+  pb.hidden = !n || S.tab === "resumen"; pb.querySelector("b").textContent = n; // en el Resumen ya está en "Necesita tu atención" pb.setAttribute("aria-current", S.tab === "pend" || S.tab === "pdetail");
   $("#migBanner").hidden = !S.needsMigration; $("#migFile").textContent = S.needsMigration;
   const v = $("#view");
   $("#offBanner").hidden = !S.offline;
@@ -1427,15 +1473,15 @@ const ICONS = {
 };
 function viewResumen(v) {
   const o = monthOutlook(), list = monthTx();
-  v.innerHTML = `<div class="grid">
+  v.innerHTML = `<div class="grid rsm">
     ${closeCard()}
     ${heroCard(o)}
     ${attentionCard()}
     ${upcomingCard(o)}
     ${spendCard(list, o.s)}
-    ${chartCard()}
+    ${S.chartAdv ? chartCard() : trendCard()}
   </div>`;
-  bindChart(v);
+  if (S.chartAdv) bindChart(v);
 }
 // AN. Del día 1 al 5: cómo cerró el mes pasado.
 function closeCard() {
@@ -1450,7 +1496,7 @@ function closeCard() {
     <button type="button" class="linkbtn strong" data-act="seeprev">Ver resumen de ${esc(name)} ›</button>
   </section>`;
 }
-// 1. ¿Cómo voy este mes? Una cifra grande (libre o gastado, se cambia con el botón discreto) y una barra.
+// 1. ¿Cómo voy este mes? Lo libre siempre en verde; lo gastado o lo que falta, siempre en rojo (en todos los temas).
 function heroCard(o) {
   const s = o.s, cur = ymOf(todayISO()), live = S.ym === cur, month = monthName(S.ym, { month:"long" });
   const inc = s.ingreso + o.porRecibir, apart = Math.max(0, s.ahorro - s.sacar), libre = o.quedan, spent = lsGet(HERO_KEY) === "gastado";
@@ -1459,7 +1505,7 @@ function heroCard(o) {
     return `<section class="card hero"><h2 class="ktitle">${esc(title)}</h2><div class="empty" style="padding:14px 0 4px">Aún no hay movimientos en ${esc(month)}. Toca <b>+</b> para agregar el primero.</div></section>`;
   const big = spent
     ? { label: live ? "Gastado este mes" : `Gastado en ${month}`, value: s.gasto, color: "var(--spend)", sub: inc ? `de ${fmt(inc)} de ingresos · ${Math.round(s.gasto / inc * 100)}%` : "" }
-    : libre >= 0 ? { label: "Te quedan libres", value: libre, color: "var(--brand)", sub: inc ? `de ${fmt(inc)} de ingresos` : "" }
+    : libre >= 0 ? { label: "Te quedan libres", value: libre, color: "var(--income)", sub: inc ? `de ${fmt(inc)} de ingresos` : "" }
     : { label: "Te faltan", value: -libre, color: "var(--spend)", sub: "Lo gastado y lo que falta pagar supera tus ingresos del mes" };
   const total = Math.max(inc, s.gasto + o.porPagar + apart) || 1, w = x => (x / total * 100).toFixed(2);
   const leg = (color, label, val, cls = "") => `<div class="hleg"><i class="sw ${cls}" style="background:${color}"></i><span class="sub">${label}</span><b>${fmt(val)}</b></div>`;
@@ -1470,88 +1516,100 @@ function heroCard(o) {
       <div class="spent num" style="color:${big.color}">${fmt(big.value)}</div>
       ${big.sub ? `<div class="sub num">${esc(big.sub)}</div>` : ""}
     </div>
-    <div class="hbar" aria-hidden="true"><i style="width:${w(s.gasto)}%;background:var(--spend)"></i><i style="width:${w(o.porPagar)}%;background:var(--warn)"></i><i style="width:${w(apart)}%;background:var(--brand)"></i></div>
-    <div class="hlegs num">${leg("var(--spend)", "Gastado", s.gasto)}${leg("var(--warn)", "Por pagar", o.porPagar)}${apart ? leg("var(--brand)", "Apartado", apart) : ""}${leg("var(--track)", "Libre", Math.max(0, libre), "line")}</div>
+    <div class="hbar" aria-hidden="true"><i style="width:${w(s.gasto)}%;background:var(--spend)"></i><i style="width:${w(o.porPagar)}%;background:var(--warn)"></i><i style="width:${w(apart)}%;background:var(--save)"></i></div>
+    <div class="hlegs num">${leg("var(--spend)", "Gastado", s.gasto)}${leg("var(--warn)", "Por pagar", o.porPagar)}${leg("var(--save)", "Apartado", apart)}${leg("var(--track)", "Libre", Math.max(0, libre), "line")}</div>
     <div class="hfoot num"><span class="sub">Ingresos del mes</span><span><b style="color:var(--income)">${fmt(inc)}</b>${o.porRecibir ? ` <span class="sub">· ${fmt(o.porRecibir)} por recibir</span>` : ""}</span></div>
   </section>`;
 }
 // 2. Necesita tu atención (solo si hay algo): por confirmar, pagos vencidos de cualquier mes y topes rebasados.
 function attentionCard() {
-  const pend = pendingOpen(), over = overdueAll(), cur = ymOf(todayISO());
+  const pend = pendingOpen(), over = overdueAll(), cur = ymOf(todayISO()), y = todayISO().slice(0, 4);
   const caps = S.ym === cur ? byGroup(monthTx()).filter(x => x.g.cap && x.v > x.g.cap) : [];
   if (!pend.length && !over.length && !caps.length) return "";
   const names = pend.slice(0, 2).map(p => `${p.note || cat(p.categoryId).name} ${fmt(p.amount)}`).join(" · ") + (pend.length > 2 ? "…" : "");
-  const shown = S.allOver ? over : over.slice(0, 5);
+  const shown = S.allOver ? over : over.slice(0, 5), chev = `<span class="chev" aria-hidden="true">›</span>`;
   return `<section class="card attn">
     ${head("Necesita tu atención")}
-    ${pend.length ? `<button type="button" class="arow" data-act="pend"><span class="aic brand num">${pend.length}</span><span class="mid"><b>Por confirmar</b><span class="sub">${esc(names)}</span></span><span class="chev" aria-hidden="true">›</span></button>` : ""}
+    ${pend.length ? `<button type="button" class="arow" data-act="pend"><span class="aic brand num">${pend.length}</span><span class="mid"><b>Por confirmar</b><span class="sub num">${esc(names)}</span></span>${chev}</button>` : ""}
     ${shown.map(it => { const inc = it.type === "ingreso";
-      return `<div class="arow"><span class="aic warn">${ICONS.clock}</span><span class="mid"><b>${esc(it.name)}</b><span class="sub num"><b class="amt ${it.type}">${inc ? "+" : "−"}${fmt(it.amount)}</b> · ${inc ? "no registrado" : "vencido"} · era el ${shortDate(it.date)}${it.date.slice(0, 4) !== todayISO().slice(0, 4) ? " " + it.date.slice(0, 4) : ""}</span></span><button type="button" class="btn sm ${inc ? "inc" : "spend"}" data-payocc="${esc(it.r.id)}|${it.date}">${inc ? "Registrar" : "Pagar"}</button></div>`; }).join("")}
+      return `<div class="arow"><span class="aic warn">${ICONS.clock}</span><span class="mid"><b>${inc ? "Ingreso sin registrar" : "Pago vencido"}</b><span class="sub num">${esc(it.name)} ${fmt(it.amount)} · era el ${shortDate(it.date)}${it.date.slice(0, 4) !== y ? " " + it.date.slice(0, 4) : ""}</span></span><button type="button" class="lnk" data-payocc="${esc(it.r.id)}|${it.date}">${inc ? "Registrar" : "Pagar"}</button></div>`; }).join("")}
     ${over.length > 5 ? `<button type="button" class="linkbtn strong" data-act="allover">${S.allOver ? "Ver menos" : `Ver ${over.length - 5} vencidos más`}</button>` : ""}
-    ${caps.map(({ g, v }) => `<button type="button" class="arow" data-filtergroup="${esc(g.id)}"><span class="aic spend">${ICONS.alert}</span><span class="mid"><b>Tope rebasado</b><span class="sub num">${esc(g.name)} ${fmt(v)} de ${fmt(g.cap)}</span></span><span class="chev" aria-hidden="true">›</span></button>`).join("")}
+    ${caps.map(({ g, v }) => `<button type="button" class="arow" data-filtergroup="${esc(g.id)}"><span class="aic spend">${ICONS.alert}</span><span class="mid"><b>Tope rebasado</b><span class="sub num">${esc(g.name)} ${fmt(v)} de ${fmt(g.cap)}</span></span>${chev}</button>`).join("")}
   </section>`;
 }
-// 3. Próximos pagos: los 3 más cercanos que faltan (pagos e ingresos fijos, y pendientes del mes).
+// 3. Próximos pagos: fecha, nombre, cuándo y monto; la acción va discreta debajo del monto.
 function upRow(it) {
   const inc = it.type === "ingreso", conf = it.status === "confirmar", r = it.r;
-  const btn = conf ? `<button type="button" class="btn sm ${inc ? "inc" : it.type === "gasto" ? "spend" : ""}" data-quickconfirm="${esc(it.pe.id)}">Confirmar</button>`
-    : `<button type="button" class="btn sm ${inc ? "inc" : "spend"}" data-payocc="${esc(r.id)}|${it.date}">${inc ? "Recibido" : "Pagado"}</button>`;
+  const act = conf ? `<button type="button" class="lnk sm" data-quickconfirm="${esc(it.pe.id)}">Confirmar</button>`
+    : `<button type="button" class="lnk sm" data-payocc="${esc(r.id)}|${it.date}">${inc ? "Marcar recibido" : "Marcar pagado"}</button>`;
   return `<div class="uprow">
     <span class="udate"><b>${+it.date.slice(8)}</b><span class="sub">${monShort(it.date)}</span></span>
-    <span class="mid" ${conf ? `data-pdetail="${esc(it.pe.id)}" role="button" tabindex="0"` : ""}><b>${esc(it.name)}</b><span class="sub num"><b class="amt ${it.type}">${inc ? "+" : "−"}${fmt(it.amount)}</b> · ${dueIn(it.date)}${r ? " · " + esc(FREQS[r.freq].toLowerCase()) : ""}${conf ? " · por confirmar ›" : ""}</span></span>
-    ${btn}
+    <span class="mid" ${conf ? `data-pdetail="${esc(it.pe.id)}" role="button" tabindex="0"` : ""}><b>${esc(it.name)}</b><span class="sub">${dueIn(it.date)}${r ? " · " + esc(FREQS[r.freq].toLowerCase()) : ""}${conf ? " · por confirmar" : ""}</span></span>
+    <span class="uright"><b class="num amt ${it.type}">${inc ? "+" : "−"}${fmt(it.amount)}</b>${act}</span>
   </div>`;
 }
 function upcomingCard(o) {
-  const cur = ymOf(todayISO()), today = todayISO(), all = `<button class="btn ghost sm" data-act="fijos">Ver todos ›</button>`;
+  const cur = ymOf(todayISO()), today = todayISO(), all = `<button type="button" class="lnk" data-act="fijos">Ver todos</button>`;
   if (!S.recs.length) return "";
-  if (S.ym < cur) return `<section class="card">${head("Fijos del mes", all)}<div class="sub num">Pagado ${fmt(o.s.fijo)}${o.s.ingreso ? ` · ingresos fijos registrados en el mes` : ""}. Lo que no se registró aparece en "Necesita tu atención".</div></section>`;
+  if (S.ym < cur) return `<section class="card">${head("Fijos del mes", all)}<div class="sub num">Pagado ${fmt(o.s.fijo)}. Lo que no se registró aparece en "Necesita tu atención".</div></section>`;
   const items = o.plan.filter(it => isOpen(it) && (S.ym > cur || it.date >= today));
   return `<section class="card">${head("Próximos pagos", all)}
     ${items.length ? items.slice(0, 3).map(upRow).join("") : `<div class="sub">No hay más pagos pendientes en ${esc(monthName(S.ym, { month:"long" }))}.</div>`}
   </section>`;
 }
-// 4. ¿En qué se fue? Una tarjeta con selector Categorías · Grupos · Métodos; los 5 principales y "Ver todo".
+// 4. ¿En qué se fue? Selector Categorías · Grupos · Métodos; los 5 principales con barra y "Ver todo".
 function spendCard(list, s) {
   const tabs = [["cat", "Categorías"], ...(S.hasGroups && S.groups.length ? [["grp", "Grupos"]] : []), ["met", "Métodos"]];
   let tab = lsGet(SPEND_KEY) || "cat"; if (!tabs.some(x => x[0] === tab)) tab = "cat";
-  const seg = `<div class="seg sm spendseg" role="group" aria-label="Ver gastos por">${tabs.map(([k, l]) => `<button type="button" data-spendtab="${k}" aria-pressed="${k === tab}">${l}</button>`).join("")}</div>`;
-  let rows = [];
+  const seg = `<div class="seg spendseg" style="--n:${tabs.length}" role="group" aria-label="Ver gastos por">${tabs.map(([k, l]) => `<button type="button" data-spendtab="${k}" aria-pressed="${k === tab}">${l}</button>`).join("")}</div>`;
+  const pct = v => s.gasto ? Math.round(v / s.gasto * 100) + "%" : "";
+  const row = (name, v, w, color, extra = "", attrs = "") => `<div class="stop"><b class="nm">${esc(name)}</b><span class="pct num">${pct(v)}</span><b class="num">${fmt(v)}</b></div>
+    <div class="sbar"><i style="width:${Math.max(0, Math.min(100, w))}%;background:${color}"></i></div>${extra}`;
+  let rows = [], foot = "";
   if (tab === "cat") {
-    const cats = byCategory(list);
+    const cats = byCategory(list), max = Math.max(1, ...cats.map(x => x.v));
     rows = topCats("gasto").map(c => cats.find(x => x.c.id === c.id) || { c, v: 0, subs: [] })
       .concat(cats.filter(x => !S.categories.some(c => c.id === x.c.id)))
       .filter(r => r.v || r.c.budget).sort((a, b) => b.v - a.v)
       .map(({ c, v, subs }) => {
-        const pct = s.gasto ? (v / s.gasto * 100) : 0, b = c.budget || 0, used = b ? v / b * 100 : pct;
-        const body = `<div class="nm"><i class="sw" style="background:${c.color}"></i>${esc(c.name)}${subs.length > 1 || subs[0]?.c.id ? `<span class="chev sm" aria-hidden="true">›</span>` : ""}</div>
-          <div class="vals num"><span class="sub">${pct.toFixed(0)}%</span> <b>${fmt(v)}</b></div>
-          ${b ? `<div class="sub num" style="grid-column:1/-1">${v > b ? `<span class="over">Excedido por ${fmt(v - b)}</span>` : `Quedan ${fmt(b - v)} de ${fmt(b)}`}</div>` : ""}
-          <div class="bar"><i style="width:${Math.min(100, used)}%;background:${b && v > b ? "var(--warn)" : c.color}"></i></div>`;
+        const b = c.budget || 0;
+        const extra = b ? `<span class="scap num" style="color:${v > b ? "var(--spend)" : v >= b * .8 ? "var(--warn)" : "var(--muted)"}">${v > b ? `Rebasaste el presupuesto de ${fmt(b)} por ${fmt(v - b)}` : `${Math.round(v / b * 100)}% del presupuesto de ${fmt(b)} · te quedan ${fmt(b - v)}`}</span>` : "";
+        const body = row(c.name, v, v / max * 100, "var(--spend)", extra);
         return subs.length > 1 || subs[0]?.c.id
-          ? `<details class="crow catx"><summary>${body}</summary><div class="subrows">${subs.map(x => `<div class="subrow num"><span><i class="sw" style="background:${x.c.color}"></i>${esc(x.c.name)}</span><b>${fmt(x.v)}</b></div>`).join("")}</div></details>`
-          : `<div class="crow">${body}</div>`;
+          ? `<details class="srow"><summary>${body}</summary><div class="subrows">${subs.map(x => `<div class="subrow num"><span>${esc(x.c.name)}</span><b>${fmt(x.v)}</b></div>`).join("")}</div></details>`
+          : `<div class="srow">${body}</div>`;
       });
   } else if (tab === "grp") {
     const gs = byGroup(list), max = Math.max(1, ...gs.map(x => x.v));
     rows = gs.map(({ g, v }) => {
-      const p = g.cap ? v / g.cap : 0, color = !g.cap ? g.color : p > 1 ? "var(--spend)" : p >= .8 ? "var(--warn)" : "var(--brand)";
-      const capTxt = !g.cap ? "" : p > 1 ? `<span style="color:var(--spend);font-weight:700">Rebasaste el tope de ${fmt(g.cap)} por ${fmt(v - g.cap)}</span>`
-        : `<span style="color:${p >= .8 ? "var(--warn)" : "var(--muted)"};font-weight:${p >= .8 ? 700 : 500}">${Math.round(p * 100)}% del tope de ${fmt(g.cap)} · te quedan ${fmt(g.cap - v)}</span>`;
-      return `<button type="button" class="crow rowbtn grprow" ${g.id ? `data-filtergroup="${esc(g.id)}"` : `data-filtergroup="-"`}>
-        <div class="nm"><i class="sw" style="background:${g.color}"></i>${esc(g.name)}</div>
-        <div class="vals num"><span class="sub">${s.gasto ? Math.round(v / s.gasto * 100) : 0}%</span> <b>${fmt(v)}</b></div>
-        ${capTxt ? `<div class="sub num" style="grid-column:1/-1">${capTxt}</div>` : ""}
-        <div class="bar"><i style="width:${Math.min(100, g.cap ? p * 100 : v / max * 100)}%;background:${color}"></i></div>
-      </button>`;
+      const p = g.cap ? v / g.cap : 0, color = !g.cap ? "var(--muted)" : p > 1 ? "var(--spend)" : p >= .8 ? "var(--warn)" : "var(--brand)";
+      const extra = !g.cap ? "" : `<span class="scap num" style="color:${p > 1 ? "var(--spend)" : p >= .8 ? "var(--warn)" : "var(--muted)"}">${p > 1 ? `Rebasaste el tope de ${fmt(g.cap)} por ${fmt(v - g.cap)}` : `${Math.round(p * 100)}% del tope de ${fmt(g.cap)} · te quedan ${fmt(g.cap - v)}`}</span>`;
+      return `<button type="button" class="srow tap" data-filtergroup="${esc(g.id || "-")}">${row(g.name, v, g.cap ? p * 100 : v / max * 100, color, extra)}</button>`;
     });
+  } else {
+    const ms = byMethod(list), max = Math.max(1, ...ms.map(x => x[1])), cb = cashBalance(list);
+    rows = ms.map(([id, v]) => `<div class="srow">${row(method(id)?.name || "Sin método", v, v / max * 100, "var(--brand)")}</div>`);
+    if (cb.retiros || cb.gastos) foot = `<div class="sub num" style="margin-top:6px">Efectivo estimado: <b style="color:var(--ink)">${fmt(cb.saldo)}</b> (retiros ${fmt(cb.retiros)} − gastos en efectivo ${fmt(cb.gastos)})</div>`;
   }
-  const many = rows.length > 5, body = tab === "met" ? methodBreakdown(list)
-    : rows.length ? (S.spendAll ? rows : rows.slice(0, 5)).join("") : `<div class="sub">Sin gastos registrados.</div>`;
+  const many = rows.length > 5;
   return `<section class="card">
-    ${head("¿En qué se fue?", many ? `<button class="btn ghost sm" data-act="spendall">${S.spendAll ? "Ver menos" : `Ver todo (${rows.length})`}</button>` : "")}
+    ${head("¿En qué se fue?", many ? `<button type="button" class="lnk" data-act="spendall">${S.spendAll ? "Ver menos" : "Ver todo"}</button>` : "")}
     ${seg}
-    <div class="spendrows">${!s.gasto && tab !== "grp" ? `<div class="sub">Aún no hay gastos en este mes.</div>` : body}</div>
+    <div class="spendrows">${rows.length ? (S.spendAll ? rows : rows.slice(0, 5)).join("") + foot : `<div class="sub">Aún no hay gastos en este mes.</div>`}</div>
+  </section>`;
+}
+// 5. Tendencia: gastos de los últimos 6 meses (el mes elegido resaltado) y la diferencia contra el mes anterior.
+// "Ajustar" abre la gráfica completa (Semana · Mes · Año, gastos o ingresos, periodo).
+function trendCard() {
+  const cur = ymOf(todayISO()), live = S.ym === cur, day = todayISO().slice(8), prev = ymAdd(S.ym, -1);
+  const spent = (ym, upTo) => monthTx(ym).filter(t => t.type === "gasto" && (!upTo || t.date.slice(8) <= upTo)).reduce((a, t) => a + t.amount, 0);
+  const months = Array.from({ length: 6 }, (_, i) => ymAdd(S.ym, i - 5)).map(ym => ({ ym, v: spent(ym) }));
+  const max = Math.max(1, ...months.map(m => m.v)), d = spent(S.ym, live && day) - spent(prev, live && day);
+  const k = v => v >= 1000 ? (v / 1000).toFixed(1) + "k" : String(Math.round(v));
+  return `<section class="card">
+    ${head("Tendencia", `<span class="sub" style="font-size:.82rem">Gastos por mes<button type="button" class="lnk" data-act="chartadv">Ajustar</button></span>`)}
+    <div class="tdiff num"><b>${d > 0 ? "+" : d < 0 ? "−" : ""}${fmt(Math.abs(d))}</b><span class="sub">vs. ${esc(monthName(prev, { month:"long" }))}${live ? " a esta fecha" : ""}</span></div>
+    <div class="tbars" role="img" aria-label="Gastos de los últimos 6 meses">${months.map(m => `<div class="tcol${m.ym === S.ym ? " cur" : ""}"><span class="v num">${k(m.v)}</span><i style="height:${Math.max(2, Math.round(m.v / max * 96))}px"></i><span class="l">${monShort(m.ym + "-01")}</span></div>`).join("")}</div>
   </section>`;
 }
 function methodBreakdown(list) {
@@ -2692,6 +2750,7 @@ $("#view").addEventListener("click", e => {
   else if (d.act === "closecard") { lsSet(CLOSE_KEY, ymAdd(ymOf(todayISO()), -1)); render(); }
   else if (d.act === "seeprev") { S.ym = ymAdd(ymOf(todayISO()), -1); render(); window.scrollTo(0, 0); refresh(false); }
   else if (d.act === "spendall") { S.spendAll = !S.spendAll; render(); }
+  else if (d.act === "chartadv") { S.chartAdv = !S.chartAdv; render(); }
   else if (d.act === "allover") { S.allOver = !S.allOver; render(); }
   else if (d.act === "newgoal") openGoal();
   else if (d.act === "newplace") openPlace();

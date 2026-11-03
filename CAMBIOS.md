@@ -653,9 +653,7 @@ El usuario pidió "aplica cambios". Se aplicaron AJ, AK, AL, AM y AN:
 
 ---
 
-## 16. Cambios anotados el 2026-11-03 (después de la versión 2.3.0, sin aplicar todavía)
-
-Solo anotados; **no ejecutar** hasta que el usuario lo indique.
+## 16. Cambios anotados el 2026-11-03 (después de la versión 2.3.0) — ✅ aplicados en la versión 2.3.1
 
 ### AO. Colores fijos en "¿Cómo voy este mes?"
 Problema (usuario): la cifra grande cambia de color según el tema (hoy usa el color principal del tema: verde en Bosque, morado en Ciruela, naranja en Mandarina…).
@@ -674,4 +672,11 @@ Diferencias encontradas:
 Propuesta de Claude para lo que choca con cambios anteriores:
 - Gráfica como en la maqueta; los controles de AK (Semana, Mes, Año…) quedan en un botón pequeño "Ajustar".
 - Botones de "Próximos pagos" (pedidos en AJ) como texto verde discreto, igual que el "Pagar" de la maqueta.
-- Pendiente: que el usuario confirme si se igualan los 5 puntos.
+- **Decisión del usuario:** "Sí, igual todo a la maqueta". Aplicado en 2.3.1:
+  - Títulos chicos, grises y en mayúsculas en el Resumen; tarjetas sin borde y más redondeadas.
+  - Tendencia simple de 6 meses (mes elegido en rojo, los demás en gris) con "Ajustar" para abrir la gráfica completa y "Listo" para volver.
+  - "Pagar" y las acciones de "Próximos pagos" como texto verde; en "Próximos pagos" la acción va debajo del monto.
+  - Barra de abajo con casa, lista, cartera y engrane; la pestaña activa en el color del tema; + redondo.
+  - Encabezado "Hola, nombre" + título de la pantalla, y el mes en una pastilla ("Noviembre 2026 ⌄"). Las flechas ‹ › se ocultaron porque la maqueta no las tiene (se pueden regresar).
+  - El botón "Pendientes" del encabezado ya no aparece en el Resumen (está en "Necesita tu atención"); sigue en las demás pantallas.
+  - Apartado en azul fijo, como en la maqueta.
