@@ -572,7 +572,7 @@ div.arow{cursor:default}
   </div>
   <button type="button" class="installrow" id="installRow" hidden>
     <span class="iric"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2.5"/><path d="M11 18h2"/></svg></span>
-    <span class="mid"><b id="installTitle">Agregar como app en tu iPhone</b><span class="sub">Pantalla completa, avisos y Face ID</span></span>
+    <span class="mid"><b id="installTitle">Agregar como app en tu iPhone</b><span class="sub">Pantalla completa, avisos y biométricos</span></span>
     <span class="chev" aria-hidden="true">›</span>
   </button>
 </div>
@@ -612,14 +612,14 @@ div.arow{cursor:default}
 <div class="update-bar" id="updateBar" role="status" hidden><span>Nueva versión</span><button class="go" id="updateGo">Actualizar</button><button class="x" id="updateX" aria-label="Cerrar aviso">×</button></div>
 <dialog id="dlg"><form method="dialog" id="dlgForm" onsubmit="return false"></form></dialog>
 
-<script src="config.js?v=2.5.0"></script>
+<script src="config.js?v=2.6.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
 <script>
 (() => {
 "use strict";
 // ---------- versión ----------
 // Al subir cambios: actualiza APP_VERSION, APP_DATE, version.json y el ?v= de config.js.
-const APP_VERSION = "2.5.0";
+const APP_VERSION = "2.6.0";
 const APP_DATE = "2026-11-03";
 
 // ---------- utilities ----------
@@ -669,7 +669,7 @@ const fmt = (n, compact) => {
   try { return new Intl.NumberFormat("es-MX", {style:"currency", currency:S.currency || "MXN", maximumFractionDigits: compact ? 0 : 2, minimumFractionDigits: compact ? 0 : 2}).format(n || 0); }
   catch { return "$" + (n || 0).toFixed(2); }
 };
-{ const t = new URLSearchParams(location.search).get("tab"); if (["resumen","movs","fijos","apartados","cats","pend"].includes(t)) S.tab = t; }
+{ const t = new URLSearchParams(location.search).get("tab"); if (["resumen","movs","fijos","apartados","cats","pend"].includes(t)) S.tab = t; if (t === "usuarios") Object.assign(S, { tab: "cats", setPage: "admin" }); }
 const cat = id => S.categories.find(c => c.id === id) || {id, name:"Sin categoría", color:"#8C9A94", kind:"gasto", budget:0};
 const catsOf = kind => S.categories.filter(c => c.kind === kind);
 // Subcategorías (un solo nivel): una categoría con parentId es subcategoría de otra.
@@ -1009,7 +1009,7 @@ function openNewPassword(fromEmail) {
 // ---------- notificaciones ----------
 const FN_URL = (window.SUPABASE_URL || "") + "/functions/v1";
 const DOCS = "https://github.com/irseve/mis-finanzas/blob/main/docs/";
-const NOTIFY_KINDS = [["recurrente","Fijos por confirmar (renta, colegiatura…)"],["ingreso","Ingresos fijos: capturar el monto (salario)"],["recordatorio","Recordatorios de pagos manuales"],["pendientes","Pendientes de Siri y del correo"],["meta","Sugerencia de ahorro al cobrar"],["resumen","Resumen diario de pendientes (9:00 a.m.)"],["tope","Topes de grupos: al llegar al 80% y al rebasarlos"]];
+const NOTIFY_KINDS = [["recurrente","Fijos por confirmar (renta, colegiatura…)"],["ingreso","Ingresos fijos: capturar el monto (salario)"],["recordatorio","Recordatorios de pagos manuales"],["pendientes","Pendientes de Siri y del correo"],["meta","Sugerencia de ahorro al cobrar"],["resumen","Resumen diario de pendientes (9:00 a.m.)"],["tope","Topes de grupos: al llegar al 80% y al rebasarlos"],["usuario","Usuarios nuevos (solo administradores)"]];
 const isStandalone = () => navigator.standalone === true || matchMedia("(display-mode: standalone)").matches;
 const isIOS = () => /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 const pushSupported = () => "serviceWorker" in navigator && "PushManager" in window && "Notification" in window;
@@ -1056,7 +1056,7 @@ const saveNotify = () => check(sb.from("settings").upsert({ user_id: userId, not
 // ---------- Face ID / huella (llaves de acceso) ----------
 // Solo en el celular con la app instalada; el teléfono decide el método (Face ID, Touch ID, huella, rostro o código).
 const isMobileApp = () => isStandalone() && (isIOS() || /Android/i.test(navigator.userAgent));
-const bioLabel = () => isIOS() ? "Face ID" : "huella o rostro";
+const bioLabel = () => "biométricos"; // Face ID, Touch ID, huella o rostro: en la app siempre se dice "biométricos"
 const PK_KEY = "finanzas.passkey";
 const pkLocal = () => { try { return JSON.parse(localStorage.getItem(PK_KEY) || "null"); } catch { return null; } };
 async function bioAvailable() {
@@ -1099,7 +1099,7 @@ async function updateLoginBio() {
 function offerBio() {
   openDialog(`
     <div class="mhead">¿Entrar con ${bioLabel()}?</div>
-    <div class="mbody"><div class="sub">La próxima vez podrás entrar a Mis finanzas con ${bioLabel()} en lugar de escribir tu contraseña. Se activa solo en este teléfono y lo puedes quitar en Ajustes → Cuenta.</div></div>
+    <div class="mbody"><div class="sub">La próxima vez podrás entrar a Mis finanzas con ${bioLabel()} en lugar de escribir tu contraseña. Se activa solo en este teléfono y lo puedes quitar en Ajustes → Seguridad.</div></div>
     <div class="mfoot"><span class="spacer"></span><button type="button" class="btn ghost" data-close>Ahora no</button><button type="button" class="btn" data-save>Activar</button></div>`,
   f => {
     f.querySelector("[data-close]").onclick = () => { try { localStorage.setItem("finanzas.passkeyAsked", "1"); } catch {} close(); };
@@ -1125,7 +1125,7 @@ function openGuide(backLabel) {
     const ios = os === "ios", other = notSafariIOS();
     g.innerHTML = `<div class="gwrap">
       <div class="ghead"><button type="button" class="hback" data-gclose>‹ ${esc(backLabel)}</button><h1 id="guideTitle">Agregar como app</h1></div>
-      <section class="gcard gintro"><img src="apple-touch-icon.png" alt=""><span style="display:flex;flex-direction:column;gap:4px"><b>Mis finanzas en tu pantalla de inicio</b><span class="sub">Se abre en pantalla completa, te llegan los avisos y entras con ${ios ? "Face ID" : "tu huella o rostro"}. Son 4 pasos y no ocupa espacio.</span></span></section>
+      <section class="gcard gintro"><img src="apple-touch-icon.png" alt=""><span style="display:flex;flex-direction:column;gap:4px"><b>Mis finanzas en tu pantalla de inicio</b><span class="sub">Se abre en pantalla completa, te llegan los avisos y entras con biométricos. Son 4 pasos y no ocupa espacio.</span></span></section>
       <div class="seg spendseg" style="--n:2" role="group" aria-label="Tipo de teléfono">${[["ios", "iPhone"], ["android", "Android"]].map(([k, l]) => `<button type="button" data-gos="${k}" aria-pressed="${os === k}">${l}</button>`).join("")}</div>
       ${ios ? [
         step(1, "Abre esta página en Safari", other ? "<b style=\"color:var(--warn)\">Estás en otro navegador.</b> Copia el enlace, abre Safari y pégalo en la dirección." : "Solo funciona desde Safari. Si la abriste desde WhatsApp, Chrome o el correo, copia el enlace y pégalo en Safari.", copy, other),
@@ -1142,7 +1142,7 @@ function openGuide(backLabel) {
         step(3, "Elige «Instalar app» o «Agregar a la pantalla principal»", "El nombre cambia según tu teléfono."),
         step(4, "Confirma con «Instalar»", "El icono aparece con tus demás apps."),
       ].join("")}
-      <section class="gcard gdone"><img src="apple-touch-icon.png" alt=""><span style="display:flex;flex-direction:column;gap:3px"><b>¡Listo! Ábrela desde el icono</b><span class="sub">${ios ? "Desde ahí entra y activa los avisos en Ajustes → Notificaciones y Face ID en Ajustes → Seguridad." : "Desde ahí entra y activa los avisos en Ajustes → Notificaciones."}</span></span></section>
+      <section class="gcard gdone"><img src="apple-touch-icon.png" alt=""><span style="display:flex;flex-direction:column;gap:3px"><b>¡Listo! Ábrela desde el icono</b><span class="sub">Desde ahí entra y activa los avisos en Ajustes → Notificaciones y los biométricos en Ajustes → Seguridad.</span></span></section>
       <button type="button" class="btn wide" data-gclose>Entendido</button>
     </div>`;
   };
@@ -1253,7 +1253,38 @@ const adminCall = async body => {
 async function loadAdminUsers() {
   try { S.adminUsers = (await adminCall({ action: "list" })).users; }
   catch (e) { S.adminUsers = []; toast("No se pudo cargar la lista: " + e.message); }
-  render();
+  S.adminLoading = false;
+  if (S.tab === "cats" && S.setPage === "admin") render();
+}
+// Opciones de un usuario (solo nombre y rol; nunca sus finanzas).
+function openUser(u) {
+  if (!u) return;
+  const name = u.name || u.email.split("@")[0], admin = u.role === "admin", me = u.id === userId;
+  openDialog(`
+    <div class="mhead">${esc(name)}</div>
+    <div class="mbody">
+      <div class="sub">${esc(u.email)}${u.created_at ? " · se registró el " + esc(new Date(u.created_at).toLocaleDateString("es-MX", { day: "numeric", month: "long", year: "numeric" })) : ""}</div>
+      <div class="sub">${admin ? "Administrador" : "Usuario"}${u.confirmed ? "" : " · correo sin confirmar"}. Ser administrador solo deja ver esta lista y agregar usuarios; no da acceso a las finanzas de nadie.</div>
+    </div>
+    <div class="mfoot paydue">
+      <button type="button" class="btn ghost" data-uname>Cambiar nombre</button>
+      ${me && admin ? "" : `<button type="button" class="btn ghost" data-urole>${admin ? "Quitar administrador" : "Hacer administrador"}</button>`}
+      <button type="button" class="btn ghost" data-close>Cerrar</button>
+    </div>`,
+  f => {
+    f.querySelector("[data-close]").onclick = close;
+    f.querySelector("[data-uname]").onclick = async () => {
+      if (isOffline()) { toast(OFFLINE_MSG); return; }
+      const n = prompt("Nombre del usuario (aparece en su bienvenida):", u.name || ""); if (n == null || !n.trim()) return;
+      close();
+      try { await adminCall({ action: "set-name", user_id: u.id, name: n.trim() }); toast("Nombre actualizado"); loadAdminUsers(); } catch (e) { toast(e.message); }
+    };
+    f.querySelector("[data-urole]")?.addEventListener("click", async () => {
+      if (isOffline()) { toast(OFFLINE_MSG); return; }
+      close();
+      try { await adminCall({ action: "set-role", user_id: u.id, role: admin ? "user" : "admin" }); toast(admin ? "Ya no es administrador" : "Ahora es administrador"); loadAdminUsers(); } catch (e) { toast(e.message); }
+    });
+  });
 }
 function openInvite() {
   openDialog(`
@@ -2311,7 +2342,7 @@ const SET_GROUPS = [
   ["siri", "Siri y correo", () => { const n = S.tokens.filter(t => !t.revoked).length; return n === 1 ? "1 token activo" : `${n} tokens activos`; }],
   ["look", "Apariencia", () => `${THEMES[document.documentElement.dataset.palette || "clasico"].name} · ${{ auto:"Automática", light:"Clara", dark:"Oscura" }[document.documentElement.dataset.theme || "auto"]}`],
   ["account", "Cuenta", () => `${S.email || ""} · ${S.currency}`],
-  ["security", "Seguridad", () => `${S.has005 && pkLocal() && S.passkeys.some(k => k.id === pkLocal().id) ? bioLabel() + " · " : ""}cerrar sesión tras ${idleMinutes()} min`],
+  ["security", "Seguridad", () => `${S.has005 && pkLocal() && S.passkeys.some(k => k.id === pkLocal().id) ? "Biométricos · " : ""}cerrar sesión tras ${idleMinutes()} min`],
   ["admin", "Usuarios", () => "Usuarios y pruebas", () => S.profile?.role === "admin"],
   ["about", "Acerca de", () => `Versión ${APP_VERSION}`],
 ];
@@ -2326,7 +2357,7 @@ function viewCats(v) {
       return `<div class="mvday"><span>${label}</span></div><section class="card mvcard">${rows.map(([k, l, sum]) =>
         `<button type="button" class="mvrow" ${k === "fijos" ? `data-act="fijos-aj"` : `data-setpage="${k}"`}><span class="mvic sq sm" style="--c:${SET_ICONS[k][1]}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${SET_ICONS[k][0]}"/></svg></span><span class="mid"><b>${esc(l)}</b><span class="sub">${esc(sum)}</span></span><span class="chev" aria-hidden="true">›</span></button>`).join("")}</section>`; };
     v.innerHTML = `<div class="grid rsm">
-      <button type="button" class="card acctcard" data-setpage="account"><span class="avatar">${esc(name.slice(0, 1).toUpperCase())}</span><span class="mid"><b>${esc(name)}</b><span class="sub">${esc([S.email, bio ? bioLabel() + " activado" : ""].filter(Boolean).join(" · "))}</span></span><span class="chev" aria-hidden="true">›</span></button>
+      <button type="button" class="card acctcard" data-setpage="account"><span class="avatar">${esc(name.slice(0, 1).toUpperCase())}</span><span class="mid"><b>${esc(name)}</b><span class="sub">${esc([S.email, bio ? "Biométricos activados" : ""].filter(Boolean).join(" · "))}</span></span><span class="chev" aria-hidden="true">›</span></button>
       ${sec("Tu dinero", ["cats", "groups", "methods", "fijos"])}
       ${sec("Avisos y atajos", ["notif", "siri"])}
       ${sec("App", ["look", "security", "admin", "about"])}
@@ -2361,7 +2392,7 @@ function viewCats(v) {
     notif: () => `<section class="card">
       ${S.pushOn ? `<div class="sub" style="margin-bottom:10px"><span class="pill ok">Activadas en este dispositivo</span></div><button class="btn ghost sm" id="pushOff">Desactivar en este dispositivo</button>`
         : `<div class="sub" style="margin-bottom:10px">${isIOS() && !isStandalone() ? "En iPhone solo funcionan con la app agregada a la pantalla de inicio. Ábrela desde el icono y actívalas ahí." : "Te avisamos cuando toque confirmar un fijo, capturar tu salario o pagar algo."}</div><button class="btn" id="pushOn" style="min-height:44px">Activar notificaciones</button>`}
-      <div style="display:grid;gap:8px;margin-top:14px">${NOTIFY_KINDS.map(([k, l]) => `<label class="check"><input type="checkbox" data-notify="${k}" ${S.notify[k] !== false ? "checked" : ""}> ${l}</label>`).join("")}</div></section>`,
+      <div style="display:grid;gap:8px;margin-top:14px">${NOTIFY_KINDS.filter(([k]) => k !== "usuario" || S.profile?.role === "admin").map(([k, l]) => `<label class="check"><input type="checkbox" data-notify="${k}" ${S.notify[k] !== false ? "checked" : ""}> ${l}</label>`).join("")}</div></section>`,
     siri: () => `<section class="card">
       ${head("Tokens", `<button class="btn sm" id="newTok">Generar token</button>`)}
       <div class="sub" style="margin-bottom:8px">Registra gastos diciendo "Oye Siri, agrega un gasto" o automáticamente con los correos de BBVA. Llegan como pendientes por confirmar. Guías: <a href="${DOCS}siri.md" target="_blank" rel="noopener">Siri</a> · <a href="${DOCS}gmail.md" target="_blank" rel="noopener">Gmail</a></div>
@@ -2383,14 +2414,30 @@ function viewCats(v) {
       <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost sm" id="chpass">Cambiar contraseña</button></div>
       <label class="f" style="margin-top:16px">Cerrar sesión si no uso la app por<select id="idleSel">${[2, 5, 15, 30].map(m => `<option value="${m}" ${m === idleMinutes() ? "selected" : ""}>${m} minutos</option>`).join("")}</select></label>
       <div class="sub" style="margin-top:4px">Se aplica en este ${isMobileApp() ? "teléfono" : "navegador"}.</div></section>
-      ${S.has005 ? `<section class="card"><h2>${isMobileApp() ? bioLabel() : "Face ID o huella"}</h2>
+      ${S.has005 ? `<section class="card"><h2>Biométricos</h2>
         ${isMobileApp() ? `<div data-biobox class="sub">Revisando…</div>` : `<div class="sub" style="margin-bottom:8px">Solo se usa en el celular con la app instalada. Desde aquí puedes quitar el acceso de un teléfono.</div>`}
         ${S.passkeys.map(k => `<div class="fixed-row compact"><div class="mid"><b>${esc(k.device || "Teléfono")}</b><div class="sub">Desde ${new Date(k.created_at).toLocaleDateString("es-MX")}${k.last_used_at ? " · último uso " + new Date(k.last_used_at).toLocaleDateString("es-MX") : ""}${pkLocal()?.id === k.id ? " · este teléfono" : ""}</div></div><button class="btn danger sm" data-delpk="${esc(k.id)}">Quitar</button></div>`).join("")}
       </section>` : ""}`,
-    admin: () => `<section class="card">
-      ${head("Usuarios", `<button class="btn sm" id="invite">Agregar usuario</button>`)}
-      <div class="sub" style="margin-bottom:8px">Ser administrador no da acceso a las finanzas de otros usuarios.</div>
-      ${S.adminUsers === null ? `<button class="btn ghost sm" id="loadUsers">Ver usuarios</button>` : S.adminUsers.map(u => `<div class="fixed-row"><div class="mid"><b>${esc(u.name || "Sin nombre")}</b> <button class="linkbtn sm" data-setname="${esc(u.id)}" data-name="${esc(u.name || "")}">Cambiar</button><div class="sub">${esc(u.email)} · ${u.role === "admin" ? "Administrador" : "Usuario"}${u.confirmed ? "" : " · invitación pendiente"}${u.last_sign_in_at ? " · entró " + new Date(u.last_sign_in_at).toLocaleDateString("es-MX") : ""}</div></div><button class="btn ghost sm" data-setrole="${esc(u.id)}|${u.role === "admin" ? "user" : "admin"}">${u.role === "admin" ? "Quitar admin" : "Hacer admin"}</button></div>`).join("")}</section>
+    admin: () => {
+      if (S.adminUsers === null && !S.adminLoading) { S.adminLoading = true; setTimeout(loadAdminUsers, 0); }
+      const us = (S.adminUsers || []).slice().sort((x, y) => String(y.created_at || "").localeCompare(String(x.created_at || "")));
+      const cur = ymOf(todayISO()), nuevos = us.filter(u => String(u.created_at || "").slice(0, 7) === cur).length;
+      const day = iso => { const d = new Date(iso); return d.toLocaleDateString("es-MX", { day: "numeric", month: "short", ...(d.getFullYear() !== new Date().getFullYear() ? { year: "numeric" } : {}) }); };
+      const rows = us.map(u => { const name = u.name || u.email.split("@")[0], me = u.id === userId;
+        const tags = [me ? "Tú" : "", u.role === "admin" ? "Administrador" : "", u.confirmed ? "" : "Sin confirmar"].filter(Boolean);
+        return `<button type="button" class="mvrow" data-user="${esc(u.id)}" data-q="${esc((name + " " + u.email).toLowerCase())}">
+          <span class="mvic" style="--c:var(--brand)">${esc(name.slice(0, 1).toUpperCase())}</span>
+          <span class="mid"><b>${esc(name)}</b><span class="sub">${esc(u.email)}</span><span class="sub">${u.created_at ? "Se registró el " + esc(day(u.created_at)) : ""}${u.last_sign_in_at ? " · entró " + esc(day(u.last_sign_in_at)) : " · aún no entra"}${tags.map(x => ` <span class="mvtag">${esc(x)}</span>`).join("")}</span></span>
+          <span class="chev" aria-hidden="true">›</span></button>`; }).join("");
+      return `<section class="card hero">
+        <h2 class="ktitle">¿Quién usa la app?</h2>
+        ${S.adminUsers === null ? `<div class="mvload" role="status"><span class="mvspin" aria-hidden="true"></span>Cargando usuarios…</div>`
+          : `<div class="pcount"><b class="num">${us.length}</b><span class="sub">${us.length === 1 ? "usuario" : "usuarios"}</span></div>
+             <div class="sub" style="margin-top:6px">${nuevos ? `${nuevos} ${nuevos === 1 ? "nuevo" : "nuevos"} este mes · ` : ""}Ser administrador no da acceso a las finanzas de nadie.</div>`}
+      </section>
+      ${us.length > 5 ? `<div class="mvsearch"><label class="mvq"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="userQ" type="search" placeholder="Buscar por nombre o correo" aria-label="Buscar usuario" autocomplete="off"></label></div>` : ""}
+      <div class="mvday"><span>De más nuevo a más viejo</span><button type="button" class="lnk" id="invite" style="text-transform:none;letter-spacing:0;font-size:.9rem;font-weight:700;padding:0">Agregar usuario</button></div>
+      ${S.adminUsers === null ? "" : `<section class="card mvcard" id="userList">${rows || `<div class="empty">Aún no hay usuarios.</div>`}</section>`}
       <section class="card">
       <h2>Probar notificación</h2>
       <div class="testn">
@@ -2399,11 +2446,12 @@ function viewCats(v) {
         <label class="f" style="grid-column:1/-1">Tipo<select id="tnKind"><option value="gmail">Registro automático por correo (Gmail)</option><option value="siri">Registro de Siri</option><option value="recurrente">Pago recurrente por confirmar</option><option value="recordatorio">Recordatorio de pago manual</option></select></label>
       </div>
       <button class="btn" id="tnGo" style="margin-top:10px;min-height:44px">Programar prueba</button>
-      <div class="sub" style="margin-top:6px">Se envía a tus dispositivos con notificaciones activadas. El servidor revisa cada minuto, así que puede tardar hasta 1 minuto más de lo indicado.</div></section>`,
+      <div class="sub" style="margin-top:6px">Se envía a tus dispositivos con notificaciones activadas. El servidor revisa cada minuto, así que puede tardar hasta 1 minuto más de lo indicado.</div></section>`;
+    },
     about: () => `<section class="card">
       <div class="sub num" style="margin-bottom:10px">Versión instalada: ${APP_VERSION} · ${APP_DATE}</div>
       <button class="btn ghost" id="checkUpd" style="min-height:44px">Buscar actualizaciones</button></section>
-      ${isStandalone() ? "" : `<button type="button" class="installrow" data-act="guide" style="width:100%"><span class="iric"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2.5"/><path d="M11 18h2"/></svg></span><span class="mid"><b>Agregar como app${isIOS() ? " en tu iPhone" : ""}</b><span class="sub">Pantalla completa, avisos y ${isIOS() ? "Face ID" : "huella"}</span></span><span class="chev" aria-hidden="true">›</span></button>`}`,
+      ${isStandalone() ? "" : `<button type="button" class="installrow" data-act="guide" style="width:100%"><span class="iric"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2.5"/><path d="M11 18h2"/></svg></span><span class="mid"><b>Agregar como app${isIOS() ? " en tu iPhone" : ""}</b><span class="sub">Pantalla completa, avisos y biométricos</span></span><span class="chev" aria-hidden="true">›</span></button>`}`,
   };
   v.innerHTML = `<div class="grid rsm">${pages[g[0]]()}</div>`;
   $("#checkUpd")?.addEventListener("click", async e => {
@@ -2425,7 +2473,8 @@ function viewCats(v) {
   v.querySelectorAll("[data-revtok]").forEach(b => b.onclick = async () => { if (confirm("¿Revocar este token? Lo que lo use (Siri o Gmail) dejará de funcionar.")) { await check(sb.from("api_tokens").update({ revoked: true }).eq("id", b.dataset.revtok), "Token revocado"); refresh(); } });
   v.querySelectorAll("[data-deltok]").forEach(b => b.onclick = async () => { await check(sb.from("api_tokens").delete().eq("id", b.dataset.deltok)); refresh(); });
   $("#invite")?.addEventListener("click", openInvite);
-  $("#loadUsers")?.addEventListener("click", loadAdminUsers);
+  $("#userQ")?.addEventListener("input", e => { const q = e.target.value.trim().toLowerCase(); v.querySelectorAll("#userList [data-q]").forEach(r => r.hidden = !!q && !r.dataset.q.includes(q)); });
+  v.querySelectorAll("[data-user]").forEach(b => b.onclick = () => openUser((S.adminUsers || []).find(u => u.id === b.dataset.user)));
   v.querySelectorAll("[data-setname]").forEach(b => b.onclick = async () => {
     const name = prompt("Nombre del usuario (aparece en su bienvenida):", b.dataset.name || "");
     if (name == null || !name.trim()) return;
@@ -2444,7 +2493,7 @@ function viewCats(v) {
   $("#logout")?.addEventListener("click", async () => { if (confirm("¿Cerrar sesión en este dispositivo?")) signOutClean(); });
   $("#idleSel")?.addEventListener("change", e => { try { localStorage.setItem(TIMEOUT_KEY, e.target.value); } catch {} markActive(); toast(`Se cerrará la sesión tras ${e.target.value} minutos sin usarla`); });
   v.querySelectorAll("[data-delpk]").forEach(b => b.onclick = async () => {
-    if (!confirm("¿Quitar el acceso con Face ID/huella de ese teléfono? Tendrá que entrar con contraseña.")) return;
+    if (!confirm("¿Quitar el acceso con biométricos de ese teléfono? Tendrá que entrar con contraseña.")) return;
     if (await check(sb.from("webauthn_credentials").delete().eq("id", b.dataset.delpk), "Acceso quitado")) { if (pkLocal()?.id === b.dataset.delpk) try { localStorage.removeItem(PK_KEY); } catch {} refresh(); }
   });
   const bioBox = v.querySelector("[data-biobox]");
@@ -3215,7 +3264,7 @@ $("#view").addEventListener("click", e => {
   else if (d.place) go("apartados", { apPlace: d.place }, "fwd");
   else if (d.editplace) openPlace(place(d.editplace));
   else if (d.realbal) openRealBalance(place(d.realbal));
-  else if (d.setpage) go("cats", { setPage: d.setpage }, "fwd");
+  else if (d.setpage) go("cats", { setPage: d.setpage, ...(d.setpage === "admin" ? { adminUsers: null } : {}) }, "fwd");
   else if (d.back) navBack();
   else if (d.act === "fijos") go("fijos", { fijosFrom: "resumen" }, "fwd");
   else if (d.act === "fijos-aj") go("fijos", { fijosFrom: "cats" }, "fwd");
@@ -3350,7 +3399,9 @@ if (pushSupported()) {
   navigator.serviceWorker.addEventListener("message", e => {
     if (e.data?.type !== "open") return;
     const t = new URL(e.data.url).searchParams.get("tab");
-    if (t) { S.tab = t; render(); window.scrollTo(0, 0); }
+    if (t === "usuarios") Object.assign(S, { tab: "cats", setPage: "admin", adminUsers: null });
+    else if (t) S.tab = t;
+    if (t) { render(); window.scrollTo(0, 0); }
     refresh();
   });
 }

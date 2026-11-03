@@ -49,7 +49,7 @@ end $$;
 alter table public.scheduled_notifications add column if not exists pending_id uuid references public.pending_entries on delete cascade;
 alter table public.scheduled_notifications drop constraint if exists scheduled_notifications_kind_check;
 alter table public.scheduled_notifications add constraint scheduled_notifications_kind_check
-  check (kind in ('pendientes','recurrente','ingreso','recordatorio','meta','prueba','resumen'));
+  check (kind in ('pendientes','recurrente','ingreso','recordatorio','meta','prueba','resumen')) not valid;
 
 -- Igual que antes, pero: el aviso se programa también cuando el pendiente lo crea la app al abrirse,
 -- queda ligado al pendiente (si se confirma o descarta antes, no se envía) y ya no se borra al abrir la app.

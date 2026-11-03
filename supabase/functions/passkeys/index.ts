@@ -75,7 +75,7 @@ export async function handle(body: any, jwt: string, origin: string, s: Store) {
       const expectedChallenge = await s.takeChallenge(String(body.challengeId), "acceso");
       if (!expectedChallenge) return { status: 400, data: { error: "El intento expiró; inténtalo de nuevo" } };
       const c = await s.cred(String(body.response?.id ?? ""));
-      if (!c) return { status: 404, data: { error: "Este teléfono ya no está registrado. Entra con tu contraseña y vuelve a activar Face ID." } };
+      if (!c) return { status: 404, data: { error: "Este teléfono ya no está registrado. Entra con tu contraseña y vuelve a activar los biométricos." } };
       const v = await verifyAuthenticationResponse({
         response: body.response, expectedChallenge, expectedOrigin: origin, expectedRPID: rpID, requireUserVerification: true,
         credential: { id: c.id, publicKey: isoBase64URL.toBuffer(c.public_key), counter: Number(c.counter), transports: c.transports as any },

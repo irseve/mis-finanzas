@@ -796,3 +796,12 @@ Pedido del usuario (2026-11-03): que un amigo cree su propia cuenta y que el adm
 - [ ] (Opcional) "Enviar enlace para cambiar contraseña": el administrador genera un enlace de un solo uso y se lo manda por WhatsApp a quien olvidó su contraseña, sin correo.
 - Requiere migración 009 (columna "aprobado" en los perfiles y el aviso al administrador).
 - Mientras tanto ya se puede hoy: el administrador crea la cuenta en Ajustes → Usuarios → Agregar usuario, con una contraseña inicial, y se la pasa a su amigo; él la cambia en Ajustes → Seguridad.
+
+---
+
+## 19. Versión 2.6.0 (2026-11-03): qué se aplicó
+El usuario respondió "Sí" a aplicar AU, AW y AX, y decidió que **no** haya aprobación de cuentas (AY descartado: cualquiera puede crear su cuenta sin autorización).
+- [x] **AU.** En toda la app dice "biométricos" en lugar de Face ID o huella (botón de entrar, Ajustes → Seguridad, tarjeta de la cuenta, guía "Agregar como app"). El mensaje del servidor de llaves de acceso también se cambió (se ve hasta que se reinstale la función `passkeys`, opcional).
+- [x] **AW.** Aviso a los administradores por cada cuenta nueva: "Nuevo usuario: nombre" con el correo y la hora; al tocarlo abre Ajustes → Usuarios. Casilla "Usuarios nuevos" en Notificaciones, solo visible para administradores. **Requiere la migración 009.**
+- [x] **AX.** Ajustes → Usuarios con el diseño nuevo: carga sola, "¿Quién usa la app?" con el total y los nuevos del mes, buscador (con más de 5 usuarios), lista de más nuevo a más viejo con fecha de registro, última entrada y etiquetas (Tú, Administrador, Sin confirmar). Al tocar un usuario: cambiar nombre y hacer o quitar administrador. Nunca muestra finanzas.
+- Corrección: las migraciones 005, 006, 008 y 009 ahora agregan la lista de tipos de aviso con `not valid`, para que `instalar_todo.sql` (o cualquiera de ellas) se pueda volver a correr aunque ya existan avisos de tipos nuevos (antes fallaba al reinstalar). Probado: dos reinstalaciones seguidas sin errores, y los tipos de aviso inválidos se siguen rechazando.

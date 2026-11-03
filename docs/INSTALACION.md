@@ -1,4 +1,4 @@
-# Dejar todo listo (versión 2.3.0)
+# Dejar todo listo (versión 2.6.0)
 
 Sigue los pasos en orden. Los pasos 1 a 4 se hacen una sola vez, desde una computadora, en <https://supabase.com/dashboard> → tu proyecto.
 
@@ -12,6 +12,7 @@ Sigue los pasos en orden. Los pasos 1 a 4 se hacen una sola vez, desde una compu
 6. Y [`migrations/005_semestral_anual_avisos_faceid.sql`](../migrations/005_semestral_anual_avisos_faceid.sql) (semestral y anual, avisos de pendientes, resumen diario, nombre y Face ID).
 7. Y [`migrations/006_avisos_a_pedido.sql`](../migrations/006_avisos_a_pedido.sql) y [`migrations/007_nombre_en_cuenta.sql`](../migrations/007_nombre_en_cuenta.sql) (avisos a pedido y nombre en la cuenta).
 8. Y [`migrations/008_grupos_y_topes.sql`](../migrations/008_grupos_y_topes.sql) (grupos de gastos, topes mensuales y su aviso). **Nueva en la versión 2.3.0.**
+9. Y [`migrations/009_aviso_usuario_nuevo.sql`](../migrations/009_aviso_usuario_nuevo.sql) (aviso a los administradores cuando alguien crea una cuenta). **Nueva en la versión 2.6.0.**
 
 Atajo: [`migrations/instalar_todo.sql`](../migrations/instalar_todo.sql) trae todos juntos; pégalo una sola vez.
 
@@ -48,7 +49,7 @@ No hace falta configurar ningún secreto: las funciones usan las llaves que Supa
 
 1. Borra el icono actual de "Finanzas" (tus datos están en Supabase, no se pierden).
 2. Abre `https://irseve.github.io/mis-finanzas/` en **Safari**. Si no ves el icono verde con $, espera 10 minutos y recarga.
-3. Inicia sesión y revisa en **Ajustes → Acerca de** que diga la versión más reciente (**2.3.0**).
+3. Inicia sesión y revisa en **Ajustes → Acerca de** que diga la versión más reciente (**2.6.0**).
 4. **Compartir → Agregar a inicio**.
 
 De aquí en adelante, ábrela siempre desde el icono.

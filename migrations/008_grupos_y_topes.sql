@@ -27,7 +27,7 @@ create index if not exists transactions_group on public.transactions (group_id, 
 -- ---------- Aviso de tope ----------
 alter table public.scheduled_notifications drop constraint if exists scheduled_notifications_kind_check;
 alter table public.scheduled_notifications add constraint scheduled_notifications_kind_check
-  check (kind in ('pendientes','recurrente','ingreso','recordatorio','meta','prueba','resumen','mensaje','tope'));
+  check (kind in ('pendientes','recurrente','ingreso','recordatorio','meta','prueba','resumen','mensaje','tope')) not valid;
 
 -- Al registrar o cambiar un gasto del mes en curso con grupo, revisa el tope de ese grupo.
 -- Avisa una sola vez por mes y grupo al llegar al 80% y otra al rebasarlo (el aviso se puede apagar en Ajustes).

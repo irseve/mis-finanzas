@@ -6,4 +6,4 @@
 
 alter table public.scheduled_notifications drop constraint if exists scheduled_notifications_kind_check;
 alter table public.scheduled_notifications add constraint scheduled_notifications_kind_check
-  check (kind in ('pendientes','recurrente','ingreso','recordatorio','meta','prueba','resumen','mensaje'));
+  check (kind in ('pendientes','recurrente','ingreso','recordatorio','meta','prueba','resumen','mensaje')) not valid;
