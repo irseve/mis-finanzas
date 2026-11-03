@@ -718,9 +718,7 @@ Conceptos que se repiten en todas: encabezado "Hola, nombre" + título, etiqueta
 
 ---
 
-## 18. Cambios anotados el 2026-11-03 (sin aplicar todavía)
-
-Solo anotados; **no ejecutar** hasta que el usuario lo indique.
+## 18. Cambios anotados el 2026-11-03 — AS ✅ aplicado en la versión 2.5.0; AT por decidir
 
 ### AR. Privacidad entre usuarios (pregunta del usuario: "que nadie, ni siquiera yo, pueda ver los datos de cada usuario")
 Revisión de Claude (2026-11-03):
@@ -753,3 +751,10 @@ Cómo funcionaría:
 - Lo que entra desde fuera (Siri, correo de BBVA, fijos que se crean solos) se cifra en el servidor con una llave **pública** del usuario: el servidor puede cerrar el candado pero no abrirlo.
 - Cambios que trae: avisos sin montos ni nombres ("Tienes un pago por confirmar"); el aviso de topes lo calcula el teléfono al registrar; búsqueda y totales en el teléfono; al entrar por primera vez después del cambio se cifran los datos existentes.
 - Límite honesto: quien publica el código de la app podría, en teoría, cambiarlo para robar llaves; la privacidad depende de confiar en el código que se publica (es igual en cualquier app con cifrado de extremo a extremo).
+
+- **Aplicado en 2.5.0 (2026-11-03):** el usuario pidió "aplica todos los cambios". Se aplicó AS con el diseño de la maqueta:
+  - Inicio de sesión sin borde (como las demás tarjetas) y debajo el renglón "Agregar como app en tu iPhone"; solo aparece si la app no está abierta desde el icono.
+  - Guía "Agregar como app" con selector iPhone · Android (elige solo según el teléfono), los 4 pasos de iOS 26 con dibujos, "Copiar enlace" y "¡Listo!". Si en el iPhone se abrió en Chrome u otro navegador, el paso 1 se resalta y avisa.
+  - También en Ajustes → Acerca de, si se abrió desde el navegador.
+  - "Crear cuenta" se queda (registro abierto, decisión del usuario). El cifrado (AT) no se aplicó: el usuario preguntó cómo lograrlo sin código de recuperación, como WhatsApp.
+- **AT, opción "como WhatsApp" (propuesta de Claude, 2026-11-03):** guardar la llave de cifrado protegida con la **llave de acceso (Face ID)** del usuario, que el iPhone sincroniza en el Llavero de iCloud (también cifrado de extremo a extremo por Apple). Al cambiar de iPhone con la misma cuenta de Apple, la llave llega sola y los datos se abren con Face ID, sin guardar ningún código. Opcional: una contraseña de respaldo solo para quien la quiera. Si alguien pierde el acceso a su cuenta de Apple y no puso respaldo, sus datos se pierden.
