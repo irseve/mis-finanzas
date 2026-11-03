@@ -766,3 +766,8 @@ Pedido del usuario (2026-11-03): la app dice "Face ID" en cualquier iPhone, aunq
 - [ ] Ajustes → Seguridad (título y "Activar biométricos"), tarjeta de la cuenta ("Biométricos activados"), resumen de Seguridad y la ventana que ofrece activarlos al entrar.
 - [ ] Guía "Agregar como app" y el renglón del inicio de sesión: "Pantalla completa, avisos y biométricos"; "activa los biométricos en Ajustes → Seguridad".
 - [ ] Mensajes de error y de confirmación que hoy dicen Face ID o huella.
+
+### AV. Antes de compartir la app con más usuarios (configuración en Supabase, no es cambio de la app)
+- Enlace para compartir: **https://irseve.github.io/mis-finanzas/**
+- [ ] **Correo propio (SMTP) en Supabase:** sin él, Supabase solo manda correos a los miembros del equipo del proyecto y unos pocos por hora. Los usuarios nuevos no recibirían el correo para confirmar su cuenta, recuperar su contraseña ni las invitaciones. Se configura en Authentication → Emails → SMTP Settings con un servicio gratuito (por ejemplo Brevo o Resend) y luego se sube el límite en Authentication → Rate Limits.
+- AT sigue por decidir. Aclaración dada al usuario: los bancos **no** usan cifrado de extremo a extremo para tus datos; el banco sí puede verlos y los protege con reglas, permisos, registros de quién entra y auditorías. La única forma de que el dueño técnicamente no pueda leer los datos es el cifrado de extremo a extremo; con contraseña (sin biométricos) los datos se conservan mientras el usuario recuerde su contraseña.
