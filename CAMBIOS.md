@@ -805,3 +805,13 @@ El usuario respondió "Sí" a aplicar AU, AW y AX, y decidió que **no** haya ap
 - [x] **AW.** Aviso a los administradores por cada cuenta nueva: "Nuevo usuario: nombre" con el correo y la hora; al tocarlo abre Ajustes → Usuarios. Casilla "Usuarios nuevos" en Notificaciones, solo visible para administradores. **Requiere la migración 009.**
 - [x] **AX.** Ajustes → Usuarios con el diseño nuevo: carga sola, "¿Quién usa la app?" con el total y los nuevos del mes, buscador (con más de 5 usuarios), lista de más nuevo a más viejo con fecha de registro, última entrada y etiquetas (Tú, Administrador, Sin confirmar). Al tocar un usuario: cambiar nombre y hacer o quitar administrador. Nunca muestra finanzas.
 - Corrección: las migraciones 005, 006, 008 y 009 ahora agregan la lista de tipos de aviso con `not valid`, para que `instalar_todo.sql` (o cualquiera de ellas) se pueda volver a correr aunque ya existan avisos de tipos nuevos (antes fallaba al reinstalar). Probado: dos reinstalaciones seguidas sin errores, y los tipos de aviso inválidos se siguen rechazando.
+
+## 20. Cambios anotados el 2026-11-03 (sin aplicar todavía)
+
+Solo anotados; **no ejecutar** hasta que el usuario lo indique.
+
+### AZ. "Compartir la app" en Ajustes (para cualquier usuario)
+- [ ] Renglón nuevo en Ajustes, sección **App**, con icono de compartir: **"Compartir la app"** · "Mándale el enlace a quien quieras".
+- [ ] Al tocarlo se abre el menú de compartir del teléfono (WhatsApp, Mensajes, correo, AirDrop…) con este mensaje: "Te recomiendo Mis finanzas para llevar tus gastos e ingresos: https://irseve.github.io/mis-finanzas/ · Ábrelo en Safari y toca «Agregar como app» para instalarla."
+- [ ] Si el teléfono o el navegador no tiene ese menú, el enlace se copia y aparece "Enlace copiado".
+- Lo ven todos los usuarios, no solo los administradores. No comparte nada de las finanzas de nadie, solo el enlace.
