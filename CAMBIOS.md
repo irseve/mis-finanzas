@@ -771,3 +771,16 @@ Pedido del usuario (2026-11-03): la app dice "Face ID" en cualquier iPhone, aunq
 - Enlace para compartir: **https://irseve.github.io/mis-finanzas/**
 - [ ] **Correo propio (SMTP) en Supabase:** sin él, Supabase solo manda correos a los miembros del equipo del proyecto y unos pocos por hora. Los usuarios nuevos no recibirían el correo para confirmar su cuenta, recuperar su contraseña ni las invitaciones. Se configura en Authentication → Emails → SMTP Settings con un servicio gratuito (por ejemplo Brevo o Resend) y luego se sube el límite en Authentication → Rate Limits.
 - AT sigue por decidir. Aclaración dada al usuario: los bancos **no** usan cifrado de extremo a extremo para tus datos; el banco sí puede verlos y los protege con reglas, permisos, registros de quién entra y auditorías. La única forma de que el dueño técnicamente no pueda leer los datos es el cifrado de extremo a extremo; con contraseña (sin biométricos) los datos se conservan mientras el usuario recuerde su contraseña.
+- Decisión del usuario (2026-11-03): configurar el correo propio es importante; Claude le dio los pasos con Brevo.
+
+### AW. Aviso al administrador por cada usuario nuevo (sin aplicar todavía)
+Pedido del usuario: una notificación **solo a los administradores** (hoy solo él) cada vez que alguien crea una cuenta.
+- [ ] Al crearse una cuenta, la base de datos programa un aviso para cada administrador: "Nuevo usuario: nombre o correo · se registró hoy 9:42". Al tocarlo abre Ajustes → Usuarios.
+- [ ] Casilla nueva en Ajustes → Notificaciones, visible solo para administradores: "Usuarios nuevos".
+- Requiere migración 009 (nuevo tipo de aviso y cambio en la función que se ejecuta al crear la cuenta). No muestra nada de las finanzas del usuario nuevo.
+
+### AX. Lista de usuarios en Ajustes (sin aplicar todavía)
+Hoy ya existe en Ajustes → Usuarios (solo administradores), pero hay que tocar "Ver usuarios" y se ve con el diseño anterior.
+- [ ] Que cargue sola al entrar, con el estilo de las maquetas: arriba cuántos usuarios hay (y cuántos se registraron este mes); lista con inicial, nombre, correo, fecha de registro, última entrada y si es administrador o tiene la invitación pendiente.
+- [ ] Buscador por nombre o correo, y orden de más nuevo a más viejo.
+- [ ] Siguen "Agregar usuario", "Cambiar nombre" y "Hacer admin / Quitar admin". Nunca muestra las finanzas de nadie.
