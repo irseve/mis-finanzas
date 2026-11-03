@@ -616,3 +616,8 @@ Propuesta (máximo 5 bloques, siempre en el mismo orden):
 - **Decisiones del usuario sobre la maqueta:**
   - Se quita la línea "unos $X por día" debajo de "Te quedan libres".
 - Por definir: qué hace el botón **Pagar** de un pago vencido en "Necesita tu atención". Propuesta: abre la misma ventana de AJ (nombre, monto editable, método y fecha programada; botones **Registrar con fecha programada**, **Registrar con fecha de hoy** y **Cancelar**) y registra el gasto sin salir del Resumen.
+- **Decisión del usuario sobre los vencidos:** "Necesita tu atención" busca los pagos vencidos **de cualquier mes, sin límite de tiempo** (no solo del mes que se está viendo).
+  - Vencido = fecha programada de un fijo que ya pasó y que no está registrado (por pagar) o cuyo pendiente no se ha confirmado.
+  - Se busca desde la fecha de inicio de cada fijo hasta ayer.
+  - Hoy la app solo los marca dentro del mes abierto (`monthPlan`); al cambiar de mes se pierden de vista. Con este cambio siguen apareciendo hasta que se pagan, se confirman o se descartan.
+  - Cada uno muestra la fecha en que estaba programado (por ejemplo "Internet $599 · era el 30 oct").
