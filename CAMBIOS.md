@@ -624,3 +624,14 @@ Propuesta (máximo 5 bloques, siempre en el mismo orden):
 - **Decisión del usuario sobre la cifra principal:** un botón **muy discreto** (icono pequeño de flechas ⇅, en gris, junto a la etiqueta) cambia entre **"Te quedan libres $X"** y **"Gastado este mes $X"** (en rojo, con "de $ingresos · N%").
   - La app recuerda la última elección en ese teléfono.
   - Por defecto: "Te quedan libres".
+
+### AN. Ver rápido el mes anterior y volver siempre al mes en curso
+Necesidad del usuario: los primeros días del mes casi no hay nada registrado y se quiere repasar el mes que acaba de cerrar, sin perder que la app abra siempre en el mes en curso.
+- [ ] **Tarjeta "Cierre del mes"** arriba del Resumen, **del día 1 al 5** de cada mes:
+  - "**Octubre cerró** · Gastaste $12,250 de $24,898 · Te sobraron $3,400" y el enlace **"Ver resumen de octubre ›"**, que cambia el Resumen a ese mes.
+  - Desaparece sola el día 6, o antes si se cierra con la ✕ (se recuerda en ese teléfono para ese mes).
+- [ ] **Siempre volver al mes en curso:**
+  - Al iniciar sesión (ya se hace hoy).
+  - También al abrir la app tras **30 minutos** o más sin usarla.
+  - Mientras se ve otro mes, aparece un botón pequeño **"Volver a noviembre"** (con el nombre del mes en curso) para regresar de un toque.
+- Descartado por ahora: las flechas ‹ › a los lados del mes (el usuario eligió solo la tarjeta de cierre y el punto de volver al mes en curso).
