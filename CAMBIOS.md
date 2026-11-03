@@ -841,3 +841,12 @@ Propuesta de Claude (por confirmar):
 - [ ] La lista sigue mostrando todos los fijos, pero los que tocan en el mes elegido van arriba con su fecha y estado ("Pagado ✓ 1 nov", "Por pagar · 5 nov"), y los que no tocan ese mes van abajo, en gris, con "No toca este mes · siguiente: 8 dic".
 - [ ] En la pestaña Ingresos fijos funciona igual ("¿Cuánto me llega en noviembre?").
 - La parte de "¿Cuánto se va en fijos?" (promedio al mes) se queda como una línea chica dentro de la tarjeta: "En promedio: $12,026 al mes".
+
+### BD. Fijos con fecha de fin (pagos a plazos, deudas)
+Pedido del usuario: que un fijo pueda ser **indefinido** o tener un **tiempo definido**, por ejemplo una mensualidad o deuda que termina en cierta fecha.
+Propuesta de Claude (por confirmar):
+- [ ] En el formulario del fijo, nueva opción **"¿Hasta cuándo?"**: *Sin fecha de fin* (como hoy, la opción por defecto) · *Hasta una fecha* (se elige la fecha del último pago) · *Un número de pagos* (por ejemplo 12; la app calcula la fecha del último pago y la muestra: "Último pago: 5 de octubre de 2027").
+- [ ] En Fijos y en el detalle del fijo: "Pago 3 de 12 · termina en oct 2027", una barra de avance y **"Te faltan $X"** (lo que queda por pagar).
+- [ ] Después del último pago el fijo pasa solo a **"Terminado"** (ya no genera pendientes, avisos ni cuenta en lo que toca pagar cada mes) y llega un aviso: "¡Terminaste de pagar X!". Se queda en una sección "Terminados" con su historial, y se puede reactivar o extender.
+- [ ] Lo que toca pagar cada mes (BC), los vencidos y "Próximos pagos" del Resumen respetan la fecha de fin.
+- Requiere migración 010 (columna de fecha de fin en los fijos y que la creación automática de pendientes y recordatorios se detenga en esa fecha).
