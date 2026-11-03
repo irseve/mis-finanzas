@@ -698,3 +698,15 @@ Conceptos que se repiten en todas: encabezado "Hola, nombre" + título, etiqueta
 - [ ] **Apartados:** tarjeta "¿Cuánto tengo apartado?" con el total en azul (color de Apartado), el rendimiento en verde y la barra Ahorro / Inversión; tarjeta "Este mes" con la sugerencia y cuánto falta; "Dónde está" con cada lugar, su valor y su ganancia; Metas con barra. Sin selector de mes (los apartados no son por mes).
 - [ ] **Ajustes:** tarjeta de la cuenta arriba (nombre, correo, Face ID), y la lista en tres secciones con icono de color: Tu dinero (Categorías, Grupos, Métodos, **Fijos**), Avisos y atajos (Notificaciones, Siri y correo) y App (Apariencia, **Seguridad**, Usuarios, Acerca de). "Cerrar sesión" en rojo al final.
 - Propuestas de Claude dentro de la maqueta: entrar a Fijos también desde Ajustes, y separar "Seguridad" (Face ID y cierre de sesión) de "Cuenta".
+- **Decisiones del usuario sobre las maquetas (2026-11-03):** Por confirmar, Apartados y Ajustes quedan aprobadas tal como están. Movimientos y Fijos se ajustan así (maqueta actualizada):
+  - [ ] **Movimientos sin selector de mes:** se ven todos los movimientos, de cualquier mes, del más nuevo al más viejo.
+    - Al abrir carga **los 10 últimos**. Abajo hay un botón discreto (texto verde) **"Mostrar más movimientos"** que carga 10 más.
+    - Después de esa primera vez, al llegar al final de la lista se cargan **solos** los siguientes 10, sin tocar nada.
+    - Mientras carga: tres renglones de muestra con un brillo que se mueve y un círculo girando con "Cargando más movimientos…". Los nuevos aparecen suavemente (subiendo y apareciendo). Sin saltos.
+    - Cuando ya no hay más: palomita y **"Ya no hay más movimientos"** con la fecha del primer movimiento registrado.
+    - Al cambiar de mes en la lista aparece un separador con el nombre del mes ("Octubre 2026").
+    - Propuesta de Claude: la tarjeta de arriba muestra los Gastos e Ingresos de **este mes**, y la hoja de filtros gana un filtro **Fechas** (para buscar un periodo, ya que no hay selector de mes).
+  - [ ] **Fijos sin selector de mes:** lista de todos los fijos agrupados por frecuencia (Mensual, Bimestral, Semanal…), cada uno con el estado de su siguiente pago: Pagado ✓ (verde), Por pagar (gris) o Pendiente (rojo, cuando ya pasó la fecha).
+    - Arriba, "¿Cuánto se va en fijos?": cuánto suman al mes los gastos fijos y qué parte de los ingresos fijos es (los semanales y bimestrales se cuentan como su equivalente al mes).
+    - Se quita "Fijos vs. variables" (era por mes).
+  - [ ] **Detalle de un fijo (pantalla nueva):** al tocar un fijo se abre su historial: Pendiente (con "Pagar"), Próximos (Por pagar, con "Marcar pagado" en el siguiente) y Pagados (con la fecha real en que se pagó). Arriba el monto, cada cuánto, método, categoría y grupo, y cuánto se ha pagado en el año. "Editar" abre el formulario de siempre.
