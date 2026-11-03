@@ -22,6 +22,7 @@ Este documento es la guía de trabajo para Claude Code. Implementa los cambios *
 ## 2. Reglas de trabajo
 
 0. **No cambiar la app sin permiso explícito (regla del usuario, 2026-10-31):** cuando el usuario pida algo, **solo anotarlo** en este archivo y **preguntar**. No modificar la app ni subir cambios a `main` hasta que el usuario diga explícitamente que se apliquen (por ejemplo "actualiza los cambios"), porque quiere juntar varios cambios y aplicarlos al mismo tiempo. Excepción: anotar en este archivo.
+0b. **Avisar cada cambio (regla del usuario, 2026-11-03):** cada vez que se suba un cambio o actualización, mandar una notificación al iPhone del usuario con lo que cambió.
 1. **Sube los cambios directo a `main`** al terminar cada fase, con un mensaje de commit claro en español.
 2. **Nunca pierdas ni alteres datos existentes.** Todo cambio de base de datos va en una migración nueva en `migrations/NNN_descripcion.sql`, idempotente (`if not exists`, etc.). Si tienes acceso a Supabase por MCP, aplícala; si no, al final indícale al usuario exactamente qué archivo correr en el SQL Editor **antes** de abrir la app.
 3. **Seguridad:**
@@ -564,9 +565,7 @@ Requiere las migraciones 006 y 007 y volver a desplegar `notificaciones` y `admi
 
 ---
 
-## 14. Cambios anotados el 2026-11-02 (tercera tanda, sin implementar todavía)
-
-Solo anotados; **no ejecutar** hasta que el usuario lo indique.
+## 14. Cambios anotados el 2026-11-02 (tercera tanda) — ✅ aplicados en la versión 2.3.0 (2026-11-03)
 
 ### AJ. "Fijos del mes": botones a la derecha y confirmación para pagos fuera de fecha
 - [ ] En cada renglón de "Fijos del mes" (y en "Por confirmar"), el botón **Marcar pagado / Marcar recibido / Confirmar** va **a la derecha**, en la misma línea que el nombre y el monto (hoy en el teléfono baja a otra línea a la izquierda).
@@ -635,4 +634,19 @@ Necesidad del usuario: los primeros días del mes casi no hay nada registrado y 
   - Al iniciar sesión (ya se hace hoy).
   - También al abrir la app tras **30 minutos** o más sin usarla.
   - Mientras se ve otro mes, aparece un botón pequeño **"Volver a noviembre"** (con el nombre del mes en curso) para regresar de un toque.
-- Descartado por ahora: las flechas ‹ › a los lados del mes (el usuario eligió solo la tarjeta de cierre y el punto de volver al mes en curso).
+- Nota: las flechas ‹ › a los lados del mes **ya existían** en la app (Claude las propuso por error como algo nuevo); se quedan como están.
+
+---
+
+## 15. Versión 2.3.0 (2026-11-03): qué se aplicó
+
+El usuario pidió "aplica cambios". Se aplicaron AJ, AK, AL, AM y AN:
+- [x] **AJ.** Botones a la derecha en "Próximos pagos" y "Necesita tu atención". Al marcar un fijo **vencido** (o confirmar un pendiente de fijo vencido) aparece la ventana "¿Seguro que quieres marcar como pagado este movimiento fuera de fecha?", con monto y método editables y dos botones: **Con la fecha programada** y **Con la fecha de hoy**.
+- [x] **AK.** Gráfica: Mes y Año cambian el periodo a "Todo"; Semana regresa a "Este mes"; ya no se ofrecen periodos de una sola barra. Por defecto: mes a mes con todo el historial.
+- [x] **AL.** Grupos de gastos (solo gastos, uno por gasto): Ajustes → Grupos de gastos (crear, editar, eliminar moviendo sus gastos), campo Grupo en el +, en pendientes y en fijos, pestaña Grupos en "¿En qué se fue?", filtro y etiqueta en Movimientos, columna Grupo en el CSV, tope mensual opcional (ámbar al 80%, rojo al rebasar) y aviso al 80% y al rebasarlo (una vez por mes y grupo; se apaga en Ajustes → Notificaciones). **Requiere la migración 008.**
+- [x] **AM.** Resumen nuevo: ¿Cómo voy este mes? (Te quedan libres ⇄ Gastado con el botón discreto, se recuerda en el teléfono) · Necesita tu atención (por confirmar, vencidos de cualquier mes, topes rebasados) · Próximos pagos (3) · ¿En qué se fue? (Categorías · Grupos · Métodos) · Tendencia. "Fijos vs. variables" pasó al detalle de Fijos y "Gastos más grandes" a Movimientos (botón "Más grandes").
+- [x] **AN.** Tarjeta "Octubre cerró" del día 1 al 5 (te sobraron en verde / te pasaste por en rojo), botón "Volver a noviembre" cuando se ve otro mes, y la app vuelve al mes en curso al abrirla tras 30 minutos.
+- Detalle: los vencidos solo cuentan desde el día en que el fijo se dio de alta en la app (para que un fijo con fecha de inicio antigua no aparezca con meses "vencidos").
+
+### Regla nueva del usuario (2026-11-03)
+- **Cada vez que se suba un cambio o actualización, mandar una notificación al iPhone del usuario** (con su token de Claude, solo en la conversación; el token no se guarda en el repositorio).
