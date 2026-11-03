@@ -680,3 +680,21 @@ Propuesta de Claude para lo que choca con cambios anteriores:
   - Encabezado "Hola, nombre" + título de la pantalla, y el mes en una pastilla ("Noviembre 2026 ⌄"). Las flechas ‹ › se ocultaron porque la maqueta no las tiene (se pueden regresar).
   - El botón "Pendientes" del encabezado ya no aparece en el Resumen (está en "Necesita tu atención"); sigue en las demás pantallas.
   - Apartado en azul fijo, como en la maqueta.
+
+---
+
+## 17. Cambios anotados el 2026-11-03 (sin aplicar todavía)
+
+Solo anotados; **no ejecutar** hasta que el usuario lo indique.
+
+### AQ. Llevar el estilo del Resumen a las demás pantallas
+Pedido del usuario: aplicar los mismos conceptos del Resumen a las demás opciones, con una maqueta de cada una, y rediseñar Movimientos (la parte de arriba tiene demasiadas cosas).
+Maquetas (mismo lienzo que el Resumen): https://claude.ai/artifact/CvW4v86VpMUM9xhVash2go
+Conceptos que se repiten en todas: encabezado "Hola, nombre" + título, etiquetas chicas grises en mayúsculas, tarjetas sin borde, la cifra más importante primero y en grande, verde lo que entra o queda y rojo lo gastado, acciones como texto verde y el detalle solo al tocar.
+- [ ] **Movimientos:** arriba solo el buscador y un botón de filtros (con un numerito cuando hay filtros activos), y el selector Todos · Gastos · Ingresos. Los filtros activos aparecen como fichas que se quitan con ✕. Tarjeta con Gastos (rojo) e Ingresos (verde) del mes. La lista va por día, con el total del día, y cada movimiento con su icono de color, categoría y método, y fichas "Fijo" o del grupo.
+- [ ] **Hoja de filtros** (se abre desde abajo): Ordenar (Más recientes / Más grandes), Grupo, Categoría, Método de pago, Solo fijos, Limpiar filtros y **Exportar CSV** (sale de la pantalla principal).
+- [ ] **Fijos:** selector Gastos fijos · Ingresos fijos; tarjeta "¿Cómo van mis fijos?" con lo pagado de lo que toca en el mes y Fijos vs. variables; lista por frecuencia con el estado en color (Pagado ✓ verde, Por pagar en ámbar, Vencido en rojo); "+ Nuevo fijo".
+- [ ] **Por confirmar:** tarjeta con cuántos faltan y el botón "Confirmar los N como están"; lista separada en "Del correo y de Siri" y "De tus fijos", con icono del origen y "Confirmar" en texto verde debajo del monto; los vencidos en ámbar.
+- [ ] **Apartados:** tarjeta "¿Cuánto tengo apartado?" con el total en azul (color de Apartado), el rendimiento en verde y la barra Ahorro / Inversión; tarjeta "Este mes" con la sugerencia y cuánto falta; "Dónde está" con cada lugar, su valor y su ganancia; Metas con barra. Sin selector de mes (los apartados no son por mes).
+- [ ] **Ajustes:** tarjeta de la cuenta arriba (nombre, correo, Face ID), y la lista en tres secciones con icono de color: Tu dinero (Categorías, Grupos, Métodos, **Fijos**), Avisos y atajos (Notificaciones, Siri y correo) y App (Apariencia, **Seguridad**, Usuarios, Acerca de). "Cerrar sesión" en rojo al final.
+- Propuestas de Claude dentro de la maqueta: entrar a Fijos también desde Ajustes, y separar "Seguridad" (Face ID y cierre de sesión) de "Cuenta".
