@@ -650,3 +650,28 @@ El usuario pidió "aplica cambios". Se aplicaron AJ, AK, AL, AM y AN:
 
 ### Regla nueva del usuario (2026-11-03)
 - **Cada vez que se suba un cambio o actualización, mandar una notificación al iPhone del usuario** (con su token de Claude, solo en la conversación; el token no se guarda en el repositorio).
+
+---
+
+## 16. Cambios anotados el 2026-11-03 (después de la versión 2.3.0, sin aplicar todavía)
+
+Solo anotados; **no ejecutar** hasta que el usuario lo indique.
+
+### AO. Colores fijos en "¿Cómo voy este mes?"
+Problema (usuario): la cifra grande cambia de color según el tema (hoy usa el color principal del tema: verde en Bosque, morado en Ciruela, naranja en Mandarina…).
+- [ ] **"Te quedan libres"** siempre en **verde** (color de ingresos) en todos los temas.
+- [ ] **"Gastado este mes"** y **"Te faltan"** siempre en **rojo** (color de gastos) en todos los temas.
+- Misma regla que ya se usa en todo: lo que queda o entra, verde; lo gastado o lo que falta, rojo.
+
+### AP. Igualar el Resumen a la maqueta aprobada (por confirmar con el usuario)
+Problema (usuario): en la versión 2.3.0 se aplicó el contenido de la maqueta, pero no su aspecto (Claude reutilizó los estilos que ya tenía la app).
+Diferencias encontradas:
+1. Títulos de sección: en la maqueta son etiquetas chicas, grises y en mayúsculas ("NECESITA TU ATENCIÓN"); en la app son títulos negros en negrita.
+2. Tendencia: en la maqueta es una gráfica simple de 6 meses sin controles, con el mes actual en rojo y los anteriores en gris; en la app quedó la gráfica anterior con todos sus controles y todas las barras en rojo.
+3. Botones: en la maqueta "Pagar" es texto verde sin fondo y "Próximos pagos" no tiene botones; en la app son botones rellenos rojos y verdes.
+4. Iconos de la barra de abajo: en la maqueta casa, lista, cartera y engrane, con la pestaña activa en verde; en la app quedaron los de antes, con la pestaña activa en negro.
+5. Encabezado: en la maqueta "Hola, Irving" arriba de "Resumen" y el mes en una pastilla; en la app quedó el encabezado de siempre.
+Propuesta de Claude para lo que choca con cambios anteriores:
+- Gráfica como en la maqueta; los controles de AK (Semana, Mes, Año…) quedan en un botón pequeño "Ajustar".
+- Botones de "Próximos pagos" (pedidos en AJ) como texto verde discreto, igual que el "Pagar" de la maqueta.
+- Pendiente: que el usuario confirme si se igualan los 5 puntos.
