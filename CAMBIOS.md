@@ -740,3 +740,16 @@ Pedido del usuario: un botón pequeño en el inicio de sesión que lleve a una p
 - [ ] La app elige sola la pestaña iPhone o Android según el teléfono, y si se abrió fuera de Safari en el iPhone, resalta el paso 1.
 - [ ] (Propuesta) También en Ajustes → Acerca de, "Agregar como app", si se abrió desde el navegador.
 - En la maqueta se quitó "Crear cuenta" (depende de la decisión en AR).
+- **Decisiones del usuario (2026-11-03):**
+  - El registro se queda **abierto para cualquiera** ("Crear cuenta" se queda en el inicio de sesión). Se descarta cerrar el registro de AR.
+  - Pasos de iPhone corregidos para iOS 26: en Safari se toca **«⋯» → «Compartir»** (en iOS anterior, el botón Compartir directo), luego **«Agregar a inicio»** (o «Ver más») y se deja **activado «Abrir como app web»** antes de tocar «Agregar». Maqueta actualizada.
+  - El usuario quiere **privacidad total** (que ni el dueño pueda ver los datos). Pendiente: que confirme si se hace el cifrado de extremo a extremo (ver AT).
+
+### AT. Cifrado de extremo a extremo (propuesta, por confirmar)
+Cómo funcionaría:
+- Cada usuario tiene una **llave personal** que se crea en su teléfono y **nunca** se envía al servidor sin cifrar. Montos, notas, nombres de categorías, métodos, fijos, metas y lugares se cifran en el teléfono antes de guardarse; en Supabase solo queda texto ilegible. Ni el dueño desde el panel ni la llave de servicio pueden leerlo.
+- La llave se protege con una **clave de cifrado** (o la contraseña) del usuario, y se puede abrir con **Face ID** en su teléfono.
+- **Código de recuperación** (24 palabras) que el usuario guarda al crear la cuenta. Si olvida la clave y no tiene el código, sus datos se pierden; nadie puede recuperarlos.
+- Lo que entra desde fuera (Siri, correo de BBVA, fijos que se crean solos) se cifra en el servidor con una llave **pública** del usuario: el servidor puede cerrar el candado pero no abrirlo.
+- Cambios que trae: avisos sin montos ni nombres ("Tienes un pago por confirmar"); el aviso de topes lo calcula el teléfono al registrar; búsqueda y totales en el teléfono; al entrar por primera vez después del cambio se cifran los datos existentes.
+- Límite honesto: quien publica el código de la app podría, en teoría, cambiarlo para robar llaves; la privacidad depende de confiar en el código que se publica (es igual en cualquier app con cifrado de extremo a extremo).
