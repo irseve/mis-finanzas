@@ -855,3 +855,7 @@ Propuesta de Claude (por confirmar):
 - [ ] Después del último pago el fijo pasa solo a **"Terminado"** (ya no genera pendientes, avisos ni cuenta en lo que toca pagar cada mes) y llega un aviso: "¡Terminaste de pagar X!". Se queda en una sección "Terminados" con su historial, y se puede reactivar o extender.
 - [ ] Lo que toca pagar cada mes (BC), los vencidos y "Próximos pagos" del Resumen respetan la fecha de fin.
 - Requiere migración 010 (columna de fecha de fin en los fijos y que la creación automática de pendientes y recordatorios se detenga en esa fecha).
+
+### BE. Formulario: campo de fecha más ancho y centavos en gris (reporte del usuario con captura, 2026-11-04)
+- [ ] **Fecha:** en el iPhone, el recuadro de la fecha sale más ancho que los demás campos y se sale del formulario (se ve en "Nuevo movimiento"). Causa: Safari le da a los campos de fecha un ancho mínimo propio. Arreglo: que mida exactamente lo mismo que los demás campos y que la fecha quede alineada a la izquierda como el resto. Aplica a todos los campos de fecha (movimiento, pendiente, fijo, meta y los filtros de Movimientos).
+- [ ] **Centavos:** hoy el ".00" que aparece solo se ve en gris. Que se vea en **negro**, igual que el resto del monto. Sigue funcionando igual: por defecto sale ".00"; al escribir el punto, los centavos que escribas reemplazan esos ceros (".5" → ".50", ".53"). Solo el "0.00" de un campo vacío se queda en gris, porque ahí todavía no hay monto.
