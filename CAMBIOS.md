@@ -859,3 +859,13 @@ Propuesta de Claude (por confirmar):
 ### BE. Formulario: campo de fecha más ancho y centavos en gris (reporte del usuario con captura, 2026-11-04)
 - [ ] **Fecha:** en el iPhone, el recuadro de la fecha sale más ancho que los demás campos y se sale del formulario (se ve en "Nuevo movimiento"). Causa: Safari le da a los campos de fecha un ancho mínimo propio. Arreglo: que mida exactamente lo mismo que los demás campos y que la fecha quede alineada a la izquierda como el resto. Aplica a todos los campos de fecha (movimiento, pendiente, fijo, meta y los filtros de Movimientos).
 - [ ] **Centavos:** hoy el ".00" que aparece solo se ve en gris. Que se vea en **negro**, igual que el resto del monto. Sigue funcionando igual: por defecto sale ".00"; al escribir el punto, los centavos que escribas reemplazan esos ceros (".5" → ".50", ".53"). Solo el "0.00" de un campo vacío se queda en gris, porque ahí todavía no hay monto.
+
+### BF. Tendencia: que la vista simple respete lo que se eligió en "Ajustar" (error reportado por el usuario, 2026-11-04)
+Problema: en el Resumen, en Tendencia, el usuario toca "Ajustar", elige "Ambos" (gastos e ingresos) y al tocar "Listo" la gráfica simple vuelve a mostrar solo gastos. Causa: la vista simple está fija en "Gastos por mes, últimos 6 meses" y no lee lo elegido en "Ajustar" (que sí se guarda).
+- [ ] La vista simple usa lo elegido en "Ajustar":
+  - **Gastos:** como hoy (el mes elegido en rojo, los demás en gris).
+  - **Ingresos:** las barras de ingresos (el mes elegido en verde).
+  - **Ambos:** dos barras por mes, gastos en rojo e ingresos en verde (los meses anteriores más claros), con su leyenda.
+  - **Semana / Mes / Año:** las últimas 6 semanas, los últimos 6 meses o los últimos 6 años.
+- [ ] El título de la derecha cambia según lo elegido ("Gastos por mes", "Ingresos por semana", "Gastos e ingresos por año"…), y la línea de comparación también: "−$2,600 de gasto vs. octubre", "+$1,500 de ingreso vs. octubre" o, en Ambos, "Te sobraron $X este mes (vs. $Y en octubre)".
+- [ ] La vista completa de "Ajustar" sigue igual (con todos los controles y el periodo que se elija).
