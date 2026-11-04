@@ -869,3 +869,9 @@ Problema: en el Resumen, en Tendencia, el usuario toca "Ajustar", elige "Ambos" 
   - **Semana / Mes / Año:** las últimas 6 semanas, los últimos 6 meses o los últimos 6 años.
 - [ ] El título de la derecha cambia según lo elegido ("Gastos por mes", "Ingresos por semana", "Gastos e ingresos por año"…), y la línea de comparación también: "−$2,600 de gasto vs. octubre", "+$1,500 de ingreso vs. octubre" o, en Ambos, "Te sobraron $X este mes (vs. $Y en octubre)".
 - [ ] La vista completa de "Ajustar" sigue igual (con todos los controles y el periodo que se elija).
+
+### BG. "Por pagar" con rayas diagonales (pedido del usuario, 2026-11-04)
+Problema: en "¿Cómo voy este mes?" del Resumen, Gastado (rojo) y Por pagar (naranja) se distinguen solo por el tono, y al usuario se le dificulta diferenciarlos.
+- [ ] El tramo **Por pagar** de la barra lleva **rayas diagonales** (naranja con franjas más claras), para que se vea "pendiente, todavía no se hace" aunque no se distinga el color. Gastado se queda lleno.
+- [ ] El cuadrito de la leyenda "Por pagar" lleva el mismo rayado.
+- [ ] Misma regla en toda la app donde aparezca algo por pagar o por recibir junto a lo ya pagado (por ejemplo la barra de "¿Cuánto toca pagar en noviembre?" de Fijos, BC): lo pendiente siempre rayado y lo hecho, lleno.
